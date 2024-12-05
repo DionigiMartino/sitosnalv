@@ -21,7 +21,7 @@ const HomePage = () => {
       <div className="relative min-h-[80vh] flex items-center">
         <div className="absolute inset-0 z-0">
           <Image
-            src="/img/home.jpg"
+            src="/img/Home.jpg"
             alt="Sezione Hero"
             fill
             className="object-cover brightness-75"
