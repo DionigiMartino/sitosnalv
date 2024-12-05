@@ -182,19 +182,19 @@ const SegreterieSindacali = () => {
 
   return (
     <div className="space-y-8">
-      <h1 className="text-[#1a365d] text-4xl font-bold mb-6">
+      <h1 className="text-[#1a365d] text-4xl font-bold mb-6 md:text-5xl">
         SEGRETERIE SINDACALI
       </h1>
 
-      <div className="grid grid-cols-3 gap-8">
-        <div className="col-span-2">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="md:col-span-2">
           <p className="text-gray-700 mb-6">
             Le Segreterie Sindacali Snalv Confsal rappresentano la voce
-            dell'Organizzazione nel territorio di riferimento. In particolare,
+            dell&apos;Organizzazione nel territorio di riferimento. In particolare,
             le Segreterie provinciali e locali si confrontano con singoli
             rappresentanti sindacali nelle procedure sindacali collettive, le
             Segreterie regionali svolgono, invece, funzioni di raccordo e
-            garantiscono l'unitarietà e il coordinamento dell'attività sindacale
+            garantiscono l&apos;unitarietà e il coordinamento dell&apos;attività sindacale
             sul territorio.
           </p>
           <p className="text-gray-700">
@@ -263,11 +263,11 @@ const SegreterieSindacali = () => {
 
       {selectedProvincia && (
         <div className="mt-8 p-6 bg-gray-50 rounded-lg">
-          <h2 className="text-xl font-bold text-[#1a365d] mb-4">
+          <h2 className="text-xl font-bold text-[#1a365d] mb-4 md:text-2xl">
             Segreterie in {selectedProvincia} ({selectedRegione})
           </h2>
           {segreterieSedi[selectedRegione]?.[selectedProvincia] ? (
-            <div className="space-y-4">
+            <div className="space-y-4 md:grid md:grid-cols-2 md:gap-6">
               {segreterieSedi[selectedRegione][selectedProvincia].map(
                 (sede: any, index: any) => (
                   <div
@@ -304,14 +304,16 @@ const CentriSnalv = () => {
 
   return (
     <div className="space-y-8">
-      <h1 className="text-[#1a365d] text-4xl font-bold mb-6">CENTRI SNALV</h1>
+      <h1 className="text-[#1a365d] text-4xl font-bold mb-6 md:text-5xl">
+        CENTRI SNALV
+      </h1>
 
-      <div className="grid grid-cols-3 gap-8">
-        <div className="col-span-2">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="md:col-span-2">
           <p className="text-gray-700 mb-6">
             I Centri Snalv agiscono in raccordo con le Segreterie Sindacali e
             garantiscono un supporto individuale ai lavoratori associati,
-            mediante l’assistenza sindacale, previdenziale e fiscale.
+            mediante l&apos;assistenza sindacale, previdenziale e fiscale.
           </p>
         </div>
 
@@ -375,11 +377,11 @@ const CentriSnalv = () => {
 
       {selectedProvincia && (
         <div className="mt-8 p-6 bg-gray-50 rounded-lg">
-          <h2 className="text-xl font-bold text-[#1a365d] mb-4">
+          <h2 className="text-xl font-bold text-[#1a365d] mb-4 md:text-2xl">
             Centri in {selectedProvincia} ({selectedRegione})
           </h2>
           {centriSedi[selectedRegione]?.[selectedProvincia] ? (
-            <div className="space-y-4">
+            <div className="space-y-4 md:grid md:grid-cols-2 md:gap-6">
               {centriSedi[selectedRegione][selectedProvincia].map(
                 (centro: any, index: any) => (
                   <div
@@ -645,12 +647,12 @@ const TerritorioPage = () => {
       case "collabora":
         return (
           <div className="space-y-12">
-            <h1 className="text-[#1a365d] text-4xl font-bold mb-6">
+            <h1 className="text-[#1a365d] text-4xl font-bold mb-6 md:text-5xl">
               COLLABORA CON NOI
             </h1>
 
             <div className="text-center max-w-3xl mx-auto space-y-6">
-              <h2 className="text-xl font-bold text-gray-800">
+              <h2 className="text-xl font-bold text-gray-800 md:text-2xl">
                 Impegnati nel Sindacato e fornisci un supporto di qualità ai
                 lavoratori del tuo territorio!
               </h2>
@@ -665,11 +667,10 @@ const TerritorioPage = () => {
               <div className="max-w-3xl mx-auto space-y-6">
                 <p className="text-gray-700">
                   La Segreteria Nazionale è a tua disposizione per aprire una
-                  sede sindacale sul territorio: ti garantiamo un'adeguata
-                  formazione, il massimo supporto operativo e l'assistenza
+                  sede sindacale sul territorio: ti garantiamo un&apos;adeguata
+                  formazione, il massimo supporto operativo e l&apos;assistenza
                   necessaria per fare i primi passi.
                 </p>
-
                 <p className="text-gray-700">
                   Inoltre, grazie alle collaborazioni di cui si avvale lo SNALV
                   CONFSAL, potrai erogare ai lavoratori, ai pensionati, ai
@@ -680,7 +681,7 @@ const TerritorioPage = () => {
                     className="text-red-500 hover:text-red-600 ml-1"
                     onClick={() => (window.location.href = "/chi-siamo#tutele")}
                   >
-                    consulta qui l'elenco completo
+                    consulta qui l&apos;elenco completo
                   </Button>
                 </p>
               </div>
@@ -688,130 +689,129 @@ const TerritorioPage = () => {
 
             <div className="max-w-3xl mx-auto">
               <div className="bg-white p-10 rounded-xl shadow-lg border border-gray-100">
-                <h3 className="text-2xl font-bold text-[#1a365d] mb-8">
+                <h3 className="text-2xl font-bold text-[#1a365d] mb-8 md:text-3xl">
                   Compila il form per essere ricontattato
                 </h3>
-
                 <form className="space-y-8">
-                  <div className="grid grid-cols-2 gap-8">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                     <div className="space-y-6">
+                      {/* Name input */}
                       <div className="relative">
                         <input
                           type="text"
                           className="peer w-full border-b-2 border-gray-300 px-0 py-2 
-               placeholder:text-transparent focus:border-red-500 focus:outline-none"
+                  placeholder:text-transparent focus:border-red-500 focus:outline-none"
                           placeholder="Nome"
                           required
                         />
                         <label
                           className="pointer-events-none absolute left-0 -top-3.5 text-sm 
-             text-gray-600 transition-all peer-placeholder-shown:top-2 
-             peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 
-             peer-focus:-top-3.5 peer-focus:text-sm peer-focus:text-red-500"
+                  text-gray-600 transition-all peer-placeholder-shown:top-2 
+                  peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 
+                  peer-focus:-top-3.5 peer-focus:text-sm peer-focus:text-red-500"
                         >
                           Nome
                         </label>
                       </div>
-
+                      {/* Surname input */}
                       <div className="relative">
                         <input
                           type="text"
                           className="peer w-full border-b-2 border-gray-300 px-0 py-2 
-               placeholder:text-transparent focus:border-red-500 focus:outline-none"
+                  placeholder:text-transparent focus:border-red-500 focus:outline-none"
                           placeholder="Cognome"
                           required
                         />
                         <label
                           className="pointer-events-none absolute left-0 -top-3.5 text-sm 
-             text-gray-600 transition-all peer-placeholder-shown:top-2 
-             peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 
-             peer-focus:-top-3.5 peer-focus:text-sm peer-focus:text-red-500"
+                  text-gray-600 transition-all peer-placeholder-shown:top-2 
+                  peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 
+                  peer-focus:-top-3.5 peer-focus:text-sm peer-focus:text-red-500"
                         >
                           Cognome
                         </label>
                       </div>
-
+                      {/* Occupation input */}
                       <div className="relative">
                         <input
                           type="text"
                           className="peer w-full border-b-2 border-gray-300 px-0 py-2 
-               placeholder:text-transparent focus:border-red-500 focus:outline-none"
+                  placeholder:text-transparent focus:border-red-500 focus:outline-none"
                           placeholder="Professione"
                           required
                         />
                         <label
                           className="pointer-events-none absolute left-0 -top-3.5 text-sm 
-             text-gray-600 transition-all peer-placeholder-shown:top-2 
-             peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 
-             peer-focus:-top-3.5 peer-focus:text-sm peer-focus:text-red-500"
+                  text-gray-600 transition-all peer-placeholder-shown:top-2 
+                  peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 
+                  peer-focus:-top-3.5 peer-focus:text-sm peer-focus:text-red-500"
                         >
                           Professione attuale
                         </label>
                       </div>
                     </div>
-
                     <div className="space-y-6">
+                      {/* Address input */}
                       <div className="relative">
                         <input
                           type="text"
                           className="peer w-full border-b-2 border-gray-300 px-0 py-2 
-               placeholder:text-transparent focus:border-red-500 focus:outline-none"
+                  placeholder:text-transparent focus:border-red-500 focus:outline-none"
                           placeholder="Domicilio"
                           required
                         />
                         <label
                           className="pointer-events-none absolute left-0 -top-3.5 text-sm 
-             text-gray-600 transition-all peer-placeholder-shown:top-2 
-             peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 
-             peer-focus:-top-3.5 peer-focus:text-sm peer-focus:text-red-500"
+                  text-gray-600 transition-all peer-placeholder-shown:top-2 
+                  peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 
+                  peer-focus:-top-3.5 peer-focus:text-sm peer-focus:text-red-500"
                         >
                           Luogo domicilio
                         </label>
                       </div>
-
+                      {/* Phone input */}
                       <div className="relative">
                         <input
                           type="tel"
                           className="peer w-full border-b-2 border-gray-300 px-0 py-2 
-               placeholder:text-transparent focus:border-red-500 focus:outline-none"
+                  placeholder:text-transparent focus:border-red-500 focus:outline-none"
                           placeholder="Cellulare"
                           required
                         />
                         <label
                           className="pointer-events-none absolute left-0 -top-3.5 text-sm 
-             text-gray-600 transition-all peer-placeholder-shown:top-2 
-             peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 
-             peer-focus:-top-3.5 peer-focus:text-sm peer-focus:text-red-500"
+                  text-gray-600 transition-all peer-placeholder-shown:top-2 
+                  peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 
+                  peer-focus:-top-3.5 peer-focus:text-sm peer-focus:text-red-500"
                         >
                           Cellulare
                         </label>
                       </div>
-
+                      {/* Email input */}
                       <div className="relative">
                         <input
                           type="email"
                           className="peer w-full border-b-2 border-gray-300 px-0 py-2 
-               placeholder:text-transparent focus:border-red-500 focus:outline-none"
+                  placeholder:text-transparent focus:border-red-500 focus:outline-none"
                           placeholder="Email"
                           required
                         />
                         <label
                           className="pointer-events-none absolute left-0 -top-3.5 text-sm 
-             text-gray-600 transition-all peer-placeholder-shown:top-2 
-             peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 
-             peer-focus:-top-3.5 peer-focus:text-sm peer-focus:text-red-500"
+                  text-gray-600 transition-all peer-placeholder-shown:top-2 
+                  peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 
+                  peer-focus:-top-3.5 peer-focus:text-sm peer-focus:text-red-500"
                         >
                           Email
                         </label>
                       </div>
                     </div>
                   </div>
-
                   <div className="flex justify-center mt-10">
                     <Button
                       type="submit"
                       className="bg-red-500 hover:bg-red-600 text-white px-12 py-3 rounded-full 
-           text-lg font-medium transition-all hover:shadow-lg"
+              text-lg font-medium transition-all hover:shadow-lg"
                     >
                       Invia richiesta
                     </Button>
@@ -866,7 +866,7 @@ const TerritorioPage = () => {
             </div>
           </div>
 
-          <div className="col-span-3">{renderContent()}</div>
+          <div className="col-span-3 mt-6 md:mt-0">{renderContent()}</div>
         </div>
       </main>
       <Footer />

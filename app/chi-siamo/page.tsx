@@ -132,7 +132,7 @@ const ChiSiamoPage = () => {
               Il servizio consente il calcolo analitico delle differenze
               retributive maturate dai lavoratori, con riferimento a qualsiasi
               elemento retributivo previsto dal Contratto Collettivo applicato.
-              L'Ufficio Vertenze elabora Documento tecnico avente valore
+              L&apos;Ufficio Vertenze elabora Documento tecnico avente valore
               probatorio anche in sede giudiziale.
             </p>
           </div>
@@ -141,7 +141,7 @@ const ChiSiamoPage = () => {
             <h4 className="font-bold mb-2">• Dimissioni telematiche:</h4>
             <p>
               Assistenza e supporto in fase di recesso dal proprio rapporto di
-              lavoro, mediante l'invio delle dimissioni in modalità telematica.
+              lavoro, mediante l&apos;invio delle dimissioni in modalità telematica.
               I nostri esperti sono in grado di individuare i termini di
               preavviso, la tipologia più consona di recesso del contratto (tra
               dimissioni volontarie, per giusta causa o con risoluzione
@@ -152,9 +152,9 @@ const ChiSiamoPage = () => {
           <div>
             <h4 className="font-bold mb-2">• Conciliazioni sindacali:</h4>
             <p>
-              L'Ufficio Vertenze fornisce ad iscritti e Conciliatori Sindacali
+              L&apos;Ufficio Vertenze fornisce ad iscritti e Conciliatori Sindacali
               il massimo supporto in fase di redazione e stipula degli accordi
-              transattivi in sede protetta, al fine di garantire un'assistenza
+              transattivi in sede protetta, al fine di garantire un&apos;assistenza
               piena ed effettiva ai lavoratori.
             </p>
           </div>
@@ -169,9 +169,9 @@ const ChiSiamoPage = () => {
               nonché per la redazione e la stipula di accordi aziendali o di
               secondo livello in qualsiasi materia (introduzione premi di
               risultato o welfare aziendale, riduzione o sospensione
-              dell'attività lavorativa con conseguente ricorso ad ammortizzatori
-              sociali, crisi aziendali, trasferimento d'azienda o ramo
-              d'azienda; cessione dei contratti di lavoro; cambio di appalto,
+              dell&apos;attività lavorativa con conseguente ricorso ad ammortizzatori
+              sociali, crisi aziendali, trasferimento d&apos;azienda o ramo
+              d&apos;azienda; cessione dei contratti di lavoro; cambio di appalto,
               procedure di licenziamento collettivo; ecc.).
             </p>
           </div>
@@ -180,7 +180,7 @@ const ChiSiamoPage = () => {
             <h4 className="font-bold mb-2">• Assistenza legale:</h4>
             <p>
               Qualora fallisca ogni tentativo stragiudiziale, lo Snalv Confsal
-              garantisce ai lavoratori che ne fanno richiesta un'assistenza
+              garantisce ai lavoratori che ne fanno richiesta un&apos;assistenza
               legale agevolata, grazie a qualificati Avvocati in convenzione,
               che garantiscono agli iscritti una prima consulenza gratuita ed un
               eventuale successivo compenso basato sui minimi tabellari.
@@ -194,8 +194,8 @@ const ChiSiamoPage = () => {
             </h4>
             <p>
               i lavoratori in disoccupazione o in cassa integrazione possono
-              contare sull'aiuto di esperti in tema di ammortizzatori sociali.
-              Oltre all'invio delle domande di disoccupazione (NASPI e
+              contare sull&apos;aiuto di esperti in tema di ammortizzatori sociali.
+              Oltre all&apos;invio delle domande di disoccupazione (NASPI e
               DIS-COLL), il Sindacato garantisce assistenza operativa anche per
               accedere alle prestazioni di sostegno al reddito in caso di
               sospensione momentanea della propria attività lavorativa (CIGO,
@@ -207,7 +207,7 @@ const ChiSiamoPage = () => {
             <h4 className="font-bold mb-2">• Tutela dei pensionati:</h4>
             <p>
               Grazie alla collaborazione con UNIPE – Unione Pensionati, lo Snalv
-              può garantire un'assistenza a 360 gradi di tutti i pensionati, sia
+              può garantire un&apos;assistenza a 360 gradi di tutti i pensionati, sia
               del settore pubblico che del settore privato.
             </p>
           </div>
@@ -231,7 +231,7 @@ const ChiSiamoPage = () => {
                 • PRESTAZIONI DI SOSTEGNO AL REDDITO
               </h4>
               <p>
-                NASPI/DIS-COLL, INDENNITA' DI DISCONTINUITA' rivolta ai
+                NASPI/DIS-COLL, INDENNITA&apos; DI DISCONTINUITA&apos; rivolta ai
                 lavoratori dello spettacolo, ISCRO - Indennità Straordinaria di
                 Continuità Reddituale e Operativa
               </p>
@@ -327,7 +327,7 @@ const ChiSiamoPage = () => {
             <li>
               <span className="font-bold">LOCAZIONI</span> (Invio registrazione
               contratti. Supporto per stesura contratti di locazione e comodato
-              d'uso mediante il Sindacato Europeo Inquilini e Assegnatari –
+              d&apos;uso mediante il Sindacato Europeo Inquilini e Assegnatari –
               SEIASS)
             </li>
             <li>
@@ -352,8 +352,8 @@ const ChiSiamoPage = () => {
       content: (
         <div className="space-y-6">
           <p>
-            Grazie alla collaborazione con l'Ente di formazione INFAP e con le
-            Agenzie di lavoro in convenzione, l'iscritto Snalv può contare su un
+            Grazie alla collaborazione con l&apos;Ente di formazione INFAP e con le
+            Agenzie di lavoro in convenzione, l&apos;iscritto Snalv può contare su un
             aiuto professionale per orientarsi meglio nel mondo del lavoro.
             Nello specifico, ti supportiamo:
           </p>
@@ -369,8 +369,8 @@ const ChiSiamoPage = () => {
               ed il background professionale;
             </li>
             <li>
-              nell'affrontare l'uscita da un'azienda, sia essa causata da un
-              licenziamento o da una risoluzione consensuale, con l'obiettivo di
+              nell&apos;affrontare l&apos;uscita da un&apos;azienda, sia essa causata da un
+              licenziamento o da una risoluzione consensuale, con l&apos;obiettivo di
               ricollocarti il prima possibile!
             </li>
           </ul>
@@ -387,9 +387,9 @@ const ChiSiamoPage = () => {
               • Assistenza e tutela dei consumatori
             </h4>
             <p>
-              L'U.Di.Con. - Unione per la Difesa dei Consumatori - tutela a 360
+              L&apos;U.Di.Con. - Unione per la Difesa dei Consumatori - tutela a 360
               gradi i diritti dei cittadini, quali consumatori e utenti,
-              offrendo un'assistenza completa in molteplici settori: dalla sfera
+              offrendo un&apos;assistenza completa in molteplici settori: dalla sfera
               giuridica a quella economica, dalla sfera sanitaria a quella
               previdenziale e fiscale. Consulta il sito www.udicon.org
             </p>
@@ -404,7 +404,7 @@ const ChiSiamoPage = () => {
               incessantemente per garantire che gli inquilini abbiano accesso a
               alloggi sicuri, dignitosi e a prezzi equi, fornendo una consulenza
               completa per tutte le tipologie di locazioni, nonché erogando
-              servizi per gli utenti dell'edilizia pubblica. Consulta il sito
+              servizi per gli utenti dell&apos;edilizia pubblica. Consulta il sito
               www.seiass.it
             </p>
           </div>
@@ -423,7 +423,7 @@ const ChiSiamoPage = () => {
             </h4>
             <p>
               I lavoratori del comparto iscritti al Sindacato hanno diritto ad
-              una polizza per colpa grave totalmente gratuita. L'estratto della
+              una polizza per colpa grave totalmente gratuita. L&apos;estratto della
               polizza e le garanzie ivi contenute sono consultabili sul sito
               dedicato:
               https://www.gbsapri.it/convenzioni/colpa-grave-snalv-confsal/.
@@ -449,7 +449,7 @@ const ChiSiamoPage = () => {
             <li>
               <span className="font-bold">USI CARD</span> (Gli iscritti allo
               Snalv Confsal di Roma e Provincia possono richiedere il rilascio
-              gratuito dell'USI Card! Per maggiori informazioni contatta il
+              gratuito dell&apos;USI Card! Per maggiori informazioni contatta il
               nostro ufficio di riferimento: 351.63.46219 -
               ilcentrocittadino@gmail.com)
             </li>
@@ -477,12 +477,12 @@ const ChiSiamoPage = () => {
   ];
 
   const ConteggiForm = () => (
-    <form className="space-y-6 bg-gray-50 p-8 rounded-lg">
-      <h2 className="text-2xl font-bold text-[#1a365d] mb-8">
+    <form className="space-y-6 bg-gray-50 p-6 sm:p-8 rounded-lg">
+      <h2 className="text-xl sm:text-2xl font-bold text-[#1a365d] mb-6 sm:mb-8">
         MODULO CONTEGGI
       </h2>
 
-      <div className="grid grid-cols-2 gap-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-8">
         <div className="space-y-4">
           <div>
             <label className="block text-sm font-medium mb-1">
@@ -572,12 +572,12 @@ const ChiSiamoPage = () => {
         </div>
       </div>
 
-      <div className="mt-8">
+      <div className="mt-6 sm:mt-8">
         <p className="text-sm text-gray-600 mb-4">
           Si prega di allegare copia del contratto e delle buste paga in
           possesso
         </p>
-        <div className="flex gap-4 items-center">
+        <div className="flex flex-col sm:flex-row gap-4 items-center">
           <input
             type="file"
             multiple
@@ -590,7 +590,7 @@ const ChiSiamoPage = () => {
         </div>
       </div>
 
-      <Button className="bg-red-500 hover:bg-red-600 text-white mt-8">
+      <Button className="bg-red-500 hover:bg-red-600 text-white mt-6 sm:mt-8">
         INVIA RICHIESTA
       </Button>
     </form>
@@ -602,11 +602,11 @@ const ChiSiamoPage = () => {
         return (
           <div className="space-y-12">
             <div className="space-y-6 text-gray-700">
-              <h1 className="text-[#1a365d] text-4xl font-bold mb-8">
+              <h1 className="text-[#1a365d] text-4xl font-bold mb-8 md:text-5xl">
                 CHI SIAMO
               </h1>
               <p>
-                Lo Snalv Confsal è un'Organizzazione Sindacale libera e
+                Lo Snalv Confsal è un&apos;Organizzazione Sindacale libera e
                 democratica, aderente alla CONFSAL, terzo Sindacato in Italia in
                 termini di rappresentatività sindacale.
               </p>
@@ -618,7 +618,7 @@ const ChiSiamoPage = () => {
               <p>
                 Siamo diffusi su tutto il territorio nazionale con oltre{" "}
                 <strong>220</strong> sedi sindacali aperte al pubblico (consulta
-                qui l'elenco completo)
+                qui l&apos;elenco completo)
               </p>
               <p>
                 Al 31/12/2024 lo Snalv Confsal ha superato il numero di{" "}
@@ -635,13 +635,13 @@ const ChiSiamoPage = () => {
         return (
           <div className="space-y-12">
             <section>
-              <h1 className="text-[#1a365d] text-4xl font-bold mb-8">
+              <h1 className="text-[#1a365d] text-4xl font-bold mb-8 md:text-5xl">
                 Il Segretario Generale
               </h1>
-              <h2 className="text-[#1a365d] text-2xl font-bold mb-4">
+              <h2 className="text-[#1a365d] text-2xl font-bold mb-4 md:text-3xl">
                 Dott.ssa Maria Mamone
               </h2>
-              <div className="grid grid-cols-2 gap-8">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div className="bg-gray-100 p-6">
                   <p>
                     Lorem ipsum dolor sit amet, consectetuer adipiscing elit,
@@ -661,13 +661,13 @@ const ChiSiamoPage = () => {
             </section>
 
             <section>
-              <h2 className="text-[#1a365d] text-4xl font-bold mb-8">
+              <h2 className="text-[#1a365d] text-4xl font-bold mb-8 md:text-5xl">
                 Il Vice-Segretario Nazionale
               </h2>
-              <h3 className="text-[#1a365d] text-2xl font-bold mb-4">
+              <h3 className="text-[#1a365d] text-2xl font-bold mb-4 md:text-3xl">
                 Cosimo Nesci - consigliere CNEL
               </h3>
-              <div className="grid grid-cols-2 gap-8">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div className="bg-gray-100 p-6">
                   <p>
                     Lorem ipsum dolor sit amet, consectetuer adipiscing elit,
@@ -691,14 +691,14 @@ const ChiSiamoPage = () => {
       case "segreteria":
         return (
           <div>
-            <h1 className="text-[#1a365d] text-4xl font-bold mb-8">
+            <h1 className="text-[#1a365d] text-4xl font-bold mb-8 md:text-5xl">
               La Segreteria nazionale
             </h1>
             <p className="mb-8">
-              I componenti della Segreteria Nazionale, eletti durante l'ultimo
+              I componenti della Segreteria Nazionale, eletti durante l&apos;ultimo
               Congresso Nazionale SNALV/Confsal
             </p>
-            <ul className="space-y-2">
+            <ul className="space-y-2 md:columns-2">
               {[
                 "MARIA MAMONE",
                 "COSIMO NESCI",
@@ -719,14 +719,14 @@ const ChiSiamoPage = () => {
       case "consiglio":
         return (
           <div>
-            <h1 className="text-[#1a365d] text-4xl font-bold mb-8">
+            <h1 className="text-[#1a365d] text-4xl font-bold mb-8 md:text-5xl">
               Il Consiglio Nazionale
             </h1>
             <p className="mb-8">
-              I componenti del Consiglio Nazionale, eletti durante l'ultimo
+              I componenti del Consiglio Nazionale, eletti durante l&apos;ultimo
               Congresso Nazionale SNALV/Confsal
             </p>
-            <ul className="space-y-2">
+            <ul className="space-y-2 md:columns-3">
               {[
                 "MARIA MAMONE",
                 "COSIMO NESCI",
@@ -761,7 +761,7 @@ const ChiSiamoPage = () => {
       case "struttura":
         return (
           <div>
-            <h1 className="text-[#1a365d] text-4xl font-bold mb-6">
+            <h1 className="text-[#1a365d] text-4xl font-bold mb-6 md:text-5xl">
               LA STRUTTURA NAZIONALE
             </h1>
             <p className="text-gray-700 mb-12">
@@ -770,10 +770,10 @@ const ChiSiamoPage = () => {
               attinenti alla tutela individuale e collettiva dei lavoratori.
             </p>
 
-            <h2 className="text-[#1a365d] text-2xl font-bold mb-8">
+            <h2 className="text-[#1a365d] text-2xl font-bold mb-8 md:text-3xl">
               GLI UFFICI TECNICI DI SUPPORTO
             </h2>
-            <div className="space-y-8">
+            <div className="space-y-8 md:grid md:grid-cols-2 md:gap-6">
               {technicalOffices.map((office, index) => (
                 <div key={index} className="flex gap-6 items-start">
                   <div className="w-32 h-32 relative flex-shrink-0">
@@ -807,11 +807,11 @@ const ChiSiamoPage = () => {
       case "tutele":
         return (
           <div>
-            <h1 className="text-[#1a365d] text-4xl font-bold mb-6">
+            <h1 className="text-[#1a365d] text-4xl font-bold mb-6 md:text-5xl">
               TUTELE E SERVIZI
             </h1>
             <p className="mb-8">
-              Gli iscritti al Sindacato godono di un'assistenza a 360° sulla
+              Gli iscritti al Sindacato godono di un&apos;assistenza a 360° sulla
               propria vita lavorativa, anche in materia fiscale e previdenziale.
               Inoltre, possono beneficiare di numerose offerte e agevolazioni
               grazie ai partner in convenzione.
@@ -856,7 +856,7 @@ const ChiSiamoPage = () => {
       case "comparti":
         return (
           <div className="space-y-8">
-            <h1 className="text-[#1a365d] text-4xl font-bold mb-6">
+            <h1 className="text-[#1a365d] text-4xl font-bold mb-6 md:text-5xl">
               COMPARTI SPECIFICI
             </h1>
             <p className="text-gray-700 mb-8">
@@ -866,8 +866,7 @@ const ChiSiamoPage = () => {
               Comparti sindacali:
             </p>
 
-            {/* Lista dei comparti */}
-            <div className="grid gap-6">
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
               {/* SOCIO-SANITARIO */}
               <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
                 <div className="flex justify-between">
@@ -939,8 +938,8 @@ const ChiSiamoPage = () => {
                     </h2>
                     <p className="text-gray-600 mb-4">
                       Lo Snalv è presente con i propri Rappresentanti nei vari
-                      comparti dell'intera Amministrazione anche a livello
-                      regionale. Scopri di più sull'organizzazione del nostro
+                      comparti dell&apos;intera Amministrazione anche a livello
+                      regionale. Scopri di più sull&apos;organizzazione del nostro
                       comparto!
                     </p>
                     <div className="flex items-center">
@@ -954,64 +953,27 @@ const ChiSiamoPage = () => {
                       </Button>
                     </div>
                   </div>
-                  <div className="ml-6">
-                    <div className="w-16 h-16 rounded-full bg-red-100 flex items-center justify-center">
-                      <FiHome className="w-8 h-8 text-red-500" />
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* CONFSAL SUD */}
-              <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
-                <div className="flex justify-between">
-                  <div className="flex-1">
-                    <h2 className="text-xl font-bold text-[#1a365d] mb-3">
-                      CONFSAL SUD
-                    </h2>
-                    <p className="text-gray-600 mb-4">
-                      Il Segretario Generale SNALV Confsal ricopre il ruolo di
-                      Coordinatore Nazionale del Dipartimento Confsal dedicato
-                      al Sud Italia.
-                    </p>
-                    <div className="flex items-center">
-                      <Button
-                        onClick={() => setActiveSection("confsal-sud")}
-                        className="flex items-center space-x-2 text-red-500 hover:text-red-600 transition-colors"
-                        variant="link"
-                      >
-                        <span>SCOPRI DI PIÙ</span>
-                        <span>→</span>
-                      </Button>
-                    </div>
-                  </div>
-                  <div className="ml-6">
-                    <div className="w-16 h-16 rounded-full bg-red-100 flex items-center justify-center">
-                      <FiMapPin className="w-8 h-8 text-red-500" />
-                    </div>
-                  </div>
                 </div>
               </div>
             </div>
           </div>
         );
 
-      // Poi aggiungere i case per ogni comparto specifico
       case "socio-sanitario":
         return (
           <div className="space-y-8">
-            <h1 className="text-[#1a365d] text-4xl font-bold mb-6">
+            <h1 className="text-[#1a365d] text-4xl font-bold mb-6 md:text-5xl">
               SOCIO-SANITARIO-ASSISTENZIALE-EDUCATIVO
             </h1>
 
-            <div className="grid grid-cols-3 gap-8">
-              <div className="col-span-2">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              <div className="md:col-span-2">
                 <p className="text-gray-700 mb-6">
                   Lorem ipsum dolor sit amet...
                 </p>
 
                 <div className="space-y-4 mt-8">
-                  <h2 className="text-[#1a365d] text-2xl font-bold">
+                  <h2 className="text-[#1a365d] text-2xl font-bold md:text-3xl">
                     CONTATTACI
                   </h2>
                   <p>Email: sociosanitario@snalv.it</p>
@@ -1048,7 +1010,7 @@ const ChiSiamoPage = () => {
                   <p>
                     I lavoratori delle strutture
                     socio-sanitarie-assistenziali-educative possono avere
-                    l'assicurazione per colpa grave totalmente gratuita se sei
+                    l&apos;assicurazione per colpa grave totalmente gratuita se sei
                     iscritto al sindacato
                   </p>
                 </div>
@@ -1056,7 +1018,7 @@ const ChiSiamoPage = () => {
             </div>
 
             <div className="mt-12">
-              <h2 className="text-[#1a365d] text-2xl font-bold mb-6">
+              <h2 className="text-[#1a365d] text-2xl font-bold mb-6 md:text-3xl">
                 NOTIZIE COMPARTO SOCIOSANITARIO
               </h2>
               <CategoryNews category="sociosanitario" />
@@ -1067,18 +1029,18 @@ const ChiSiamoPage = () => {
       case "lavoratori-fragili":
         return (
           <div className="space-y-8">
-            <h1 className="text-[#1a365d] text-4xl font-bold mb-6">
+            <h1 className="text-[#1a365d] text-4xl font-bold mb-6 md:text-5xl">
               LAVORATORI FRAGILI
             </h1>
 
-            <div className="grid grid-cols-3 gap-8">
-              <div className="col-span-2">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              <div className="md:col-span-2">
                 <p className="text-gray-700 mb-6">
                   Lorem ipsum dolor sit amet...
                 </p>
 
                 <div className="space-y-4 mt-8">
-                  <h2 className="text-[#1a365d] text-2xl font-bold">
+                  <h2 className="text-[#1a365d] text-2xl font-bold md:text-3xl">
                     CONTATTACI
                   </h2>
                   <p>Email: sociosanitario@snalv.it</p>
@@ -1115,7 +1077,7 @@ const ChiSiamoPage = () => {
                   <p>
                     I lavoratori delle strutture
                     socio-sanitarie-assistenziali-educative possono avere
-                    l'assicurazione per colpa grave totalmente gratuita se sei
+                    l&apos;assicurazione per colpa grave totalmente gratuita se sei
                     iscritto al sindacato
                   </p>
                 </div>
@@ -1123,10 +1085,9 @@ const ChiSiamoPage = () => {
             </div>
 
             <div className="mt-12">
-              <h2 className="text-[#1a365d] text-2xl font-bold mb-6">
+              <h2 className="text-[#1a365d] text-2xl font-bold mb-6 md:text-3xl">
                 NOTIZIE COMPARTO LAVORATORI FRAGILI
               </h2>
-
               <CategoryNews category="fragili" />
             </div>
           </div>
@@ -1135,7 +1096,7 @@ const ChiSiamoPage = () => {
       case "enti-locali":
         return (
           <div className="space-y-8">
-            <h1 className="text-[#1a365d] text-4xl font-bold mb-6">
+            <h1 className="text-[#1a365d] text-4xl font-bold mb-6 md:text-5xl">
               ENTI LOCALI
             </h1>
             <p className="mb-8">
@@ -1144,11 +1105,11 @@ const ChiSiamoPage = () => {
             </p>
 
             <div>
-              <h2 className="text-xl font-bold mb-4">
+              <h2 className="text-xl font-bold mb-4 md:text-2xl">
                 Il Sindacato rappresenta, in particolare, le lavoratrici e i
                 lavoratori dei seguenti ENTI:
               </h2>
-              <ul className="list-disc pl-5 space-y-2">
+              <ul className="list-disc pl-5 space-y-2 md:columns-2">
                 <li>
                   Regioni a statuto ordinario e degli Enti pubblici non
                   economici dalle stesse dipendenti
@@ -1181,8 +1142,8 @@ const ChiSiamoPage = () => {
               </ul>
             </div>
 
-            <div className="bg-gray-100 p-6 rounded-lg mt-8">
-              <h2 className="text-xl font-bold mb-4">CONTATTACI</h2>
+            <div className="bg-gray-100 p-6 rounded-lg">
+              <h2 className="text-xl font-bold mb-4 md:text-2xl">CONTATTACI</h2>
               <div className="space-y-2">
                 <p>
                   <span className="font-bold">Coordinatore nazionale:</span>{" "}
@@ -1199,10 +1160,9 @@ const ChiSiamoPage = () => {
             </div>
 
             <div className="mt-12">
-              <h2 className="text-[#1a365d] text-2xl font-bold mb-6">
+              <h2 className="text-[#1a365d] text-2xl font-bold mb-6 md:text-3xl">
                 NOTIZIE COMPARTO ENTI LOCALI
               </h2>
-
               <CategoryNews category="entilocali" />
             </div>
           </div>
@@ -1211,20 +1171,20 @@ const ChiSiamoPage = () => {
       case "confsal-sud":
         return (
           <div className="space-y-8">
-            <h1 className="text-[#1a365d] text-4xl font-bold mb-6">
+            <h1 className="text-[#1a365d] text-4xl font-bold mb-6 md:text-5xl">
               CONFSAL SUD
             </h1>
 
-            <div className="grid grid-cols-3 gap-8">
-              <div className="col-span-2">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              <div className="md:col-span-2">
                 <p className="text-gray-700 mb-6">
                   Il Segretario Generale SNALV Confsal ricopre il ruolo di
                   Coordinatore Nazionale del Dipartimento Confsal dedicato al
-                  Sud Italia. Consulta l'attività svolta finora!
+                  Sud Italia. Consulta l&apos;attività svolta finora!
                 </p>
 
                 <div className="space-y-4 mt-8">
-                  <h2 className="text-[#1a365d] text-2xl font-bold">
+                  <h2 className="text-[#1a365d] text-2xl font-bold md:text-3xl">
                     CONTATTACI
                   </h2>
                   {/* Contatti */}
@@ -1233,10 +1193,9 @@ const ChiSiamoPage = () => {
             </div>
 
             <div className="mt-12">
-              <h2 className="text-[#1a365d] text-2xl font-bold mb-6">
+              <h2 className="text-[#1a365d] text-2xl font-bold mb-6 md:text-3xl">
                 NOTIZIE DIPARTIMENTO SUD
               </h2>
-
               <CategoryNews category="confsalsud" />
             </div>
           </div>
@@ -1251,14 +1210,16 @@ const ChiSiamoPage = () => {
     <>
       <Header />
       <HeroSection section={activeSection} />
-      <main className="max-w-7xl mx-auto px-4 py-12">
-        <div className="lg:grid lg:grid-cols-4 gap-8">
-          <div>
+
+      <main className="max-w-full md:max-w-7xl px-4 mx-auto py-8 sm:py-12">
+        <div className="grid gap-8 lg:grid-cols-4">
+          {/* Menu Items */}
+          <div className="">
             <div className="bg-gray-100 p-4 rounded-lg">
               {menuItems.map((item, index) => (
                 <div
                   key={item.id}
-                  className={`py-2 ${
+                  className={`py-4 ${
                     index === 0
                       ? "border-t-2 border-red-500"
                       : "border-t border-gray-300"
@@ -1279,6 +1240,7 @@ const ChiSiamoPage = () => {
               ))}
             </div>
 
+            {/* Organigramma Section */}
             {(activeSection === "chi-siamo" ||
               activeSection === "segretario" ||
               activeSection === "segreteria" ||
@@ -1305,9 +1267,11 @@ const ChiSiamoPage = () => {
             )}
           </div>
 
-          <div className="col-span-3">{renderContent()}</div>
+          {/* Render Content */}
+          <div className="lg:col-span-3">{renderContent()}</div>
         </div>
       </main>
+
       <Footer />
     </>
   );

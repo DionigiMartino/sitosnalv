@@ -98,13 +98,13 @@ const NewsComponent = ({ category }: any) => {
 
   return (
     <div>
-      <div className="w-full flex  gap-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {newsData[category]?.map((news: any) => (
           <div
             key={news.id}
-            className="bg-white rounded-lg overflow-hidden shadow-sm w-2/4"
+            className="bg-white rounded-lg overflow-hidden shadow-sm"
           >
-            <div className="relative h-48">
+            <div className="relative h-48 md:h-56">
               <Image
                 src={news.image}
                 alt={news.title}

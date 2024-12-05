@@ -78,7 +78,7 @@ const HeroSection = ({ section }: any) => {
   if (!heroContent) return null;
 
   return (
-    <div className="relative h-[60vh] mb-12">
+    <div className="relative h-[50vh] sm:h-[60vh] md:h-[70vh] mb-8 sm:mb-12">
       <div className="absolute inset-0">
         <Image
           src={heroContent.bg}
@@ -87,8 +87,10 @@ const HeroSection = ({ section }: any) => {
           className="object-cover brightness-50"
         />
       </div>
-      <div className="relative z-10 max-w-7xl mx-auto px-4 h-full flex items-end pb-12">
-        <h1 className="text-8xl font-bold text-white">{heroContent.title}</h1>
+      <div className="relative z-10 max-w-7xl mx-auto px-4 h-full flex items-center sm:items-end pb-6 sm:pb-12">
+        <h1 className="text-4xl sm:text-6xl md:text-8xl font-bold text-white leading-tight">
+          {heroContent.title}
+        </h1>
       </div>
     </div>
   );

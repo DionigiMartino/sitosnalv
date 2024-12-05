@@ -3,9 +3,12 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, Menu, X } from "lucide-react";
+import { useState } from "react";
 
 const Header = () => {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
   const menuItems = [
     {
       label: "IL SINDACATO",
@@ -13,7 +16,7 @@ const Header = () => {
       items: [
         { label: "Chi siamo", href: "/chi-siamo" },
         { label: "La struttura nazionale", href: "/chi-siamo#struttura" },
-        { label: "Tutele e servizi", href: "//chi-siamo#tutele" },
+        { label: "Tutele e servizi", href: "/chi-siamo#tutele" },
         { label: "Comparti specifici", href: "/chi-siamo#comparti" },
       ],
     },
@@ -30,72 +33,121 @@ const Header = () => {
   ];
 
   return (
-    <>
-      <div className="bg-[#1a365d] py-3">
-        <div className="max-w-7xl mx-auto px-4 flex justify-end space-x-6">
-          <Button variant="ghost" className="text-white hover:bg-white/10">
-            ISCRIVITI
-          </Button>
-          <Button variant="ghost" className="text-white hover:bg-white/10">
-            AREA RISERVATA
-          </Button>
+    <header className="border-b bg-white">
+      <div className="max-w-7xl mx-auto px-4 py-4 md:py-6 flex justify-between items-center">
+        <Link href="/">
+          <Image
+            src="/img/logo.jpg"
+            alt="SNALV"
+            width={200}
+            height={53}
+            priority
+          />
+        </Link>
+
+        <nav className="hidden md:block">
+          <ul className="flex items-center space-x-10">
+            {menuItems.map((item) => (
+              <li key={item.label} className="relative group">
+                {item.dropdown ? (
+                  <>
+                    <button className="text-gray-700 font-medium py-2 group-hover:text-red-600 transition-colors flex items-center gap-1">
+                      {item.label}
+                      <ChevronDown />
+                    </button>
+                    <div className="absolute left-0 top-full hidden group-hover:block bg-white border shadow-lg rounded-md min-w-[200px] z-50">
+                      <div className="py-2">
+                        {item.items.map((subItem) => (
+                          <Link
+                            key={subItem.label}
+                            href={subItem.href}
+                            className="block px-4 py-2 text-gray-700 hover:bg-gray-50 hover:text-red-600"
+                          >
+                            {subItem.label}
+                          </Link>
+                        ))}
+                      </div>
+                    </div>
+                  </>
+                ) : (
+                  <Link
+                    // @ts-ignore
+                    href={item.href}
+                    className="text-gray-700 font-medium py-2 hover:text-red-600 transition-colors"
+                  >
+                    {item.label}
+                  </Link>
+                )}
+              </li>
+            ))}
+          </ul>
+        </nav>
+
+        <div className="md:hidden">
+          {isMenuOpen ? (
+            <Button
+              variant="ghost"
+              onClick={() => setIsMenuOpen(false)}
+              className="text-gray-700"
+            >
+              <X size={24} />
+            </Button>
+          ) : (
+            <Button
+              variant="ghost"
+              onClick={() => setIsMenuOpen(true)}
+              className="text-gray-700"
+            >
+              <Menu size={24} />
+            </Button>
+          )}
         </div>
       </div>
 
-      <header className="border-b bg-white">
-        <div className="max-w-7xl mx-auto px-4 py-6">
-          <div className="flex justify-between items-center">
-            <Link href="/">
-              <Image
-                src="/img/logo.jpg"
-                alt="SNALV"
-                width={300}
-                height={80}
-                priority
-              />
-            </Link>
-
-            <nav>
-              <ul className="flex items-center space-x-10">
-                {menuItems.map((item) => (
-                  <li key={item.label} className="relative group">
-                    {item.dropdown ? (
-                      <>
-                        <button className="text-gray-700 font-medium py-2 group-hover:text-red-600 transition-colors flex items-center gap-1">
-                          {item.label}
-                          <ChevronDown />
-                        </button>
-                        <div className="absolute left-0 top-full hidden group-hover:block bg-white border shadow-lg rounded-md min-w-[200px] z-50">
-                          <div className="py-2">
-                            {item.items.map((subItem) => (
-                              <Link
-                                key={subItem.label}
-                                href={subItem.href}
-                                className="block px-4 py-2 text-gray-700 hover:bg-gray-50 hover:text-red-600"
-                              >
-                                {subItem.label}
-                              </Link>
-                            ))}
-                          </div>
-                        </div>
-                      </>
-                    ) : (
-                      <Link
+      {isMenuOpen && (
+        <div className="bg-white border-b shadow-lg md:hidden">
+          <div className="max-w-7xl mx-auto px-4 py-4 space-y-4">
+            {menuItems.map((item) => (
+              <div key={item.label} className="space-y-2">
+                {item.dropdown ? (
+                  <>
+                    <button
+                      className="w-full text-left text-gray-700 font-medium py-2 hover:text-red-600 transition-colors flex items-center justify-between"
+                      onClick={() => {
                         // @ts-ignore
-                        href={item.href}
-                        className="text-gray-700 font-medium py-2 hover:text-red-600 transition-colors"
-                      >
-                        {item.label}
-                      </Link>
-                    )}
-                  </li>
-                ))}
-              </ul>
-            </nav>
+                        window.location.href = item.items[0].href;
+                      }}
+                    >
+                      {item.label}
+                      <ChevronDown />
+                    </button>
+                    <div className="space-y-2 pl-4">
+                      {item.items.map((subItem) => (
+                        <Link
+                          key={subItem.label}
+                          href={subItem.href}
+                          className="block text-gray-700 hover:text-red-600 transition-colors"
+                        >
+                          {subItem.label}
+                        </Link>
+                      ))}
+                    </div>
+                  </>
+                ) : (
+                  <Link
+                    // @ts-ignore
+                    href={item.href}
+                    className="block text-gray-700 font-medium py-2 hover:text-red-600 transition-colors"
+                  >
+                    {item.label}
+                  </Link>
+                )}
+              </div>
+            ))}
           </div>
         </div>
-      </header>
-    </>
+      )}
+    </header>
   );
 };
 

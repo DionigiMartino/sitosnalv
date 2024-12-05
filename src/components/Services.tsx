@@ -33,35 +33,35 @@ const ServiceSlider = () => {
       title: "SERVIZI",
       description: "Esplora tutti i servizi disponibili",
       icon: FiSettings,
-      href: "/servizi",
+      href: "/chi-siamo#tutele",
       buttonText: "Vedi i servizi",
     },
     {
       title: "LE NOSTRE SEDI",
       description: "Trova la sede più vicina a te",
       icon: FiMapPin,
-      href: "/sedi",
+      href: "/territorio#cerca-sede",
       buttonText: "Trova sede",
     },
     {
       title: "COMPARTO SOCIO-SANITARIO",
       description: "Informazioni per il settore sanitario",
       icon: FiHeart,
-      href: "/sociosanitario",
+      href: "/chi-siamo#comparti",
       buttonText: "Scopri di più",
     },
     {
       title: "COMPARTO FRAGILI",
       description: "Supporto per le categorie fragili",
       icon: FiUsers,
-      href: "/fragili",
+      href: "/chi-siamo#comparti",
       buttonText: "Maggiori info",
     },
     {
       title: "COMPARTO ENTI LOCALI",
       description: "Servizi per gli enti locali",
       icon: FiHome,
-      href: "/entilocali",
+      href: "/chi-siamo#comparti",
       buttonText: "Dettagli",
     },
     {
@@ -75,7 +75,7 @@ const ServiceSlider = () => {
       title: "COLLABORAZIONI",
       description: "Opportunità di collaborazione",
       icon: FiUserPlus,
-      href: "/collaborazioni",
+      href: "/territorio#collabora",
       buttonText: "Collabora",
     },
     {
@@ -96,8 +96,8 @@ const ServiceSlider = () => {
   };
 
   return (
-    <div className="w-3/4 mx-auto px-4 my-24 relative z-10">
-      <div className="grid grid-cols-3 gap-8">
+    <div className="w-full md:w-3/4 mx-auto px-4 my-24 relative z-10">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
         <AnimatePresence mode="wait">
           {services
             .slice(currentIndex, currentIndex + 3)
@@ -113,15 +113,15 @@ const ServiceSlider = () => {
                 >
                   <Link href={service.href} className="relative">
                     <div
-                      className="absolute -top-12 left-1/2 -translate-x-1/2 w-32 h-32 rounded-full bg-red-100 
+                      className="absolute -top-12 left-1/2 -translate-x-1/2 w-24 h-24 md:w-32 md:h-32 rounded-full bg-red-100 
                     flex items-center justify-center border-4 border-white z-20 hover:bg-red-200 transition-colors
                     "
                     >
-                      <Icon className="w-16 h-16 text-red-500" />
+                      <Icon className="w-12 h-12 md:w-16 md:h-16 text-red-500" />
                     </div>
-                    <Card className="pt-24 pb-8 h-full border-2 border-dashed border-red-500 hover:border-solid transition-all">
+                    <Card className="pt-20 md:pt-24 pb-8 h-full border-2 border-dashed border-red-500 hover:border-solid transition-all">
                       <CardContent className="text-center flex flex-col h-full justify-between">
-                        <h3 className="text-xl font-bold text-gray-900 mb-4">
+                        <h3 className="text-lg md:text-xl font-bold text-gray-900 mb-4">
                           {service.title}
                         </h3>
                         <p className="text-gray-600 mb-6">
@@ -145,15 +145,15 @@ const ServiceSlider = () => {
       <div className="flex justify-center gap-4 mt-8">
         <Button
           onClick={prevSlide}
-          className="w-10 h-10 rounded-full bg-white shadow-md hover:bg-gray-50"
+          className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-white shadow-md hover:bg-gray-50"
         >
-          <ChevronLeft className="w-6 h-6 text-red-500" />
+          <ChevronLeft className="w-4 h-4 md:w-6 md:h-6 text-red-500" />
         </Button>
         <Button
           onClick={nextSlide}
-          className="w-10 h-10 rounded-full bg-white shadow-md hover:bg-gray-50"
+          className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-white shadow-md hover:bg-gray-50"
         >
-          <ChevronRight className="w-6 h-6 text-red-500" />
+          <ChevronRight className="w-4 h-4 md:w-6 md:h-6 text-red-500" />
         </Button>
       </div>
     </div>

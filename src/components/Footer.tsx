@@ -16,7 +16,7 @@ import { FaWhatsapp, FaXTwitter } from "react-icons/fa6";
 
 const Footer = () => {
   return (
-    <footer className="relative text-white py-12 h-[45vh] mt-auto">
+    <footer className="relative text-white py-12 md:h-[45vh] mt-auto">
       <div className="absolute inset-0 z-0">
         <Image
           src="/img/footer.jpg"
@@ -27,7 +27,7 @@ const Footer = () => {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 relative z-10">
-        <div className="grid grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           <div>
             <Image
               src="/img/logo_white.jpg"

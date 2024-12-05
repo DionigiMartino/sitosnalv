@@ -31,18 +31,18 @@ const ContattiPage = () => {
       <HeroSection section="contatti" />
 
       <main className="max-w-7xl mx-auto px-4 py-12">
-        <div className="grid md:grid-cols-2 gap-16">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-16">
           {/* Contact Form */}
           <div className="space-y-8">
             <div className="space-y-4">
-              <h2 className="text-2xl font-bold text-[#1a365d]">
+              <h2 className="text-2xl font-bold text-[#1a365d] md:text-4xl">
                 Hai un problema o un dubbio riguardo al tuo rapporto di lavoro?
               </h2>
               <p className="text-gray-600">Contattaci subito!</p>
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-6">
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <Input
                     placeholder="NOME"
@@ -64,7 +64,7 @@ const ContattiPage = () => {
                   />
                 </div>
               </div>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <Input
                     placeholder="TEL"
@@ -100,7 +100,7 @@ const ContattiPage = () => {
           {/* Contact Info */}
           <div className="space-y-12">
             <div className="space-y-4">
-              <h3 className="font-medium">
+              <h3 className="font-medium md:text-2xl">
                 Altrimenti, se preferisci, puoi contattarci ai seguenti
                 recapiti:
               </h3>
@@ -116,8 +116,7 @@ const ContattiPage = () => {
                 variant="link"
                 className="text-blue-600 p-0"
                 onClick={() =>
-                  (window.location.href =
-                    "/territorio#cerca-sede")
+                  (window.location.href = "/territorio#cerca-sede")
                 }
               >
                 Ufficio vertenze e conteggi sul territorio, cerca la sede più
@@ -127,10 +126,10 @@ const ContattiPage = () => {
 
             {/* Newsletter */}
             <div className="bg-gray-50 p-8 rounded-lg space-y-6">
-              <p className="text-center">
+              <p className="text-center md:text-lg">
                 Nel frattempo, registrati alla nostra{" "}
                 <span className="font-bold">Newsletter</span> per ricevere
-                all'istante ogni nuova notizia e aggiornamenti dal mondo del
+                all&apos;istante ogni nuova notizia e aggiornamenti dal mondo del
                 lavoro!
               </p>
               <div className="flex gap-4">

@@ -56,13 +56,13 @@ const RecentNews = () => {
 
   return (
     <div className="bg-gray-100 py-16">
-      <div className="max-w-7xl mx-auto px-4 relative">
-        <h2 className="text-5xl font-bold text-[#1a365d] mb-12 text-center">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+        <h2 className="text-5xl font-bold text-[#1a365d] mb-12 text-center sm:text-3xl lg:text-4xl">
           NOTIZIE RECENTI
         </h2>
 
         <div>
-          <div className="grid grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
             <AnimatePresence mode="wait">
               {news.slice(currentIndex, currentIndex + 3).map((item, index) => (
                 <motion.div
@@ -72,21 +72,21 @@ const RecentNews = () => {
                   exit={{ opacity: 0, y: -20 }}
                   transition={{ duration: 0.3, delay: index * 0.1 }}
                 >
-                  <Card className="overflow-hidden bg-white">
+                  <Card className="overflow-hidden bg-white shadow-md">
                     <CardContent className="p-0">
-                      <div className="relative h-56">
+                      <div className="relative h-40 sm:h-48 lg:h-56">
                         <Image
                           src={item.image}
                           alt="News"
                           fill
                           className="object-cover"
                         />
-                        <div className="absolute top-4 left-4 bg-white px-3 py-1.5 text-sm">
+                        <div className="absolute top-2 left-2 bg-white px-2 py-1 text-xs sm:text-sm">
                           {item.date}
                         </div>
                       </div>
-                      <div className="p-6">
-                        <p className="text-gray-800 mb-6 line-clamp-3">
+                      <div className="p-4 sm:p-6">
+                        <p className="text-gray-800 mb-4 sm:mb-6 line-clamp-3">
                           {item.text}
                         </p>
                         <Button
@@ -105,7 +105,7 @@ const RecentNews = () => {
         </div>
 
         {/* Navigation Dots */}
-        <div className="flex justify-center gap-2 mt-8">
+        <div className="flex justify-center gap-2 mt-6 sm:mt-8">
           {Array.from({ length: totalSlides }).map((_, i) => (
             <button
               key={i}
@@ -119,18 +119,18 @@ const RecentNews = () => {
         </div>
 
         {/* Arrow Navigation */}
-        <div className="absolute left-4 right-4 top-1/2 -translate-y-1/2 flex justify-between z-10">
+        <div className="absolute left-2 right-2 top-1/2 -translate-y-1/2 flex justify-between z-10">
           <button
             onClick={prevSlide}
-            className="w-10 h-10 rounded-full bg-white shadow-lg flex items-center justify-center hover:bg-gray-50 transition-colors"
+            className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-white shadow-lg flex items-center justify-center hover:bg-gray-50 transition-colors"
           >
-            <ChevronLeft className="w-6 h-6" />
+            <ChevronLeft className="w-4 h-4 sm:w-6 sm:h-6" />
           </button>
           <button
             onClick={nextSlide}
-            className="w-10 h-10 rounded-full bg-white shadow-lg flex items-center justify-center hover:bg-gray-50 transition-colors"
+            className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-white shadow-lg flex items-center justify-center hover:bg-gray-50 transition-colors"
           >
-            <ChevronRight className="w-6 h-6" />
+            <ChevronRight className="w-4 h-4 sm:w-6 sm:h-6" />
           </button>
         </div>
       </div>
