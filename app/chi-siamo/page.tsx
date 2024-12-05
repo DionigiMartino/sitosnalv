@@ -1,0 +1,1298 @@
+"use client";
+
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+import Image from "next/image";
+import Link from "next/link";
+import Header from "@/src/components/Header";
+import Footer from "@/src/components/Footer";
+import { useState, useEffect } from "react";
+import { FiHeart, FiUsers, FiHome, FiMapPin } from "react-icons/fi";
+import CategoryNews from "@/src/components/CategoryNews";
+
+const ChiSiamoPage = () => {
+  const [activeSection, setActiveSection] = useState("chi-siamo");
+  const [showConteggiForm, setShowConteggiForm] = useState(false);
+
+  useEffect(() => {
+    const hash = window.location.hash.slice(1);
+    if (hash) {
+      setActiveSection(hash);
+    }
+  }, []);
+
+  const menuItems = [
+    { id: "chi-siamo", label: "Chi siamo" },
+    { id: "struttura", label: "La struttura nazionale" },
+    { id: "tutele", label: "Tutele e servizi" },
+    { id: "comparti", label: "Comparti specifici" },
+  ];
+
+  const technicalOffices = [
+    {
+      title: "Relazioni istituzionali",
+      email: "pasquale.pellegrino@snalv.it",
+      image: "/img/profilepic.jpg",
+    },
+    {
+      title: "Relazioni industriali",
+      email: "giulia.puddu@snalv.it",
+      image: "/img/profilepic.jpg",
+    },
+    {
+      title: "Ufficio vertenze e conteggi",
+      emails: ["info@snalv.it", "conteggi@snalv.it", "conciliazioni@snalv.it"],
+      image: "/img/profilepic.jpg",
+    },
+    {
+      title: "Organizzazione del territorio",
+      email: "organizzazione@snalv.it",
+      image: "/img/profilepic.jpg",
+    },
+    {
+      title: "Amministrazione sedi",
+      email: "deleghe@snalv.it",
+      image: "/img/profilepic.jpg",
+    },
+    {
+      title: "Amministrazione e contabilità",
+      email: "info@snalv.it",
+      image: "/img/profilepic.jpg",
+    },
+    {
+      title: "Addetto stampa nazionale",
+      email: "francesca.dibiagio@snalv.it",
+      image: "/img/profilepic.jpg",
+    },
+    {
+      title: "Ufficio comunicazione",
+      image: "/img/profilepic.jpg",
+    },
+  ];
+
+  const servicesAccordionItems = [
+    {
+      value: "tutela-sindacale",
+      title:
+        "TUTELA SINDACALE DEI LAVORATORI, DEI DISOCCUPATI E DEI PENSIONATI",
+      content: (
+        <div className="space-y-6">
+          <div>
+            <h4 className="font-bold mb-2">
+              • Consulenza ed eventuale avvio vertenza per:
+            </h4>
+            <p>
+              controllo buste paga, regolarità contratto di assunzione;
+              applicazione CCNL; livello di inquadramento; livello di
+              retribuzione; turni lavorativi; lavoro nero o irregolare;
+              cambiamento di mansioni; trasferimenti, trasferte e indennità di
+              viaggio; recupero crediti retributivi; licenziamenti o
+              provvedimenti disciplinari; erogazione del T.F.R.; gestione delle
+              assenze, permessi, malattia; maternità e paternità; gestione
+              congedi ordinari e straordinari; aspettative; tutela della
+              fragilità e delle patologie gravi; ecc.
+            </p>
+          </div>
+
+          <div>
+            <h4 className="font-bold mb-2">
+              • Conteggi differenze retributive
+            </h4>
+            <Button
+              variant="link"
+              onClick={() => setShowConteggiForm(true)}
+              className="text-red-500 hover:text-red-600 py-2"
+            >
+              → clicca qui per richiedere un preventivo!
+            </Button>
+            <p>
+              Il servizio consente il calcolo analitico delle differenze
+              retributive maturate dai lavoratori, con riferimento a qualsiasi
+              elemento retributivo previsto dal Contratto Collettivo applicato.
+              L'Ufficio Vertenze elabora Documento tecnico avente valore
+              probatorio anche in sede giudiziale.
+            </p>
+          </div>
+
+          <div>
+            <h4 className="font-bold mb-2">• Dimissioni telematiche:</h4>
+            <p>
+              Assistenza e supporto in fase di recesso dal proprio rapporto di
+              lavoro, mediante l'invio delle dimissioni in modalità telematica.
+              I nostri esperti sono in grado di individuare i termini di
+              preavviso, la tipologia più consona di recesso del contratto (tra
+              dimissioni volontarie, per giusta causa o con risoluzione
+              consensuale) con relative procedure ed adempimenti.
+            </p>
+          </div>
+
+          <div>
+            <h4 className="font-bold mb-2">• Conciliazioni sindacali:</h4>
+            <p>
+              L'Ufficio Vertenze fornisce ad iscritti e Conciliatori Sindacali
+              il massimo supporto in fase di redazione e stipula degli accordi
+              transattivi in sede protetta, al fine di garantire un'assistenza
+              piena ed effettiva ai lavoratori.
+            </p>
+          </div>
+
+          <div>
+            <h4 className="font-bold mb-2">
+              • Tutela collettiva dei lavoratori:
+            </h4>
+            <p>
+              Lo Snalv Confsal è sempre al fianco delle proprie Rappresentanze
+              Sindacali Aziendali per ogni procedura a carattere collettivo,
+              nonché per la redazione e la stipula di accordi aziendali o di
+              secondo livello in qualsiasi materia (introduzione premi di
+              risultato o welfare aziendale, riduzione o sospensione
+              dell'attività lavorativa con conseguente ricorso ad ammortizzatori
+              sociali, crisi aziendali, trasferimento d'azienda o ramo
+              d'azienda; cessione dei contratti di lavoro; cambio di appalto,
+              procedure di licenziamento collettivo; ecc.).
+            </p>
+          </div>
+
+          <div>
+            <h4 className="font-bold mb-2">• Assistenza legale:</h4>
+            <p>
+              Qualora fallisca ogni tentativo stragiudiziale, lo Snalv Confsal
+              garantisce ai lavoratori che ne fanno richiesta un'assistenza
+              legale agevolata, grazie a qualificati Avvocati in convenzione,
+              che garantiscono agli iscritti una prima consulenza gratuita ed un
+              eventuale successivo compenso basato sui minimi tabellari.
+            </p>
+          </div>
+
+          <div>
+            <h4 className="font-bold mb-2">
+              • Tutela dei disoccupati ed invio domande di prestazioni di
+              sostegno al reddito:
+            </h4>
+            <p>
+              i lavoratori in disoccupazione o in cassa integrazione possono
+              contare sull'aiuto di esperti in tema di ammortizzatori sociali.
+              Oltre all'invio delle domande di disoccupazione (NASPI e
+              DIS-COLL), il Sindacato garantisce assistenza operativa anche per
+              accedere alle prestazioni di sostegno al reddito in caso di
+              sospensione momentanea della propria attività lavorativa (CIGO,
+              CIGS, FIS, ecc.).
+            </p>
+          </div>
+
+          <div>
+            <h4 className="font-bold mb-2">• Tutela dei pensionati:</h4>
+            <p>
+              Grazie alla collaborazione con UNIPE – Unione Pensionati, lo Snalv
+              può garantire un'assistenza a 360 gradi di tutti i pensionati, sia
+              del settore pubblico che del settore privato.
+            </p>
+          </div>
+        </div>
+      ),
+    },
+    {
+      value: "tutela-previdenziale",
+      title: "TUTELA PREVIDENZIALE",
+      content: (
+        <div className="space-y-6">
+          <p>
+            Grazie alla convenzione col Patronato EPAS, lo Snalv Confsal
+            garantisce gratuitamente ai propri iscritti tutti i servizi
+            assistenziali e previdenziali di cui hanno bisogno, come ad esempio:
+          </p>
+
+          <div className="space-y-4">
+            <div>
+              <h4 className="font-bold mb-2">
+                • PRESTAZIONI DI SOSTEGNO AL REDDITO
+              </h4>
+              <p>
+                NASPI/DIS-COLL, INDENNITA' DI DISCONTINUITA' rivolta ai
+                lavoratori dello spettacolo, ISCRO - Indennità Straordinaria di
+                Continuità Reddituale e Operativa
+              </p>
+            </div>
+
+            <div>
+              <h4 className="font-bold mb-2">• PENSIONE E PREVIDENZA</h4>
+              <p>
+                Inoltro domanda di pensione di Vecchiaia, Pensione Anticipata,
+                Ape sociale, Opzione donna e quota 103. Ricostituzione e
+                ricongiunzione dei contributi, accreditamento contributi
+                figurativi. Richiesta estratto contributivo ed estratto
+                contributivo certificato
+              </p>
+            </div>
+
+            <div>
+              <h4 className="font-bold mb-2">• INVALIDITÀ E DISABILITÀ</h4>
+              <p>
+                Richiesta di assegno ordinario di invalidità, invio domanda
+                pensione di inabilità, invio domanda di invalidità civile e
+                accertamento sanitario, indennità di frequenza, indennità di
+                accompagno, richiesta permessi 104, congedo straordinario
+              </p>
+            </div>
+
+            <div>
+              <h4 className="font-bold mb-2">• MATERNITÀ/PATERNITÀ</h4>
+              <p>
+                Inoltro richiesta di indennità di maternità e paternità
+                obbligatoria, anticipata e flessibile. Inoltro domanda di
+                indennità di congedo parentale. Richiesta bonus asilo nido,
+                bonus mamme premio alla nascita, contributi per genitori
+                disoccupati o monoreddito con figli disabili. Assegno unico.
+                Permessi allattamento. Assegno per congedo matrimoniale
+              </p>
+            </div>
+
+            <div>
+              <h4 className="font-bold">• Altri servizi:</h4>
+              <ul className="list-disc pl-5 space-y-1">
+                <li>
+                  ASSEGNO DI INCLUSIONE (Inoltro domanda di assegno di
+                  inclusione)
+                </li>
+                <li>
+                  ASSEGNO INTEGRATIVO (Richiesta assegno integrativo per
+                  lavoratore in mobilità)
+                </li>
+                <li>
+                  RICORSI E RIESAMI (Assistenza per ricorsi e riesami online)
+                </li>
+                <li>
+                  BONUS UNA TANTUM (Bonus psicologo, bonus mamme, bonus asilo
+                  nido, ecc.)
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      ),
+    },
+    {
+      value: "tutela-fiscale",
+      title: "TUTELA FISCALE",
+      content: (
+        <div className="space-y-6">
+          <p>
+            Grazie alla convenzione col CAF ITALIA, lo Snalv Confsal garantisce
+            gratuitamente ai propri iscritti tutti i servizi fiscali di cui
+            hanno bisogno, come ad esempio:
+          </p>
+
+          <ul className="list-disc pl-5 space-y-2">
+            <li>
+              <span className="font-bold">ISEE</span> (Indicatore della
+              situazione economica equivalente, necessario per alcune tipologie
+              di prestazioni assistenziali, universitarie, sociosanitarie)
+            </li>
+            <li>
+              <span className="font-bold">730/ REDDITI PF/ 730 congiunto</span>{" "}
+              (Dichiarazione dei redditi)
+            </li>
+            <li>
+              <span className="font-bold">RED</span>
+            </li>
+            <li>
+              <span className="font-bold">IMU E TASI</span>
+            </li>
+            <li>
+              <span className="font-bold">SUCCESSIONI</span>
+            </li>
+            <li>
+              <span className="font-bold">LOCAZIONI</span> (Invio registrazione
+              contratti. Supporto per stesura contratti di locazione e comodato
+              d'uso mediante il Sindacato Europeo Inquilini e Assegnatari –
+              SEIASS)
+            </li>
+            <li>
+              <span className="font-bold">VISURE CATASTALI</span>
+            </li>
+            <li>
+              <span className="font-bold">VISURE CAMERALI</span>
+            </li>
+            <li>
+              <span className="font-bold">EAS</span>
+            </li>
+            <li>
+              <span className="font-bold">ICRIC- ICLAV-ACCAS/PS</span>
+            </li>
+          </ul>
+        </div>
+      ),
+    },
+    {
+      value: "orientamento",
+      title: "ORIENTAMENTO LAVORATIVO",
+      content: (
+        <div className="space-y-6">
+          <p>
+            Grazie alla collaborazione con l'Ente di formazione INFAP e con le
+            Agenzie di lavoro in convenzione, l'iscritto Snalv può contare su un
+            aiuto professionale per orientarsi meglio nel mondo del lavoro.
+            Nello specifico, ti supportiamo:
+          </p>
+
+          <ul className="list-disc pl-5 space-y-2">
+            <li>
+              nella ricerca di un lavoro o di un percorso formativo, accedendo
+              ad iniziative a carattere nazionale, regionale e anche europeo;
+            </li>
+            <li>nel reperire tutte le informazioni sui progetti finanziati;</li>
+            <li>
+              nel definire meglio le tue competenze, il tuo profilo lavorativo
+              ed il background professionale;
+            </li>
+            <li>
+              nell'affrontare l'uscita da un'azienda, sia essa causata da un
+              licenziamento o da una risoluzione consensuale, con l'obiettivo di
+              ricollocarti il prima possibile!
+            </li>
+          </ul>
+        </div>
+      ),
+    },
+    {
+      value: "altri-servizi",
+      title: "ALTRI SERVIZI IN CONVENZIONE",
+      content: (
+        <div className="space-y-6">
+          <div>
+            <h4 className="font-bold mb-2">
+              • Assistenza e tutela dei consumatori
+            </h4>
+            <p>
+              L'U.Di.Con. - Unione per la Difesa dei Consumatori - tutela a 360
+              gradi i diritti dei cittadini, quali consumatori e utenti,
+              offrendo un'assistenza completa in molteplici settori: dalla sfera
+              giuridica a quella economica, dalla sfera sanitaria a quella
+              previdenziale e fiscale. Consulta il sito www.udicon.org
+            </p>
+          </div>
+
+          <div>
+            <h4 className="font-bold mb-2">
+              • Assistenza e tutela degli inquilini
+            </h4>
+            <p>
+              SEIASS – Sindacato Europeo Inquilini e Assegnatari lavora
+              incessantemente per garantire che gli inquilini abbiano accesso a
+              alloggi sicuri, dignitosi e a prezzi equi, fornendo una consulenza
+              completa per tutte le tipologie di locazioni, nonché erogando
+              servizi per gli utenti dell'edilizia pubblica. Consulta il sito
+              www.seiass.it
+            </p>
+          </div>
+        </div>
+      ),
+    },
+    {
+      value: "agevolazioni",
+      title: "AGEVOLAZIONI, SCONTI ED OFFERTE ESCLUSIVE PER GLI ISCRITTI",
+      content: (
+        <div className="space-y-6">
+          <div>
+            <h4 className="font-bold mb-2">
+              • Assicurazione gratuita per i dipendenti delle strutture
+              socio-sanitarie-assistenziali-educative
+            </h4>
+            <p>
+              I lavoratori del comparto iscritti al Sindacato hanno diritto ad
+              una polizza per colpa grave totalmente gratuita. L'estratto della
+              polizza e le garanzie ivi contenute sono consultabili sul sito
+              dedicato:
+              https://www.gbsapri.it/convenzioni/colpa-grave-snalv-confsal/.
+              Tramite il medesimo link, i lavoratori che ne hanno diritto
+              possono richiedere un certificato della propria polizza.
+            </p>
+          </div>
+
+          <ul className="list-disc pl-5 space-y-2">
+            <li>
+              <span className="font-bold">Università PEGASO</span> (sconti sulle
+              iscrizioni universitarie)
+            </li>
+            <li>
+              <span className="font-bold">IBL Banca</span> (Condizioni agevolate
+              per apertura conto corrente, richieste di prestiti, finanziamenti
+              e cessioni del quinto)
+            </li>
+            <li>
+              <span className="font-bold">AGOS</span> (Prestiti a condizioni
+              vantaggiose)
+            </li>
+            <li>
+              <span className="font-bold">USI CARD</span> (Gli iscritti allo
+              Snalv Confsal di Roma e Provincia possono richiedere il rilascio
+              gratuito dell'USI Card! Per maggiori informazioni contatta il
+              nostro ufficio di riferimento: 351.63.46219 -
+              ilcentrocittadino@gmail.com)
+            </li>
+            <li>
+              <span className="font-bold">CONVENZIONI CON PARTNER LOCALI</span>{" "}
+              (Consulta la tua sede di riferimento sul territorio, per
+              verificare ulteriori sconti ed agevolazioni a cui puoi accedere in
+              qualità di "Iscritto SNALV" !)
+            </li>
+          </ul>
+        </div>
+      ),
+    },
+  ];
+
+  const organigrammaItems = [
+    {
+      id: "segretario",
+      label: "Il Segretario Generale ed il Vice-Segretario Nazionale",
+    },
+    { id: "segreteria", label: "La Segreteria nazionale" },
+    { id: "consiglio", label: "Il Consiglio Nazionale" },
+    { id: "segreterie", label: "Le Segreterie Sindacali" },
+    { id: "centri", label: "I Centri Snalv" },
+  ];
+
+  const ConteggiForm = () => (
+    <form className="space-y-6 bg-gray-50 p-8 rounded-lg">
+      <h2 className="text-2xl font-bold text-[#1a365d] mb-8">
+        MODULO CONTEGGI
+      </h2>
+
+      <div className="grid grid-cols-2 gap-8">
+        <div className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium mb-1">
+              Ragione sociale/Datore di lavoro
+            </label>
+            <Input className="w-full bg-white" />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium mb-1">Cellulare</label>
+            <Input className="w-full bg-white" />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium mb-1">
+              Data inizio rapporto lavoro
+            </label>
+            <Input type="date" className="w-full bg-white" />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium mb-1">
+              CCNL applicato
+              <span className="text-sm text-gray-500 block">
+                (specificare settore, qualifica e livello)
+              </span>
+            </label>
+            <Input className="w-full bg-white" />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium mb-1">
+              Tipologia di contratto
+              <span className="text-sm text-gray-500 block">
+                (specificare se part-time o full time)
+              </span>
+            </label>
+            <Input className="w-full bg-white" />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium mb-1">
+              Eventuali straordinari
+            </label>
+            <Input className="w-full bg-white" />
+          </div>
+        </div>
+
+        <div className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium mb-1">Lavoratore</label>
+            <Input className="w-full bg-white" />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium mb-1">Email</label>
+            <Input type="email" className="w-full bg-white" />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium mb-1">
+              Data risoluzione rapporto lavoro
+            </label>
+            <Input type="date" className="w-full bg-white" />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium mb-1">
+              Retribuzione corrisposta
+            </label>
+            <Input className="w-full bg-white" />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium mb-1">
+              Orario di lavoro
+            </label>
+            <Input className="w-full bg-white" />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium mb-1">
+              N° ore settimanali
+            </label>
+            <Input className="w-full bg-white" />
+          </div>
+        </div>
+      </div>
+
+      <div className="mt-8">
+        <p className="text-sm text-gray-600 mb-4">
+          Si prega di allegare copia del contratto e delle buste paga in
+          possesso
+        </p>
+        <div className="flex gap-4 items-center">
+          <input
+            type="file"
+            multiple
+            className="border-dashed border-red-500 border-2 rounded-lg p-4 text-center text-sm text-gray-500 hover:border-red-600 hover:text-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+            id="fileUpload"
+          />
+          <span className="text-sm text-gray-500">
+            È possibile allegare più file
+          </span>
+        </div>
+      </div>
+
+      <Button className="bg-red-500 hover:bg-red-600 text-white mt-8">
+        INVIA RICHIESTA
+      </Button>
+    </form>
+  );
+
+  const renderContent = () => {
+    switch (activeSection) {
+      case "chi-siamo":
+        return (
+          <div className="space-y-12">
+            <div className="space-y-6 text-gray-700">
+              <h1 className="text-[#1a365d] text-4xl font-bold mb-8">
+                CHI SIAMO
+              </h1>
+              <p>
+                Lo Snalv Confsal è un'Organizzazione Sindacale libera e
+                democratica, aderente alla CONFSAL, terzo Sindacato in Italia in
+                termini di rappresentatività sindacale.
+              </p>
+              <p>
+                Il nostro Sindacato tutela i lavoratori dipendenti del settore
+                privato ed i dipendenti pubblici degli "Enti Locali", corsi
+                convenzionati ed i pensionati.
+              </p>
+              <p>
+                Siamo diffusi su tutto il territorio nazionale con oltre{" "}
+                <strong>220</strong> sedi sindacali aperte al pubblico (consulta
+                qui l'elenco completo)
+              </p>
+              <p>
+                Al 31/12/2024 lo Snalv Confsal ha superato il numero di{" "}
+                <strong>50.000</strong> iscritti al Sindacato, con oltre n.{" "}
+                <strong>150</strong> rappresentanze sindacali aziendali nel
+                settore privato (da RSA e RSU) e n. 51 membri RSU nel settore
+                pubblico.
+              </p>
+            </div>
+          </div>
+        );
+
+      case "segretario":
+        return (
+          <div className="space-y-12">
+            <section>
+              <h1 className="text-[#1a365d] text-4xl font-bold mb-8">
+                Il Segretario Generale
+              </h1>
+              <h2 className="text-[#1a365d] text-2xl font-bold mb-4">
+                Dott.ssa Maria Mamone
+              </h2>
+              <div className="grid grid-cols-2 gap-8">
+                <div className="bg-gray-100 p-6">
+                  <p>
+                    Lorem ipsum dolor sit amet, consectetuer adipiscing elit,
+                    sed diam nonummy nibh euismod tincidunt ut laoreet dolore
+                    magna aliquam erat volutpat.
+                  </p>
+                </div>
+                <div>
+                  <Image
+                    src="/img/placeholder.jpg"
+                    alt="Maria Mamone"
+                    width={300}
+                    height={300}
+                  />
+                </div>
+              </div>
+            </section>
+
+            <section>
+              <h2 className="text-[#1a365d] text-4xl font-bold mb-8">
+                Il Vice-Segretario Nazionale
+              </h2>
+              <h3 className="text-[#1a365d] text-2xl font-bold mb-4">
+                Cosimo Nesci - consigliere CNEL
+              </h3>
+              <div className="grid grid-cols-2 gap-8">
+                <div className="bg-gray-100 p-6">
+                  <p>
+                    Lorem ipsum dolor sit amet, consectetuer adipiscing elit,
+                    sed diam nonummy nibh euismod tincidunt ut laoreet dolore
+                    magna aliquam erat volutpat.
+                  </p>
+                </div>
+                <div>
+                  <Image
+                    src="/img/placeholder.jpg"
+                    alt="Cosimo Nesci"
+                    width={300}
+                    height={300}
+                  />
+                </div>
+              </div>
+            </section>
+          </div>
+        );
+
+      case "segreteria":
+        return (
+          <div>
+            <h1 className="text-[#1a365d] text-4xl font-bold mb-8">
+              La Segreteria nazionale
+            </h1>
+            <p className="mb-8">
+              I componenti della Segreteria Nazionale, eletti durante l'ultimo
+              Congresso Nazionale SNALV/Confsal
+            </p>
+            <ul className="space-y-2">
+              {[
+                "MARIA MAMONE",
+                "COSIMO NESCI",
+                "GIULIA PUDDU",
+                "GIUSEPPINA ADAMO",
+                "BELINDA PESCOSOLIDO",
+                "DANIELE PACE",
+                "PASQUALE PELLEGRINO",
+              ].map((name) => (
+                <li key={name} className="text-[#1a365d]">
+                  {name}
+                </li>
+              ))}
+            </ul>
+          </div>
+        );
+
+      case "consiglio":
+        return (
+          <div>
+            <h1 className="text-[#1a365d] text-4xl font-bold mb-8">
+              Il Consiglio Nazionale
+            </h1>
+            <p className="mb-8">
+              I componenti del Consiglio Nazionale, eletti durante l'ultimo
+              Congresso Nazionale SNALV/Confsal
+            </p>
+            <ul className="space-y-2">
+              {[
+                "MARIA MAMONE",
+                "COSIMO NESCI",
+                "GIULIA PUDDU",
+                "GIUSEPPINA ADAMO",
+                "BELINDA PESCOSOLIDO",
+                "DANIELE PACE",
+                "PASQUALE PELLEGRINO",
+                "ISABELLA MAMONE",
+                "VINCENZO PALDINO",
+                "VALERIA SMURRA",
+                "CLAUDIO ZUCCHELLI",
+                "FRANCESCO FLORIO",
+                "STANISLAO AULETTA",
+                "FARA MANZI",
+                "ANTONIO LENTO",
+                "PEPPINO RUBERTO",
+                "ANTONIO SANTONOCITO",
+                "DANIELA MAZZOLA",
+                "MARTINA DONINI",
+                "FABIO LAROCCA",
+                "DANIELA MARIA SERVETTI",
+              ].map((name) => (
+                <li key={name} className="text-[#1a365d]">
+                  {name}
+                </li>
+              ))}
+            </ul>
+          </div>
+        );
+
+      case "struttura":
+        return (
+          <div>
+            <h1 className="text-[#1a365d] text-4xl font-bold mb-6">
+              LA STRUTTURA NAZIONALE
+            </h1>
+            <p className="text-gray-700 mb-12">
+              Lo Snalv Confsal garantisce a tutti gli iscritti ed ai referenti
+              sindacali un supporto puntuale e competente su ogni questione
+              attinenti alla tutela individuale e collettiva dei lavoratori.
+            </p>
+
+            <h2 className="text-[#1a365d] text-2xl font-bold mb-8">
+              GLI UFFICI TECNICI DI SUPPORTO
+            </h2>
+            <div className="space-y-8">
+              {technicalOffices.map((office, index) => (
+                <div key={index} className="flex gap-6 items-start">
+                  <div className="w-32 h-32 relative flex-shrink-0">
+                    <Image
+                      src={office.image}
+                      alt={office.title}
+                      fill
+                      className="object-cover rounded-lg"
+                    />
+                  </div>
+                  <div>
+                    <h3 className="text-[#1a365d] font-semibold mb-2">
+                      {office.title}
+                    </h3>
+                    {office.email && (
+                      <p className="text-gray-600">{office.email}</p>
+                    )}
+                    {office.emails &&
+                      office.emails.map((email, idx) => (
+                        <p key={idx} className="text-gray-600">
+                          {email}
+                        </p>
+                      ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        );
+
+      case "tutele":
+        return (
+          <div>
+            <h1 className="text-[#1a365d] text-4xl font-bold mb-6">
+              TUTELE E SERVIZI
+            </h1>
+            <p className="mb-8">
+              Gli iscritti al Sindacato godono di un'assistenza a 360° sulla
+              propria vita lavorativa, anche in materia fiscale e previdenziale.
+              Inoltre, possono beneficiare di numerose offerte e agevolazioni
+              grazie ai partner in convenzione.
+            </p>
+
+            {showConteggiForm ? (
+              <ConteggiForm />
+            ) : (
+              <>
+                <Accordion type="single" collapsible className="mb-12">
+                  {servicesAccordionItems.map((item) => (
+                    <AccordionItem value={item.value} key={item.value}>
+                      <AccordionTrigger className="text-[#1a365d] hover:text-[#1a365d]">
+                        {item.title}
+                      </AccordionTrigger>
+                      <AccordionContent className="text-gray-700">
+                        {item.content}
+                      </AccordionContent>
+                    </AccordionItem>
+                  ))}
+                </Accordion>
+
+                <div className="mt-12">
+                  <h2 className="text-[#1a365d] text-2xl font-bold">
+                    SERVIZI, CONVENZIONI ED AGEVOLAZIONI
+                  </h2>
+                  <h3 className="text-red-500 text-xl mt-2">
+                    LE ULTIME NOTIZIE
+                  </h3>
+                  <Button
+                    variant="link"
+                    className="text-blue-600 hover:text-blue-800 p-0 mt-2"
+                  >
+                    SCOPRI DI PIÙ
+                  </Button>
+                </div>
+              </>
+            )}
+          </div>
+        );
+
+      case "comparti":
+        return (
+          <div className="space-y-8">
+            <h1 className="text-[#1a365d] text-4xl font-bold mb-6">
+              COMPARTI SPECIFICI
+            </h1>
+            <p className="text-gray-700 mb-8">
+              Al fine di garantire ai lavoratori un supporto specifico e
+              competente, in relazione alle peculiarità del settore o delle
+              fasce lavorative, lo SNALV Confsal ha costituito i seguenti
+              Comparti sindacali:
+            </p>
+
+            {/* Lista dei comparti */}
+            <div className="grid gap-6">
+              {/* SOCIO-SANITARIO */}
+              <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
+                <div className="flex justify-between">
+                  <div className="flex-1">
+                    <h2 className="text-xl font-bold text-[#1a365d] mb-3">
+                      SOCIO-SANITARIO-ASSISTENZIALE-EDUCATIVO
+                    </h2>
+                    <p className="text-gray-600 mb-4">
+                      Lo Snalv è la federazione rappresentativa della CONFSAL
+                      del settore socio-sanitario-assistenziale-educativo.
+                      Scopri di più sulla nostra attività sindacale in merito!
+                    </p>
+                    <div className="flex items-center">
+                      <Button
+                        onClick={() => setActiveSection("socio-sanitario")}
+                        className="flex items-center space-x-2 text-red-500 hover:text-red-600 transition-colors"
+                        variant="link"
+                      >
+                        <span>SCOPRI DI PIÙ</span>
+                        <span>→</span>
+                      </Button>
+                    </div>
+                  </div>
+                  <div className="ml-6">
+                    <div className="w-16 h-16 rounded-full bg-red-100 flex items-center justify-center">
+                      <FiHeart className="w-8 h-8 text-red-500" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* LAVORATORI FRAGILI */}
+              <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
+                <div className="flex justify-between">
+                  <div className="flex-1">
+                    <h2 className="text-xl font-bold text-[#1a365d] mb-3">
+                      LAVORATORI FRAGILI
+                    </h2>
+                    <p className="text-gray-600 mb-4">
+                      Lo Snalv tutela i dipendenti affetti da patologie gravi,
+                      croniche o invalidanti per la salvaguardia dei diritti e
+                      dei doveri afferenti al proprio rapporto lavorativo.
+                    </p>
+                    <div className="flex items-center">
+                      <Button
+                        onClick={() => setActiveSection("lavoratori-fragili")}
+                        className="flex items-center space-x-2 text-red-500 hover:text-red-600 transition-colors"
+                        variant="link"
+                      >
+                        <span>SCOPRI DI PIÙ</span>
+                        <span>→</span>
+                      </Button>
+                    </div>
+                  </div>
+                  <div className="ml-6">
+                    <div className="w-16 h-16 rounded-full bg-red-100 flex items-center justify-center">
+                      <FiUsers className="w-8 h-8 text-red-500" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* ENTI LOCALI */}
+              <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
+                <div className="flex justify-between">
+                  <div className="flex-1">
+                    <h2 className="text-xl font-bold text-[#1a365d] mb-3">
+                      ENTI LOCALI
+                    </h2>
+                    <p className="text-gray-600 mb-4">
+                      Lo Snalv è presente con i propri Rappresentanti nei vari
+                      comparti dell'intera Amministrazione anche a livello
+                      regionale. Scopri di più sull'organizzazione del nostro
+                      comparto!
+                    </p>
+                    <div className="flex items-center">
+                      <Button
+                        onClick={() => setActiveSection("enti-locali")}
+                        className="flex items-center space-x-2 text-red-500 hover:text-red-600 transition-colors"
+                        variant="link"
+                      >
+                        <span>SCOPRI DI PIÙ</span>
+                        <span>→</span>
+                      </Button>
+                    </div>
+                  </div>
+                  <div className="ml-6">
+                    <div className="w-16 h-16 rounded-full bg-red-100 flex items-center justify-center">
+                      <FiHome className="w-8 h-8 text-red-500" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* CONFSAL SUD */}
+              <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
+                <div className="flex justify-between">
+                  <div className="flex-1">
+                    <h2 className="text-xl font-bold text-[#1a365d] mb-3">
+                      CONFSAL SUD
+                    </h2>
+                    <p className="text-gray-600 mb-4">
+                      Il Segretario Generale SNALV Confsal ricopre il ruolo di
+                      Coordinatore Nazionale del Dipartimento Confsal dedicato
+                      al Sud Italia.
+                    </p>
+                    <div className="flex items-center">
+                      <Button
+                        onClick={() => setActiveSection("confsal-sud")}
+                        className="flex items-center space-x-2 text-red-500 hover:text-red-600 transition-colors"
+                        variant="link"
+                      >
+                        <span>SCOPRI DI PIÙ</span>
+                        <span>→</span>
+                      </Button>
+                    </div>
+                  </div>
+                  <div className="ml-6">
+                    <div className="w-16 h-16 rounded-full bg-red-100 flex items-center justify-center">
+                      <FiMapPin className="w-8 h-8 text-red-500" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        );
+
+      // Poi aggiungere i case per ogni comparto specifico
+      case "socio-sanitario":
+        return (
+          <div className="space-y-8">
+            <h1 className="text-[#1a365d] text-4xl font-bold mb-6">
+              SOCIO-SANITARIO-ASSISTENZIALE-EDUCATIVO
+            </h1>
+
+            <div className="grid grid-cols-3 gap-8">
+              <div className="col-span-2">
+                <p className="text-gray-700 mb-6">
+                  Lorem ipsum dolor sit amet...
+                </p>
+
+                <div className="space-y-4 mt-8">
+                  <h2 className="text-[#1a365d] text-2xl font-bold">
+                    CONTATTACI
+                  </h2>
+                  <p>Email: sociosanitario@snalv.it</p>
+                  <p>Telefono: 06.70492451</p>
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                <div className="bg-gray-100 p-4 rounded">
+                  <h3 className="font-bold mb-2">IL CCNL ANASTE 2022</h3>
+                  <div className="space-y-2">
+                    <Button variant="link">Il Testo integrale</Button>
+                    <Button variant="link">
+                      Verbale integrativo 28.04.2023
+                    </Button>
+                    <Button variant="link">Scheda di approfondimento</Button>
+                  </div>
+                </div>
+
+                <div className="bg-blue-900 text-white p-4 rounded">
+                  <h3 className="font-bold mb-2">
+                    EVENTO 20 FEBBRAIO 2024 - ROMA
+                  </h3>
+                  <p>
+                    SETTORE SOCIO SANITARIO, valorizzare il LAVORO per garantire
+                    la QUALITÀ dei servizi
+                  </p>
+                </div>
+
+                <div className="bg-blue-900 text-white p-4 rounded">
+                  <h3 className="font-bold mb-2">
+                    ASSICURAZIONE GRATUITA PER GLI ISCRITTI
+                  </h3>
+                  <p>
+                    I lavoratori delle strutture
+                    socio-sanitarie-assistenziali-educative possono avere
+                    l'assicurazione per colpa grave totalmente gratuita se sei
+                    iscritto al sindacato
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-12">
+              <h2 className="text-[#1a365d] text-2xl font-bold mb-6">
+                NOTIZIE COMPARTO SOCIOSANITARIO
+              </h2>
+              <CategoryNews category="sociosanitario" />
+            </div>
+          </div>
+        );
+
+      case "lavoratori-fragili":
+        return (
+          <div className="space-y-8">
+            <h1 className="text-[#1a365d] text-4xl font-bold mb-6">
+              LAVORATORI FRAGILI
+            </h1>
+
+            <div className="grid grid-cols-3 gap-8">
+              <div className="col-span-2">
+                <p className="text-gray-700 mb-6">
+                  Lorem ipsum dolor sit amet...
+                </p>
+
+                <div className="space-y-4 mt-8">
+                  <h2 className="text-[#1a365d] text-2xl font-bold">
+                    CONTATTACI
+                  </h2>
+                  <p>Email: sociosanitario@snalv.it</p>
+                  <p>Telefono: 06.70492451</p>
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                <div className="bg-gray-100 p-4 rounded">
+                  <h3 className="font-bold mb-2">IL CCNL ANASTE 2022</h3>
+                  <div className="space-y-2">
+                    <Button variant="link">Il Testo integrale</Button>
+                    <Button variant="link">
+                      Verbale integrativo 28.04.2023
+                    </Button>
+                    <Button variant="link">Scheda di approfondimento</Button>
+                  </div>
+                </div>
+
+                <div className="bg-blue-900 text-white p-4 rounded">
+                  <h3 className="font-bold mb-2">
+                    EVENTO 20 FEBBRAIO 2024 - ROMA
+                  </h3>
+                  <p>
+                    SETTORE SOCIO SANITARIO, valorizzare il LAVORO per garantire
+                    la QUALITÀ dei servizi
+                  </p>
+                </div>
+
+                <div className="bg-blue-900 text-white p-4 rounded">
+                  <h3 className="font-bold mb-2">
+                    ASSICURAZIONE GRATUITA PER GLI ISCRITTI
+                  </h3>
+                  <p>
+                    I lavoratori delle strutture
+                    socio-sanitarie-assistenziali-educative possono avere
+                    l'assicurazione per colpa grave totalmente gratuita se sei
+                    iscritto al sindacato
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-12">
+              <h2 className="text-[#1a365d] text-2xl font-bold mb-6">
+                NOTIZIE COMPARTO LAVORATORI FRAGILI
+              </h2>
+
+              <CategoryNews category="fragili" />
+            </div>
+          </div>
+        );
+
+      case "enti-locali":
+        return (
+          <div className="space-y-8">
+            <h1 className="text-[#1a365d] text-4xl font-bold mb-6">
+              ENTI LOCALI
+            </h1>
+            <p className="mb-8">
+              Lo Snalv Confsal è impegnato nella tutela dei dipendenti pubblici
+              delle "Funzioni Locali"
+            </p>
+
+            <div>
+              <h2 className="text-xl font-bold mb-4">
+                Il Sindacato rappresenta, in particolare, le lavoratrici e i
+                lavoratori dei seguenti ENTI:
+              </h2>
+              <ul className="list-disc pl-5 space-y-2">
+                <li>
+                  Regioni a statuto ordinario e degli Enti pubblici non
+                  economici dalle stesse dipendenti
+                </li>
+                <li>
+                  Province, Città metropolitane, Enti di area vasta, Liberi
+                  consorzi comunali di cui alla legge 4 agosto 2015, n. 15 della
+                  regione Sicilia
+                </li>
+                <li>Comuni montani</li>
+                <li>
+                  ex Istituti autonomi per le case popolari comunque denominati
+                </li>
+                <li>Consorzi e associazioni, incluse le Unioni di Comuni</li>
+                <li>
+                  Aziende pubbliche di servizi alla persona (ex IPAB), che
+                  svolgono prevalentemente funzioni assistenziali
+                </li>
+                <li>
+                  Università agrarie ed associazioni agrarie dipendenti dagli
+                  enti locali
+                </li>
+                <li>
+                  Camere di commercio, industria, artigianato e agricoltura
+                </li>
+                <li>
+                  Autorità di bacino, ai sensi della legge 21 ottobre 1994, n.
+                  584
+                </li>
+              </ul>
+            </div>
+
+            <div className="bg-gray-100 p-6 rounded-lg mt-8">
+              <h2 className="text-xl font-bold mb-4">CONTATTACI</h2>
+              <div className="space-y-2">
+                <p>
+                  <span className="font-bold">Coordinatore nazionale:</span>{" "}
+                  avv. Massimo Arena
+                </p>
+                <p>
+                  <span className="font-bold">Email:</span> entilocali@snalv.it
+                  - snalventilocali@pec.it
+                </p>
+                <p>
+                  <span className="font-bold">Telefono:</span> 380.5252867
+                </p>
+              </div>
+            </div>
+
+            <div className="mt-12">
+              <h2 className="text-[#1a365d] text-2xl font-bold mb-6">
+                NOTIZIE COMPARTO ENTI LOCALI
+              </h2>
+
+              <CategoryNews category="entilocali" />
+            </div>
+          </div>
+        );
+
+      case "confsal-sud":
+        return (
+          <div className="space-y-8">
+            <h1 className="text-[#1a365d] text-4xl font-bold mb-6">
+              CONFSAL SUD
+            </h1>
+
+            <div className="grid grid-cols-3 gap-8">
+              <div className="col-span-2">
+                <p className="text-gray-700 mb-6">
+                  Il Segretario Generale SNALV Confsal ricopre il ruolo di
+                  Coordinatore Nazionale del Dipartimento Confsal dedicato al
+                  Sud Italia. Consulta l'attività svolta finora!
+                </p>
+
+                <div className="space-y-4 mt-8">
+                  <h2 className="text-[#1a365d] text-2xl font-bold">
+                    CONTATTACI
+                  </h2>
+                  {/* Contatti */}
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-12">
+              <h2 className="text-[#1a365d] text-2xl font-bold mb-6">
+                NOTIZIE DIPARTIMENTO SUD
+              </h2>
+
+              <CategoryNews category="confsalsud" />
+            </div>
+          </div>
+        );
+
+      default:
+        return null;
+    }
+  };
+
+  return (
+    <>
+      <Header />
+      <main className="max-w-7xl mx-auto px-4 py-12">
+        <div className="lg:grid lg:grid-cols-4 gap-8">
+          <div>
+            <div className="bg-gray-100 p-4 rounded-lg">
+              {menuItems.map((item, index) => (
+                <div
+                  key={item.id}
+                  className={`py-2 ${
+                    index === 0
+                      ? "border-t-2 border-red-500"
+                      : "border-t border-gray-300"
+                  }`}
+                >
+                  <Button
+                    variant="ghost"
+                    className={`w-full justify-start text-left ${
+                      activeSection === item.id
+                        ? "text-red-500"
+                        : "text-gray-700"
+                    }`}
+                    onClick={() => setActiveSection(item.id)}
+                  >
+                    {item.label}
+                  </Button>
+                </div>
+              ))}
+            </div>
+
+            {(activeSection === "chi-siamo" ||
+              activeSection === "segretario" ||
+              activeSection === "segreteria" ||
+              activeSection === "consiglio") && (
+              <div className="mt-8">
+                <h2 className="text-[#1a365d] text-xl font-bold mb-4">
+                  ORGANIGRAMMA
+                </h2>
+                <div className="space-y-2">
+                  {organigrammaItems.map((item) => (
+                    <Button
+                      key={item.id}
+                      variant="ghost"
+                      className={`w-full justify-between bg-gray-100 hover:bg-gray-200 py-6 text-left text-wrap ${
+                        activeSection === item.id ? "bg-gray-200" : ""
+                      }`}
+                      onClick={() => setActiveSection(item.id)}
+                    >
+                      {item.label}
+                    </Button>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+
+          <div className="col-span-3">{renderContent()}</div>
+        </div>
+      </main>
+      <Footer />
+    </>
+  );
+};
+
+export default ChiSiamoPage;
