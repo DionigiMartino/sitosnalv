@@ -457,7 +457,7 @@ const ChiSiamoPage = () => {
               <span className="font-bold">CONVENZIONI CON PARTNER LOCALI</span>{" "}
               (Consulta la tua sede di riferimento sul territorio, per
               verificare ulteriori sconti ed agevolazioni a cui puoi accedere in
-              qualità di "Iscritto SNALV" !)
+              qualità di &quot;Iscritto SNALV&quot; !)
             </li>
           </ul>
         </div>
@@ -612,7 +612,7 @@ const ChiSiamoPage = () => {
               </p>
               <p>
                 Il nostro Sindacato tutela i lavoratori dipendenti del settore
-                privato ed i dipendenti pubblici degli "Enti Locali", corsi
+                privato ed i dipendenti pubblici degli &quot;Enti Locali&quot;, corsi
                 convenzionati ed i pensionati.
               </p>
               <p>
@@ -1101,7 +1101,7 @@ const ChiSiamoPage = () => {
             </h1>
             <p className="mb-8">
               Lo Snalv Confsal è impegnato nella tutela dei dipendenti pubblici
-              delle "Funzioni Locali"
+              delle &quot;Funzioni Locali&quot;
             </p>
 
             <div>
