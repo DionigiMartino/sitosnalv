@@ -22,7 +22,7 @@ const Header = () => {
       dropdown: true,
       items: [
         { label: "Cerca una sede", href: "/territorio" },
-        { label: "Collabora con noi", href: "/collabora" },
+        { label: "Collabora con noi", href: "/territorio#collabora" },
       ],
     },
     { label: "NEWS", href: "/news" },

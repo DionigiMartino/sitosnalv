@@ -11,8 +11,7 @@ import NewsComponent from "@/src/components/CategoryNews";
 import "leaflet/dist/leaflet.css";
 import { FiChevronLeft } from "react-icons/fi";
 
-// Database delle regioni e province
-const regioni = [
+const regioni: any = [
   "Abruzzo",
   "Basilicata",
   "Calabria",
@@ -35,7 +34,7 @@ const regioni = [
   "Veneto",
 ];
 
-const province = {
+const province: any = {
   Campania: ["Avellino", "Benevento", "Caserta", "Napoli", "Salerno"],
   Lazio: ["Frosinone", "Latina", "Rieti", "Roma", "Viterbo"],
   Lombardia: [
@@ -50,7 +49,6 @@ const province = {
     "Pavia",
     "Varese",
   ],
-  // Aggiungi altre province per le regioni restanti
 };
 
 // Database delle sedi
@@ -78,7 +76,7 @@ const sediList = [
   },
 ];
 
-const segreterieSedi = {
+const segreterieSedi: any = {
   Campania: {
     Napoli: [
       {
@@ -129,7 +127,7 @@ const segreterieSedi = {
   },
 };
 
-const centriSedi = {
+const centriSedi: any = {
   Lombardia: {
     Milano: [
       {
@@ -169,7 +167,7 @@ const centriSedi = {
 };
 
 // Componente Mappa
-const MapComponent = ({ center, zoom, locations = sediList }) => {
+const MapComponent = ({ center, zoom, locations = sediList }: any) => {
   const customIcon = new Icon({
     iconUrl: "/img/marker.jpg",
     iconSize: [15, 20],
@@ -187,7 +185,7 @@ const MapComponent = ({ center, zoom, locations = sediList }) => {
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         />
-        {locations.map((location, index) => (
+        {locations.map((location: any, index: any) => (
           <Marker key={index} position={location.position} icon={customIcon}>
             <Popup>
               <div className="p-2">
@@ -245,7 +243,7 @@ const SegreterieSindacali = () => {
             </button>
             {isRegioneOpen && (
               <div className="mt-2 p-2 bg-white border rounded-lg shadow-lg max-h-60 overflow-y-auto">
-                {regioni.map((regione) => (
+                {regioni.map((regione: any) => (
                   <button
                     key={regione}
                     onClick={() => {
@@ -273,7 +271,7 @@ const SegreterieSindacali = () => {
               </button>
               {isProvinciaOpen && (
                 <div className="mt-2 p-2 bg-white border rounded-lg shadow-lg max-h-60 overflow-y-auto">
-                  {province[selectedRegione]?.map((prov) => (
+                  {province[selectedRegione]?.map((prov: any) => (
                     <button
                       key={prov}
                       onClick={() => {
@@ -300,7 +298,7 @@ const SegreterieSindacali = () => {
           {segreterieSedi[selectedRegione]?.[selectedProvincia] ? (
             <div className="space-y-4">
               {segreterieSedi[selectedRegione][selectedProvincia].map(
-                (sede, index) => (
+                (sede: any, index: any) => (
                   <div
                     key={index}
                     className="bg-white p-4 rounded-lg shadow-sm"
@@ -357,7 +355,7 @@ const CentriSnalv = () => {
             </button>
             {isRegioneOpen && (
               <div className="mt-2 p-2 bg-white border rounded-lg shadow-lg max-h-60 overflow-y-auto">
-                {regioni.map((regione) => (
+                {regioni.map((regione: any) => (
                   <button
                     key={regione}
                     onClick={() => {
@@ -385,7 +383,7 @@ const CentriSnalv = () => {
               </button>
               {isProvinciaOpen && (
                 <div className="mt-2 p-2 bg-white border rounded-lg shadow-lg max-h-60 overflow-y-auto">
-                  {province[selectedRegione]?.map((prov) => (
+                  {province[selectedRegione]?.map((prov: any) => (
                     <button
                       key={prov}
                       onClick={() => {
@@ -412,7 +410,7 @@ const CentriSnalv = () => {
           {centriSedi[selectedRegione]?.[selectedProvincia] ? (
             <div className="space-y-4">
               {centriSedi[selectedRegione][selectedProvincia].map(
-                (centro, index) => (
+                (centro: any, index: any) => (
                   <div
                     key={index}
                     className="bg-white p-4 rounded-lg shadow-sm"
@@ -427,7 +425,7 @@ const CentriSnalv = () => {
                           Servizi disponibili:
                         </p>
                         <div className="flex flex-wrap gap-2 mt-1">
-                          {centro.servizi.map((servizio, i) => (
+                          {centro.servizi.map((servizio: any, i: any) => (
                             <span
                               key={i}
                               className="px-2 py-1 bg-red-50 text-red-600 rounded-full text-sm"
@@ -457,7 +455,7 @@ const CentriSnalv = () => {
 const TerritorioPage = () => {
   const [activeSection, setActiveSection] = useState("cerca-sede");
   const [searchTerm, setSearchTerm] = useState("");
-  const [searchResults, setSearchResults] = useState([]);
+  const [searchResults, setSearchResults] = useState<any>([]);
   const [mapCenter, setMapCenter] = useState([41.9028, 12.4964]);
   const [mapZoom, setMapZoom] = useState(6);
 
@@ -574,7 +572,7 @@ const TerritorioPage = () => {
                   <div className="mt-4 p-4 bg-gray-50 rounded-lg">
                     <h3 className="font-bold mb-2">Sedi trovate:</h3>
                     <ul className="space-y-2">
-                      {searchResults.map((sede, index) => (
+                      {searchResults.map((sede: any, index: any) => (
                         <li
                           key={index}
                           className="flex justify-between items-center p-2 hover:bg-gray-100 rounded"
