@@ -141,21 +141,21 @@ const ChiSiamoPage = () => {
             <h4 className="font-bold mb-2">• Dimissioni telematiche:</h4>
             <p>
               Assistenza e supporto in fase di recesso dal proprio rapporto di
-              lavoro, mediante l&apos;invio delle dimissioni in modalità telematica.
-              I nostri esperti sono in grado di individuare i termini di
-              preavviso, la tipologia più consona di recesso del contratto (tra
-              dimissioni volontarie, per giusta causa o con risoluzione
-              consensuale) con relative procedure ed adempimenti.
+              lavoro, mediante l&apos;invio delle dimissioni in modalità
+              telematica. I nostri esperti sono in grado di individuare i
+              termini di preavviso, la tipologia più consona di recesso del
+              contratto (tra dimissioni volontarie, per giusta causa o con
+              risoluzione consensuale) con relative procedure ed adempimenti.
             </p>
           </div>
 
           <div>
             <h4 className="font-bold mb-2">• Conciliazioni sindacali:</h4>
             <p>
-              L&apos;Ufficio Vertenze fornisce ad iscritti e Conciliatori Sindacali
-              il massimo supporto in fase di redazione e stipula degli accordi
-              transattivi in sede protetta, al fine di garantire un&apos;assistenza
-              piena ed effettiva ai lavoratori.
+              L&apos;Ufficio Vertenze fornisce ad iscritti e Conciliatori
+              Sindacali il massimo supporto in fase di redazione e stipula degli
+              accordi transattivi in sede protetta, al fine di garantire
+              un&apos;assistenza piena ed effettiva ai lavoratori.
             </p>
           </div>
 
@@ -169,10 +169,11 @@ const ChiSiamoPage = () => {
               nonché per la redazione e la stipula di accordi aziendali o di
               secondo livello in qualsiasi materia (introduzione premi di
               risultato o welfare aziendale, riduzione o sospensione
-              dell&apos;attività lavorativa con conseguente ricorso ad ammortizzatori
-              sociali, crisi aziendali, trasferimento d&apos;azienda o ramo
-              d&apos;azienda; cessione dei contratti di lavoro; cambio di appalto,
-              procedure di licenziamento collettivo; ecc.).
+              dell&apos;attività lavorativa con conseguente ricorso ad
+              ammortizzatori sociali, crisi aziendali, trasferimento
+              d&apos;azienda o ramo d&apos;azienda; cessione dei contratti di
+              lavoro; cambio di appalto, procedure di licenziamento collettivo;
+              ecc.).
             </p>
           </div>
 
@@ -194,11 +195,11 @@ const ChiSiamoPage = () => {
             </h4>
             <p>
               i lavoratori in disoccupazione o in cassa integrazione possono
-              contare sull&apos;aiuto di esperti in tema di ammortizzatori sociali.
-              Oltre all&apos;invio delle domande di disoccupazione (NASPI e
-              DIS-COLL), il Sindacato garantisce assistenza operativa anche per
-              accedere alle prestazioni di sostegno al reddito in caso di
-              sospensione momentanea della propria attività lavorativa (CIGO,
+              contare sull&apos;aiuto di esperti in tema di ammortizzatori
+              sociali. Oltre all&apos;invio delle domande di disoccupazione
+              (NASPI e DIS-COLL), il Sindacato garantisce assistenza operativa
+              anche per accedere alle prestazioni di sostegno al reddito in caso
+              di sospensione momentanea della propria attività lavorativa (CIGO,
               CIGS, FIS, ecc.).
             </p>
           </div>
@@ -207,8 +208,8 @@ const ChiSiamoPage = () => {
             <h4 className="font-bold mb-2">• Tutela dei pensionati:</h4>
             <p>
               Grazie alla collaborazione con UNIPE – Unione Pensionati, lo Snalv
-              può garantire un&apos;assistenza a 360 gradi di tutti i pensionati, sia
-              del settore pubblico che del settore privato.
+              può garantire un&apos;assistenza a 360 gradi di tutti i
+              pensionati, sia del settore pubblico che del settore privato.
             </p>
           </div>
         </div>
@@ -231,9 +232,9 @@ const ChiSiamoPage = () => {
                 • PRESTAZIONI DI SOSTEGNO AL REDDITO
               </h4>
               <p>
-                NASPI/DIS-COLL, INDENNITA&apos; DI DISCONTINUITA&apos; rivolta ai
-                lavoratori dello spettacolo, ISCRO - Indennità Straordinaria di
-                Continuità Reddituale e Operativa
+                NASPI/DIS-COLL, INDENNITA&apos; DI DISCONTINUITA&apos; rivolta
+                ai lavoratori dello spettacolo, ISCRO - Indennità Straordinaria
+                di Continuità Reddituale e Operativa
               </p>
             </div>
 
@@ -352,10 +353,10 @@ const ChiSiamoPage = () => {
       content: (
         <div className="space-y-6">
           <p>
-            Grazie alla collaborazione con l&apos;Ente di formazione INFAP e con le
-            Agenzie di lavoro in convenzione, l&apos;iscritto Snalv può contare su un
-            aiuto professionale per orientarsi meglio nel mondo del lavoro.
-            Nello specifico, ti supportiamo:
+            Grazie alla collaborazione con l&apos;Ente di formazione INFAP e con
+            le Agenzie di lavoro in convenzione, l&apos;iscritto Snalv può
+            contare su un aiuto professionale per orientarsi meglio nel mondo
+            del lavoro. Nello specifico, ti supportiamo:
           </p>
 
           <ul className="list-disc pl-5 space-y-2">
@@ -369,9 +370,9 @@ const ChiSiamoPage = () => {
               ed il background professionale;
             </li>
             <li>
-              nell&apos;affrontare l&apos;uscita da un&apos;azienda, sia essa causata da un
-              licenziamento o da una risoluzione consensuale, con l&apos;obiettivo di
-              ricollocarti il prima possibile!
+              nell&apos;affrontare l&apos;uscita da un&apos;azienda, sia essa
+              causata da un licenziamento o da una risoluzione consensuale, con
+              l&apos;obiettivo di ricollocarti il prima possibile!
             </li>
           </ul>
         </div>
@@ -387,10 +388,10 @@ const ChiSiamoPage = () => {
               • Assistenza e tutela dei consumatori
             </h4>
             <p>
-              L&apos;U.Di.Con. - Unione per la Difesa dei Consumatori - tutela a 360
-              gradi i diritti dei cittadini, quali consumatori e utenti,
-              offrendo un&apos;assistenza completa in molteplici settori: dalla sfera
-              giuridica a quella economica, dalla sfera sanitaria a quella
+              L&apos;U.Di.Con. - Unione per la Difesa dei Consumatori - tutela a
+              360 gradi i diritti dei cittadini, quali consumatori e utenti,
+              offrendo un&apos;assistenza completa in molteplici settori: dalla
+              sfera giuridica a quella economica, dalla sfera sanitaria a quella
               previdenziale e fiscale. Consulta il sito www.udicon.org
             </p>
           </div>
@@ -404,8 +405,8 @@ const ChiSiamoPage = () => {
               incessantemente per garantire che gli inquilini abbiano accesso a
               alloggi sicuri, dignitosi e a prezzi equi, fornendo una consulenza
               completa per tutte le tipologie di locazioni, nonché erogando
-              servizi per gli utenti dell&apos;edilizia pubblica. Consulta il sito
-              www.seiass.it
+              servizi per gli utenti dell&apos;edilizia pubblica. Consulta il
+              sito www.seiass.it
             </p>
           </div>
         </div>
@@ -423,9 +424,9 @@ const ChiSiamoPage = () => {
             </h4>
             <p>
               I lavoratori del comparto iscritti al Sindacato hanno diritto ad
-              una polizza per colpa grave totalmente gratuita. L&apos;estratto della
-              polizza e le garanzie ivi contenute sono consultabili sul sito
-              dedicato:
+              una polizza per colpa grave totalmente gratuita. L&apos;estratto
+              della polizza e le garanzie ivi contenute sono consultabili sul
+              sito dedicato:
               https://www.gbsapri.it/convenzioni/colpa-grave-snalv-confsal/.
               Tramite il medesimo link, i lavoratori che ne hanno diritto
               possono richiedere un certificato della propria polizza.
@@ -472,8 +473,6 @@ const ChiSiamoPage = () => {
     },
     { id: "segreteria", label: "La Segreteria nazionale" },
     { id: "consiglio", label: "Il Consiglio Nazionale" },
-    { id: "segreterie", label: "Le Segreterie Sindacali" },
-    { id: "centri", label: "I Centri Snalv" },
   ];
 
   const ConteggiForm = () => (
@@ -612,8 +611,8 @@ const ChiSiamoPage = () => {
               </p>
               <p>
                 Il nostro Sindacato tutela i lavoratori dipendenti del settore
-                privato ed i dipendenti pubblici degli &quot;Enti Locali&quot;, corsi
-                convenzionati ed i pensionati.
+                privato ed i dipendenti pubblici degli &quot;Enti Locali&quot;,
+                corsi convenzionati ed i pensionati.
               </p>
               <p>
                 Siamo diffusi su tutto il territorio nazionale con oltre{" "}
@@ -695,8 +694,8 @@ const ChiSiamoPage = () => {
               La Segreteria nazionale
             </h1>
             <p className="mb-8">
-              I componenti della Segreteria Nazionale, eletti durante l&apos;ultimo
-              Congresso Nazionale SNALV/Confsal
+              I componenti della Segreteria Nazionale, eletti durante
+              l&apos;ultimo Congresso Nazionale SNALV/Confsal
             </p>
             <ul className="space-y-2 md:columns-2">
               {[
@@ -761,7 +760,7 @@ const ChiSiamoPage = () => {
       case "struttura":
         return (
           <div>
-            <h1 className="text-[#1a365d] text-4xl font-bold mb-6 md:text-5xl">
+            <h1 className="text-[#1a365d] text-4xl font-bold mb-6">
               LA STRUTTURA NAZIONALE
             </h1>
             <p className="text-gray-700 mb-12">
@@ -770,13 +769,13 @@ const ChiSiamoPage = () => {
               attinenti alla tutela individuale e collettiva dei lavoratori.
             </p>
 
-            <h2 className="text-[#1a365d] text-2xl font-bold mb-8 md:text-3xl">
+            <h2 className="text-[#1a365d] text-2xl font-bold mb-8">
               GLI UFFICI TECNICI DI SUPPORTO
             </h2>
-            <div className="space-y-8 md:grid md:grid-cols-2 md:gap-6">
+            <div className="space-y-8">
               {technicalOffices.map((office, index) => (
                 <div key={index} className="flex gap-6 items-start">
-                  <div className="w-32 h-32 relative flex-shrink-0">
+                  <div className="w-28 h-28 md:w-32 md:h-32 relative flex-shrink-0">
                     <Image
                       src={office.image}
                       alt={office.title}
@@ -811,10 +810,10 @@ const ChiSiamoPage = () => {
               TUTELE E SERVIZI
             </h1>
             <p className="mb-8">
-              Gli iscritti al Sindacato godono di un&apos;assistenza a 360° sulla
-              propria vita lavorativa, anche in materia fiscale e previdenziale.
-              Inoltre, possono beneficiare di numerose offerte e agevolazioni
-              grazie ai partner in convenzione.
+              Gli iscritti al Sindacato godono di un&apos;assistenza a 360°
+              sulla propria vita lavorativa, anche in materia fiscale e
+              previdenziale. Inoltre, possono beneficiare di numerose offerte e
+              agevolazioni grazie ai partner in convenzione.
             </p>
 
             {showConteggiForm ? (
@@ -856,7 +855,7 @@ const ChiSiamoPage = () => {
       case "comparti":
         return (
           <div className="space-y-8">
-            <h1 className="text-[#1a365d] text-4xl font-bold mb-6 md:text-5xl">
+            <h1 className="text-[#1a365d] text-4xl font-bold mb-6">
               COMPARTI SPECIFICI
             </h1>
             <p className="text-gray-700 mb-8">
@@ -866,7 +865,8 @@ const ChiSiamoPage = () => {
               Comparti sindacali:
             </p>
 
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {/* Lista dei comparti */}
+            <div className="grid gap-6">
               {/* SOCIO-SANITARIO */}
               <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
                 <div className="flex justify-between">
@@ -938,8 +938,8 @@ const ChiSiamoPage = () => {
                     </h2>
                     <p className="text-gray-600 mb-4">
                       Lo Snalv è presente con i propri Rappresentanti nei vari
-                      comparti dell&apos;intera Amministrazione anche a livello
-                      regionale. Scopri di più sull&apos;organizzazione del nostro
+                      comparti dell'intera Amministrazione anche a livello
+                      regionale. Scopri di più sull'organizzazione del nostro
                       comparto!
                     </p>
                     <div className="flex items-center">
@@ -951,6 +951,42 @@ const ChiSiamoPage = () => {
                         <span>SCOPRI DI PIÙ</span>
                         <span>→</span>
                       </Button>
+                    </div>
+                  </div>
+                  <div className="ml-6">
+                    <div className="w-16 h-16 rounded-full bg-red-100 flex items-center justify-center">
+                      <FiHome className="w-8 h-8 text-red-500" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* CONFSAL SUD */}
+              <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
+                <div className="flex justify-between">
+                  <div className="flex-1">
+                    <h2 className="text-xl font-bold text-[#1a365d] mb-3">
+                      CONFSAL SUD
+                    </h2>
+                    <p className="text-gray-600 mb-4">
+                      Il Segretario Generale SNALV Confsal ricopre il ruolo di
+                      Coordinatore Nazionale del Dipartimento Confsal dedicato
+                      al Sud Italia.
+                    </p>
+                    <div className="flex items-center">
+                      <Button
+                        onClick={() => setActiveSection("confsal-sud")}
+                        className="flex items-center space-x-2 text-red-500 hover:text-red-600 transition-colors"
+                        variant="link"
+                      >
+                        <span>SCOPRI DI PIÙ</span>
+                        <span>→</span>
+                      </Button>
+                    </div>
+                  </div>
+                  <div className="ml-6">
+                    <div className="w-16 h-16 rounded-full bg-red-100 flex items-center justify-center">
+                      <FiMapPin className="w-8 h-8 text-red-500" />
                     </div>
                   </div>
                 </div>
@@ -1010,8 +1046,8 @@ const ChiSiamoPage = () => {
                   <p>
                     I lavoratori delle strutture
                     socio-sanitarie-assistenziali-educative possono avere
-                    l&apos;assicurazione per colpa grave totalmente gratuita se sei
-                    iscritto al sindacato
+                    l&apos;assicurazione per colpa grave totalmente gratuita se
+                    sei iscritto al sindacato
                   </p>
                 </div>
               </div>
@@ -1077,8 +1113,8 @@ const ChiSiamoPage = () => {
                   <p>
                     I lavoratori delle strutture
                     socio-sanitarie-assistenziali-educative possono avere
-                    l&apos;assicurazione per colpa grave totalmente gratuita se sei
-                    iscritto al sindacato
+                    l&apos;assicurazione per colpa grave totalmente gratuita se
+                    sei iscritto al sindacato
                   </p>
                 </div>
               </div>
@@ -1262,6 +1298,22 @@ const ChiSiamoPage = () => {
                       {item.label}
                     </Button>
                   ))}
+                  <Link href="/territorio#cerca-sede" passHref className="">
+                    <Button
+                      variant="ghost"
+                      className={`w-full my-2 justify-between bg-gray-100 hover:bg-gray-200 py-6 text-left text-wrap`}
+                    > 
+                      Le Segreterie Nazionali
+                    </Button>
+                  </Link> 
+                  <Link href="/territorio#cerca-sede" passHref>
+                    <Button
+                      variant="ghost"
+                      className={`w-full justify-between bg-gray-100 hover:bg-gray-200 py-6 text-left text-wrap`}
+                    >
+                      I Centri Snalv
+                    </Button>
+                  </Link>
                 </div>
               </div>
             )}
