@@ -22,7 +22,7 @@ const HomePage = () => {
         <div className="absolute inset-0 z-0">
           <Image
             src="/img/home.jpg"
-            alt="Hero background"
+            alt="Sezione Hero"
             fill
             className="object-cover brightness-75"
             priority
