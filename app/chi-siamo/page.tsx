@@ -15,6 +15,7 @@ import Footer from "@/src/components/Footer";
 import { useState, useEffect } from "react";
 import { FiHeart, FiUsers, FiHome, FiMapPin } from "react-icons/fi";
 import CategoryNews from "@/src/components/CategoryNews";
+import HeroSection from "@/src/components/Hero";
 
 const ChiSiamoPage = () => {
   const [activeSection, setActiveSection] = useState("chi-siamo");
@@ -28,10 +29,26 @@ const ChiSiamoPage = () => {
   }, []);
 
   const menuItems = [
-    { id: "chi-siamo", label: "Chi siamo" },
-    { id: "struttura", label: "La struttura nazionale" },
-    { id: "tutele", label: "Tutele e servizi" },
-    { id: "comparti", label: "Comparti specifici" },
+    {
+      id: "chi-siamo",
+      label: "Chi siamo",
+      hero: { title: "Chi Siamo", bg: "/img/chisiamo.jpg" },
+    },
+    {
+      id: "struttura",
+      label: "La struttura nazionale",
+      hero: { title: "Struttura Nazionale", bg: "/img/struttura.jpg" },
+    },
+    {
+      id: "tutele",
+      label: "Tutele e servizi",
+      hero: { title: "Tutele e Servizi", bg: "/img/tutele.jpg" },
+    },
+    {
+      id: "comparti",
+      label: "Comparti specifici",
+      hero: { title: "Comparti Specifici", bg: "/img/comparti.jpg" },
+    },
   ];
 
   const technicalOffices = [
@@ -1233,6 +1250,7 @@ const ChiSiamoPage = () => {
   return (
     <>
       <Header />
+      <HeroSection section={activeSection} />
       <main className="max-w-7xl mx-auto px-4 py-12">
         <div className="lg:grid lg:grid-cols-4 gap-8">
           <div>

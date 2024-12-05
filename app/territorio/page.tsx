@@ -10,6 +10,13 @@ import Footer from "@/src/components/Footer";
 import NewsComponent from "@/src/components/CategoryNews";
 import "leaflet/dist/leaflet.css";
 import { FiChevronLeft } from "react-icons/fi";
+import HeroSection from "@/src/components/Hero";
+import dynamic from "next/dynamic";
+
+const MapComponent = dynamic(() => import("@/src/components/Map"), {
+  ssr: false,
+  loading: () => <div className="w-full h-[500px] bg-gray-100" />,
+});
 
 const regioni: any = [
   "Abruzzo",
@@ -164,42 +171,6 @@ const centriSedi: any = {
       },
     ],
   },
-};
-
-// Componente Mappa
-const MapComponent = ({ center, zoom, locations = sediList }: any) => {
-  const customIcon = new Icon({
-    iconUrl: "/img/marker.jpg",
-    iconSize: [15, 20],
-    iconAnchor: [12, 41],
-  });
-
-  return (
-    <div className="w-full h-[500px] rounded-lg overflow-hidden shadow-md">
-      <MapContainer
-        center={center}
-        zoom={zoom}
-        style={{ height: "100%", width: "100%" }}
-      >
-        <TileLayer
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        />
-        {locations.map((location: any, index: any) => (
-          <Marker key={index} position={location.position} icon={customIcon}>
-            <Popup>
-              <div className="p-2">
-                <h3 className="font-bold">{location.name}</h3>
-                <p>{location.address}</p>
-                <p>CAP: {location.cap}</p>
-                <p className="text-sm text-gray-600">{location.type}</p>
-              </div>
-            </Popup>
-          </Marker>
-        ))}
-      </MapContainer>
-    </div>
-  );
 };
 
 // Componente Segreterie Sindacali
@@ -601,11 +572,17 @@ const TerritorioPage = () => {
                 )}
               </div>
 
-              <MapComponent
-                center={mapCenter}
-                zoom={mapZoom}
-                locations={searchResults.length > 0 ? searchResults : sediList}
-              />
+              {activeSection === "cerca-sede" && (
+                <div className="w-full h-[500px] rounded-lg overflow-hidden shadow-md">
+                  <MapComponent
+                    center={mapCenter}
+                    zoom={mapZoom}
+                    locations={
+                      searchResults.length > 0 ? searchResults : sediList
+                    }
+                  />
+                </div>
+              )}
 
               <div className="space-y-2 mt-8">
                 <Button
@@ -709,57 +686,133 @@ const TerritorioPage = () => {
               </div>
             </div>
 
-            <div className="max-w-2xl mx-auto">
-              <div className="bg-white p-8 rounded-lg shadow-sm">
-                <h3 className="text-xl font-semibold mb-6 flex items-center gap-2">
-                  <span>Compila il form per essere ricontattato:</span>
+            <div className="max-w-3xl mx-auto">
+              <div className="bg-white p-10 rounded-xl shadow-lg border border-gray-100">
+                <h3 className="text-2xl font-bold text-[#1a365d] mb-8">
+                  Compila il form per essere ricontattato
                 </h3>
 
-                <form className="space-y-6">
-                  <div className="grid grid-cols-3 gap-6">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Nome:
-                      </label>
-                      <Input className="w-full" />
+                <form className="space-y-8">
+                  <div className="grid grid-cols-2 gap-8">
+                    <div className="space-y-6">
+                      <div className="relative">
+                        <input
+                          type="text"
+                          className="peer w-full border-b-2 border-gray-300 px-0 py-2 
+               placeholder:text-transparent focus:border-red-500 focus:outline-none"
+                          placeholder="Nome"
+                          required
+                        />
+                        <label
+                          className="pointer-events-none absolute left-0 -top-3.5 text-sm 
+             text-gray-600 transition-all peer-placeholder-shown:top-2 
+             peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 
+             peer-focus:-top-3.5 peer-focus:text-sm peer-focus:text-red-500"
+                        >
+                          Nome
+                        </label>
+                      </div>
+
+                      <div className="relative">
+                        <input
+                          type="text"
+                          className="peer w-full border-b-2 border-gray-300 px-0 py-2 
+               placeholder:text-transparent focus:border-red-500 focus:outline-none"
+                          placeholder="Cognome"
+                          required
+                        />
+                        <label
+                          className="pointer-events-none absolute left-0 -top-3.5 text-sm 
+             text-gray-600 transition-all peer-placeholder-shown:top-2 
+             peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 
+             peer-focus:-top-3.5 peer-focus:text-sm peer-focus:text-red-500"
+                        >
+                          Cognome
+                        </label>
+                      </div>
+
+                      <div className="relative">
+                        <input
+                          type="text"
+                          className="peer w-full border-b-2 border-gray-300 px-0 py-2 
+               placeholder:text-transparent focus:border-red-500 focus:outline-none"
+                          placeholder="Professione"
+                          required
+                        />
+                        <label
+                          className="pointer-events-none absolute left-0 -top-3.5 text-sm 
+             text-gray-600 transition-all peer-placeholder-shown:top-2 
+             peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 
+             peer-focus:-top-3.5 peer-focus:text-sm peer-focus:text-red-500"
+                        >
+                          Professione attuale
+                        </label>
+                      </div>
                     </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Cognome:
-                      </label>
-                      <Input className="w-full" />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Professione attuale:
-                      </label>
-                      <Input className="w-full" />
+
+                    <div className="space-y-6">
+                      <div className="relative">
+                        <input
+                          type="text"
+                          className="peer w-full border-b-2 border-gray-300 px-0 py-2 
+               placeholder:text-transparent focus:border-red-500 focus:outline-none"
+                          placeholder="Domicilio"
+                          required
+                        />
+                        <label
+                          className="pointer-events-none absolute left-0 -top-3.5 text-sm 
+             text-gray-600 transition-all peer-placeholder-shown:top-2 
+             peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 
+             peer-focus:-top-3.5 peer-focus:text-sm peer-focus:text-red-500"
+                        >
+                          Luogo domicilio
+                        </label>
+                      </div>
+
+                      <div className="relative">
+                        <input
+                          type="tel"
+                          className="peer w-full border-b-2 border-gray-300 px-0 py-2 
+               placeholder:text-transparent focus:border-red-500 focus:outline-none"
+                          placeholder="Cellulare"
+                          required
+                        />
+                        <label
+                          className="pointer-events-none absolute left-0 -top-3.5 text-sm 
+             text-gray-600 transition-all peer-placeholder-shown:top-2 
+             peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 
+             peer-focus:-top-3.5 peer-focus:text-sm peer-focus:text-red-500"
+                        >
+                          Cellulare
+                        </label>
+                      </div>
+
+                      <div className="relative">
+                        <input
+                          type="email"
+                          className="peer w-full border-b-2 border-gray-300 px-0 py-2 
+               placeholder:text-transparent focus:border-red-500 focus:outline-none"
+                          placeholder="Email"
+                          required
+                        />
+                        <label
+                          className="pointer-events-none absolute left-0 -top-3.5 text-sm 
+             text-gray-600 transition-all peer-placeholder-shown:top-2 
+             peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 
+             peer-focus:-top-3.5 peer-focus:text-sm peer-focus:text-red-500"
+                        >
+                          Email
+                        </label>
+                      </div>
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-3 gap-6">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Luogo domicilio:
-                      </label>
-                      <Input className="w-full" />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Cel:
-                      </label>
-                      <Input className="w-full" type="tel" />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Mail:
-                      </label>
-                      <Input className="w-full" type="email" />
-                    </div>
-                  </div>
-
-                  <div className="flex justify-end">
-                    <Button className="bg-red-500 hover:bg-red-600 text-white px-8">
+                  <div className="flex justify-center mt-10">
+                    <Button
+                      type="submit"
+                      className="bg-red-500 hover:bg-red-600 text-white px-12 py-3 rounded-full 
+           text-lg font-medium transition-all hover:shadow-lg"
+                    >
                       Invia richiesta
                     </Button>
                   </div>
@@ -777,6 +830,7 @@ const TerritorioPage = () => {
   return (
     <>
       <Header />
+      <HeroSection section={activeSection} />
       <main className="max-w-7xl mx-auto px-4 py-12">
         <div className="lg:grid lg:grid-cols-4 gap-8">
           <div>

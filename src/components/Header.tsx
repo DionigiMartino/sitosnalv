@@ -21,11 +21,11 @@ const Header = () => {
       label: "TERRITORIO",
       dropdown: true,
       items: [
-        { label: "Cerca una sede", href: "/territorio" },
+        { label: "Cerca una sede", href: "/territorio#cerca-sede" },
         { label: "Collabora con noi", href: "/territorio#collabora" },
       ],
     },
-    { label: "NEWS", href: "/news" },
+    { label: "NEWS", href: "/notizie#notizie" },
     { label: "CONTATTI", href: "/contatti" },
   ];
 
