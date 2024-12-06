@@ -50,7 +50,7 @@ const ServiceSlider = () => {
     {
       title: "COMPARTO ENTI LOCALI",
       description: "Servizi per gli enti locali",
-      image: "/icon/locali.jpg",
+      image: "/icon/enti.jpg",
       href: "/chi-siamo#comparti",
       buttonText: "Dettagli",
     },
