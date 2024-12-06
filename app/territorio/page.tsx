@@ -689,7 +689,7 @@ const TerritorioPage = () => {
 
             <div className="max-w-3xl mx-auto">
               <div className="bg-white p-10 rounded-xl shadow-lg border border-gray-100">
-                <h3 className="text-2xl font-bold text-white mb-8 md:text-3xl bg-blue-600 p-2 rounded-md">
+                <h3 className="text-2xl font-bold text-white mb-8 md:text-3xl bg-blue-600 p-2 rounded-md text-center">
                   Compila il form per essere ricontattato
                 </h3>
                 <form className="space-y-8">
