@@ -638,32 +638,41 @@ const ChiSiamoPage = () => {
       case "chi-siamo":
         return (
           <div className="space-y-12">
-            <div className="space-y-6 text-gray-700">
-              <h1 className="text-[#1a365d] text-4xl font-bold mb-8 md:text-5xl">
-                CHI SIAMO
-              </h1>
-              <p>
-                Lo Snalv Confsal è un&apos;Organizzazione Sindacale libera e
-                democratica, aderente alla CONFSAL, terzo Sindacato in Italia in
-                termini di rappresentatività sindacale.
-              </p>
-              <p>
-                Il nostro Sindacato tutela i lavoratori dipendenti del settore
-                privato ed i dipendenti pubblici degli &quot;Enti Locali&quot;,
-                corsi convenzionati ed i pensionati.
-              </p>
-              <p>
-                Siamo diffusi su tutto il territorio nazionale con oltre{" "}
-                <strong>220</strong> sedi sindacali aperte al pubblico (consulta
-                qui l&apos;elenco completo)
-              </p>
-              <p>
-                Al 31/12/2024 lo Snalv Confsal ha superato il numero di{" "}
-                <strong>50.000</strong> iscritti al Sindacato, con oltre n.{" "}
-                <strong>150</strong> rappresentanze sindacali aziendali nel
-                settore privato (da RSA e RSU) e n. 51 membri RSU nel settore
-                pubblico.
-              </p>
+            <div className="space-y-6 text-gray-700 flex flex-col md:flex-row justify-between">
+              <div className="w-full md:w-2/4 flexflex-col gap-3">
+                <h1 className="text-[#1a365d] text-4xl font-bold mb-8 md:text-5xl ">
+                  CHI SIAMO
+                </h1>
+                <p className="text-justify">
+                  Lo Snalv Confsal è un&apos;Organizzazione Sindacale libera e
+                  democratica, aderente alla CONFSAL, terzo Sindacato in Italia
+                  in termini di rappresentatività sindacale.
+                </p>
+                <p className="text-justify">
+                  Il nostro Sindacato tutela i lavoratori dipendenti del settore
+                  privato ed i dipendenti pubblici degli &quot;Enti
+                  Locali&quot;, corsi convenzionati ed i pensionati.
+                </p>
+                <p className="text-justify">
+                  Siamo diffusi su tutto il territorio nazionale con oltre{" "}
+                  <strong>220</strong> sedi sindacali aperte al pubblico
+                  (consulta qui l&apos;elenco completo)
+                </p>
+                <p className="text-justify">
+                  Al 31/12/2024 lo Snalv Confsal ha superato il numero di{" "}
+                  <strong>50.000</strong> iscritti al Sindacato, con oltre n.{" "}
+                  <strong>150</strong> rappresentanze sindacali aziendali nel
+                  settore privato (da RSA e RSU) e n. 51 membri RSU nel settore
+                  pubblico.
+                </p>
+              </div>
+              <video className="w-full md:w-1/3 h-full rounded-lg" controls>
+                <source
+                  src="/video/chisiamo.mp4"
+                  type="video/mp4"
+                  className=""
+                />
+              </video>
             </div>
           </div>
         );
