@@ -74,14 +74,14 @@ const RecentNews = () => {
                 >
                   <Card className="overflow-hidden bg-white shadow-md">
                     <CardContent className="p-0">
-                      <div className="relative h-40 sm:h-48 lg:h-56 ">
+                      <div className="relative h-40 sm:h-48 lg:h-56 border-b-[6px] border-blue-600">
                         <Image
                           src={item.image}
                           alt="News"
                           fill
                           className="object-cover"
                         />
-                        <div className="absolute top-2 left-2 bg-white px-2 py-1 text-xs sm:text-sm">
+                        <div className="absolute bottom-0 left-4 bg-blue-600 text-white px-4 font-bold py-2 text-xs sm:text-sm">
                           {item.date}
                         </div>
                       </div>
@@ -91,9 +91,9 @@ const RecentNews = () => {
                         </p>
                         <Button
                           variant="secondary"
-                          className="w-full bg-gray-300 hover:bg-gray-400 text-white"
+                          className="w-full bg-gray-300 hover:bg-gray-400 font-bold uppercase text-blue-600"
                         >
-                          LEARN MORE
+                          leggi di più
                         </Button>
                       </div>
                     </CardContent>

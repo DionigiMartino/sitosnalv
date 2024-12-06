@@ -60,7 +60,7 @@ const Footer = () => {
 
           <div className="space-y-4">
             <div className="flex items-center gap-2">
-              <div className="h-[45px] w-[45px] relative">
+              <div className="h-[30px] w-[30px] relative">
                 <Image
                   src="/icon/snalv.jpg"
                   alt="Phone"
@@ -77,7 +77,7 @@ const Footer = () => {
             </div>
             <div className="space-y-2">
               <div className="flex items-center gap-2">
-                <div className="h-[45px] w-[45px] relative">
+                <div className="h-[30px] w-[30px] relative">
                   <Image
                     src="/icon/phone.jpg"
                     alt="Phone"
@@ -88,7 +88,7 @@ const Footer = () => {
                 <p>06 70492451</p>
               </div>
               <div className="flex items-center gap-2">
-                <div className="h-[45px] w-[45px] relative">
+                <div className="h-[30px] w-[30px] relative">
                   <Image
                     src="/icon/whatsapp.jpg"
                     alt="WhatsApp"
@@ -99,7 +99,7 @@ const Footer = () => {
                 <p>345 0511636</p>
               </div>
               <div className="flex items-center gap-2">
-                <div className="h-[45px] w-[45px] relative">
+                <div className="h-[30px] w-[30px] relative">
                   <Image
                     src="/icon/email.jpg"
                     alt="Email"
@@ -138,8 +138,8 @@ const Footer = () => {
                 className="h-[45px] w-[45px] relative"
               >
                 <Image
-                  src="/icon/twitter.jpg"
-                  alt="Twitter"
+                  src="/icon/x.jpg"
+                  alt="X"
                   fill
                   className="object-contain p-1 hover:opacity-70 transition-opacity"
                 />

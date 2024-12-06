@@ -74,23 +74,24 @@ const ComunicatiStampa = () => {
                     exit={{ opacity: 0, x: -50 }}
                     transition={{ duration: 0.3 }}
                   >
-                    <div className="relative h-40 sm:h-48 md:h-64">
+                    <div className="relative h-40 sm:h-48 md:h-64 border-b-[6px] border-blue-600">
                       <Image
                         src={comunicati[index].image}
                         alt={comunicati[index].text}
                         fill
                         className="object-cover"
                       />
-                    </div>
-                    <div className="p-4 sm:p-6">
-                      <div className="text-xs sm:text-sm font-medium text-snalv-600 mb-2 sm:mb-4">
+
+                      <div className="absolute bottom-0 left-4 bg-blue-600 text-white px-4 font-bold py-2 text-xs sm:text-sm">
                         {comunicati[index].date}
                       </div>
+                    </div>
+                    <div className="p-4 sm:p-6">
                       <p className="text-gray-800 mb-4 sm:mb-6 line-clamp-3">
                         {comunicati[index].text}
                       </p>
                       <button className="w-full uppercase py-2 text-center border border-snalv-200 text-snalv-600 rounded-md hover:bg-snalv-50 transition-colors">
-                        scopri di più
+                        leggi di più
                       </button>
                     </div>
                   </motion.div>

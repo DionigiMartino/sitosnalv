@@ -150,7 +150,7 @@ const ComunicatiPage = () => {
                     fill
                     className="object-cover"
                   />
-                  <div className="absolute top-4 left-4 bg-white px-3 py-1 text-sm">
+                  <div className="absolute bottom-0 left-4 bg-blue-600 text-white font-bold px-3 py-3 text-sm">
                     {comunicato.date}
                   </div>
                   {comunicato.featured && (
@@ -198,7 +198,7 @@ const ComunicatiPage = () => {
                     fill
                     className="object-cover"
                   />
-                  <div className="absolute top-4 left-4 bg-white px-3 py-1 text-sm">
+                  <div className="absolute bottom-0 left-4 bg-blue-600 text-white font-bold px-3 py-3 text-sm">
                     {notizia.date}
                   </div>
                   {notizia.featured && (
@@ -275,7 +275,10 @@ const ComunicatiPage = () => {
 
             {/* Filters */}
             <div>
-              <Button variant="ghost" className="w-full text-left mb-4 justify-start">
+              <Button
+                variant="ghost"
+                className="w-full text-left mb-4 justify-start"
+              >
                 + Filtri
               </Button>
               {activeFilter && (
