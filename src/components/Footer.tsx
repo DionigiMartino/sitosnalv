@@ -2,17 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import {
-  Facebook,
-  Instagram,
-  Linkedin,
-  Youtube,
-  Building2,
-  Phone,
-  Mail,
-} from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { FaWhatsapp, FaXTwitter } from "react-icons/fa6";
 
 const Footer = () => {
   return (
@@ -111,10 +101,7 @@ const Footer = () => {
               </div>
             </div>
             <div className="flex space-x-4 mt-4">
-              <Link
-                href="#"
-                className="h-[45px] w-[45px] relative"
-              >
+              <Link href="#" className="h-[45px] w-[45px] relative">
                 <Image
                   src="/icon/facebook.jpg"
                   alt="Facebook"
@@ -122,10 +109,7 @@ const Footer = () => {
                   className="object-contain p-1 hover:opacity-70 transition-opacity"
                 />
               </Link>
-              <Link
-                href="#"
-                className="h-[45px] w-[45px] relative"
-              >
+              <Link href="#" className="h-[45px] w-[45px] relative">
                 <Image
                   src="/icon/instagram.jpg"
                   alt="Instagram"
@@ -133,10 +117,7 @@ const Footer = () => {
                   className="object-contain p-1 hover:opacity-70 transition-opacity"
                 />
               </Link>
-              <Link
-                href="#"
-                className="h-[45px] w-[45px] relative"
-              >
+              <Link href="#" className="h-[45px] w-[45px] relative">
                 <Image
                   src="/icon/x.jpg"
                   alt="X"
@@ -144,10 +125,7 @@ const Footer = () => {
                   className="object-contain p-1 hover:opacity-70 transition-opacity"
                 />
               </Link>
-              <Link
-                href="#"
-                className="h-[45px] w-[45px] relative"
-              >
+              <Link href="#" className="h-[45px] w-[45px] relative">
                 <Image
                   src="/icon/linkedin.jpg"
                   alt="LinkedIn"
@@ -155,10 +133,7 @@ const Footer = () => {
                   className="object-contain p-1 hover:opacity-70 transition-opacity"
                 />
               </Link>
-              <Link
-                href="#"
-                className="h-[45px] w-[45px] relative"
-              >
+              <Link href="#" className="h-[45px] w-[45px] relative">
                 <Image
                   src="/icon/youtube.jpg"
                   alt="YouTube"
