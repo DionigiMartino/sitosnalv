@@ -87,7 +87,7 @@ const ServiceSlider = () => {
 
   return (
     <div className="w-full md:w-3/4 mx-auto px-4 my-24 relative z-10">
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8 auto-rows-fr">
+      <div className="flex flex-col md:flex-row gap-16 md:gap-8  auto-rows-fr">
         <AnimatePresence mode="wait">
           {services
             .slice(currentIndex, currentIndex + 3)

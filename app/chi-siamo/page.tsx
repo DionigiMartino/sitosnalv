@@ -16,10 +16,13 @@ import { useState, useEffect } from "react";
 import { FiHeart, FiUsers, FiHome, FiMapPin } from "react-icons/fi";
 import CategoryNews from "@/src/components/CategoryNews";
 import HeroSection from "@/src/components/Hero";
+import { useRouter } from "next/navigation";
 
 const ChiSiamoPage = () => {
   const [activeSection, setActiveSection] = useState("chi-siamo");
   const [showConteggiForm, setShowConteggiForm] = useState(false);
+
+  const router = useRouter();
 
   useEffect(() => {
     const updateSection = () => {
@@ -637,9 +640,9 @@ const ChiSiamoPage = () => {
     switch (activeSection) {
       case "chi-siamo":
         return (
-          <div className="space-y-12">
+          <div className="space-y-12 flex flex-col gap-12">
             <div className="space-y-6 text-gray-700 flex flex-col md:flex-row justify-between">
-              <div className="w-full md:w-2/4 flexflex-col gap-3">
+              <div className="w-full md:w-2/5 flex flex-col gap-6">
                 <h1 className="text-[#1a365d] text-4xl font-bold mb-8 md:text-5xl ">
                   CHI SIAMO
                 </h1>
@@ -666,13 +669,29 @@ const ChiSiamoPage = () => {
                   pubblico.
                 </p>
               </div>
-              <video className="w-full md:w-1/3 h-full rounded-lg" controls>
+              <video className="w-full md:w-2/4 h-full rounded-lg" controls>
                 <source
                   src="/video/chisiamo.mp4"
                   type="video/mp4"
                   className=""
                 />
               </video>
+            </div>
+
+            <div
+              className="flex flex-col md:flex-row items-center gap-6 cursor-pointer bg-gray-100 rounded-lg p-4 hover:bg-gray-200 transition-colors"
+              onClick={() => router.push("/congresso")}
+            >
+              <Image
+                src="/img/congresso.jpg"
+                width={200}
+                height={100}
+                alt="Congresso"
+              />
+
+              <h1 className="text-3xl text-blue-600 w-1/3">
+                Il Congresso Nazionale del 2018
+              </h1>
             </div>
           </div>
         );
