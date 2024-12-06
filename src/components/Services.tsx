@@ -36,7 +36,7 @@ const ServiceSlider = () => {
     {
       title: "COMPARTO SOCIO-SANITARIO",
       description: "Informazioni per il settore sanitario",
-      image: "/icon/anti.jpg", // Assumo che questa sia l'immagine corretta
+      image: "/icon/locali.jpg", // Assumo che questa sia l'immagine corretta
       href: "/chi-siamo#comparti",
       buttonText: "Scopri di più",
     },
@@ -103,7 +103,7 @@ const ServiceSlider = () => {
                 <div className="relative w-full max-w-sm">
                   <Link href={service.href} className="block">
                     <div
-                      className="absolute left-1/2 -translate-x-1/2 -top-12 md:-top-16 w-24 h-24 md:w-32 md:h-32 rounded-full bg-white flex items-center justify-center z-20 overflow-hidden"
+                      className="absolute left-1/2 -translate-x-1/2 -top-12 md:-top-16 w-24 h-24 md:w-24 md:h-24 rounded-full bg-white flex items-center justify-center z-20 overflow-hidden"
                       style={{
                         boxShadow: `
       4px 5px 0px  #de041b
@@ -119,7 +119,7 @@ const ServiceSlider = () => {
                     </div>
                     <Card className="pt-16 md:pt-20 pb-8 h-full border-[3px] border-dashed border-red-500 hover:border-solid transition-all">
                       <CardContent className="text-center flex flex-col h-full justify-between px-4">
-                        <h3 className="text-lg md:text-xl font-bold text-gray-900 mb-2">
+                        <h3 className="text-lg md:text-xl font-bold text-blue-900 mb-2">
                           {service.title}
                         </h3>
                         <p className="text-sm text-gray-600 mb-4">
