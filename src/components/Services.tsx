@@ -45,14 +45,14 @@ const ServiceSlider = () => {
       description: "Supporto per le categorie fragili",
       image: "/icon/fragili.jpg",
       href: "/chi-siamo#comparti",
-      buttonText: "Maggiori info",
+      buttonText: "Scopri di più",
     },
     {
       title: "COMPARTO ENTI LOCALI",
       description: "Servizi per gli enti locali",
       image: "/icon/enti.jpg",
       href: "/chi-siamo#comparti",
-      buttonText: "Dettagli",
+      buttonText: "Scopri di più",
     },
     {
       title: "VERSAMENTI DELEGHE",

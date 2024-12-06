@@ -60,7 +60,14 @@ const Footer = () => {
 
           <div className="space-y-4">
             <div className="flex items-center gap-2">
-              <Building2 size={20} />
+              <div className="h-[45px] w-[45px] relative">
+                <Image
+                  src="/icon/snalv.jpg"
+                  alt="Phone"
+                  fill
+                  className="object-contain p-1"
+                />
+              </div>
               <div>
                 <h3 className="font-semibold mb-1">
                   SNALV CONFSAL - Segreteria nazionale
@@ -70,20 +77,35 @@ const Footer = () => {
             </div>
             <div className="space-y-2">
               <div className="flex items-center gap-2">
-                <div className="border rounded-full p-1.5">
-                  <Phone size={20} />
+                <div className="h-[45px] w-[45px] relative">
+                  <Image
+                    src="/icon/phone.jpg"
+                    alt="Phone"
+                    fill
+                    className="object-contain p-1"
+                  />
                 </div>
                 <p>06 70492451</p>
               </div>
               <div className="flex items-center gap-2">
-                <div className="border rounded-full p-1.5">
-                  <FaWhatsapp size={20} />
+                <div className="h-[45px] w-[45px] relative">
+                  <Image
+                    src="/icon/whatsapp.jpg"
+                    alt="WhatsApp"
+                    fill
+                    className="object-contain p-1"
+                  />
                 </div>
                 <p>345 0511636</p>
               </div>
               <div className="flex items-center gap-2">
-                <div className="border rounded-full p-1.5">
-                  <Mail size={20} />
+                <div className="h-[45px] w-[45px] relative">
+                  <Image
+                    src="/icon/email.jpg"
+                    alt="Email"
+                    fill
+                    className="object-contain p-1"
+                  />
                 </div>
                 <p>snalv@pec.it / info@snalv.it</p>
               </div>
@@ -91,33 +113,58 @@ const Footer = () => {
             <div className="flex space-x-4 mt-4">
               <Link
                 href="#"
-                className="border rounded-full p-1.5 hover:text-gray-300 hover:border-gray-300"
+                className="h-[45px] w-[45px] relative"
               >
-                <Facebook size={24} />
+                <Image
+                  src="/icon/facebook.jpg"
+                  alt="Facebook"
+                  fill
+                  className="object-contain p-1 hover:opacity-70 transition-opacity"
+                />
               </Link>
               <Link
                 href="#"
-                className="border rounded-full p-1.5 hover:text-gray-300 hover:border-gray-300"
+                className="h-[45px] w-[45px] relative"
               >
-                <Instagram size={24} />
+                <Image
+                  src="/icon/instagram.jpg"
+                  alt="Instagram"
+                  fill
+                  className="object-contain p-1 hover:opacity-70 transition-opacity"
+                />
               </Link>
               <Link
                 href="#"
-                className="border rounded-full p-1.5 hover:text-gray-300 hover:border-gray-300"
+                className="h-[45px] w-[45px] relative"
               >
-                <FaXTwitter size={24} />
+                <Image
+                  src="/icon/twitter.jpg"
+                  alt="Twitter"
+                  fill
+                  className="object-contain p-1 hover:opacity-70 transition-opacity"
+                />
               </Link>
               <Link
                 href="#"
-                className="border rounded-full p-1.5 hover:text-gray-300 hover:border-gray-300"
+                className="h-[45px] w-[45px] relative"
               >
-                <Linkedin size={24} />
+                <Image
+                  src="/icon/linkedin.jpg"
+                  alt="LinkedIn"
+                  fill
+                  className="object-contain p-1 hover:opacity-70 transition-opacity"
+                />
               </Link>
               <Link
                 href="#"
-                className="border rounded-full p-1.5 hover:text-gray-300 hover:border-gray-300"
+                className="h-[45px] w-[45px] relative"
               >
-                <Youtube size={24} />
+                <Image
+                  src="/icon/youtube.jpg"
+                  alt="YouTube"
+                  fill
+                  className="object-contain p-1 hover:opacity-70 transition-opacity"
+                />
               </Link>
             </div>
           </div>

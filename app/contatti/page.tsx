@@ -7,6 +7,7 @@ import Header from "@/src/components/Header";
 import Footer from "@/src/components/Footer";
 import { motion } from "framer-motion";
 import HeroSection from "@/src/components/Hero";
+import Link from "next/link";
 
 const ContattiPage = () => {
   const [formData, setFormData] = useState({
@@ -31,7 +32,7 @@ const ContattiPage = () => {
       <HeroSection section="contatti" />
 
       <main className="max-w-7xl mx-auto px-4 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-16">
+        <div className="flex flex-col gap-16">
           {/* Contact Form */}
           <div className="space-y-8">
             <div className="space-y-4">
@@ -64,7 +65,7 @@ const ContattiPage = () => {
                   />
                 </div>
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
                   <Input
                     placeholder="TEL"
@@ -86,13 +87,15 @@ const ContattiPage = () => {
                     className="bg-gray-50"
                   />
                 </div>
+                <div>
+                  <Button className="w-full bg-red-500 hover:bg-red-600 text-white font-bold">
+                    INVIA
+                  </Button>
+                </div>
               </div>
-              <Button className="w-full bg-red-500 hover:bg-red-600 text-white">
-                INVIA
-              </Button>
             </form>
 
-            <p className="text-center font-medium">
+            <p className="text-center font-bold text-blue-600">
               UN NOSTRO OPERATORE TI CHIAMERÀ IL PRIMA POSSIBILE!
             </p>
           </div>
@@ -100,17 +103,35 @@ const ContattiPage = () => {
           {/* Contact Info */}
           <div className="space-y-12">
             <div className="space-y-4">
-              <h3 className="font-medium md:text-2xl">
+              <h3 className="font-bold text-blue-600 md:text-2xl ">
                 Altrimenti, se preferisci, puoi contattarci ai seguenti
                 recapiti:
               </h3>
               <div className="space-y-2">
-                <p className="font-bold">
+                <p className="font-bold text-blue-600">
                   Ufficio vertenze e conteggi Segreteria Nazionale
                 </p>
-                <p>06.70492451</p>
-                <p>345.0511636</p>
-                <p>info@snalv.it</p>
+
+                <div className="flex flex-col gap-3">
+                  <Link
+                    className="text-blue-600 font-medium border-b-2 border-blue-600 pb-1 w-fit"
+                    href="/"
+                  >
+                    06.70492451
+                  </Link>
+                  <Link
+                    className="text-blue-600 font-medium border-b-2 border-blue-600 pb-1 w-fit"
+                    href="/"
+                  >
+                    345.0511636
+                  </Link>
+                  <Link
+                    className="text-blue-600 font-medium border-b-2 border-blue-600 pb-1 w-fit"
+                    href="/"
+                  >
+                    info@snalv.it
+                  </Link>
+                </div>
               </div>
               <Button
                 variant="link"
@@ -125,12 +146,12 @@ const ContattiPage = () => {
             </div>
 
             {/* Newsletter */}
-            <div className="bg-gray-50 p-8 rounded-lg space-y-6">
-              <p className="text-center md:text-lg">
+            <div className="bg-gray-50 p-8 rounded-lg space-y-6 border-t-4 border-red-500">
+              <p className="text-center md:text-lg text-blue-600">
                 Nel frattempo, registrati alla nostra{" "}
                 <span className="font-bold">Newsletter</span> per ricevere
-                all&apos;istante ogni nuova notizia e aggiornamenti dal mondo del
-                lavoro!
+                all&apos;istante ogni nuova notizia e aggiornamenti dal mondo
+                del lavoro!
               </p>
               <div className="flex gap-4">
                 <Input
@@ -139,7 +160,7 @@ const ContattiPage = () => {
                   placeholder="Inserisci la tua email"
                   className="bg-white"
                 />
-                <Button className="bg-gray-200 hover:bg-gray-300 text-gray-800">
+                <Button className="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold">
                   ISCRIVITI
                 </Button>
               </div>

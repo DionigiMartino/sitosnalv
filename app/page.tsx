@@ -55,7 +55,7 @@ const HomePage = () => {
             >
               <Button
                 size="lg"
-                className="text-lg px-8 bg-white text-blue-900 hover:bg-gray-100"
+                className="text-lg px-8 bg-white text-blue-900 font-bold hover:bg-gray-100"
               >
                 ISCRIVITI
               </Button>

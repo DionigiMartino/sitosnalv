@@ -52,7 +52,7 @@ const Header = () => {
             href="/iscriviti"
             className="flex items-center gap-2 text-sm hover:text-blue-200 transition-colors"
           >
-            <PenLine size={18} />
+            <PenLine size={24} />
             <span className="hidden sm:inline">Iscriviti</span>
           </Link>
           <div className="w-px h-4 bg-blue-700" /> {/* Separatore verticale */}
@@ -60,7 +60,7 @@ const Header = () => {
             href="/area-riservata"
             className="flex items-center gap-2 text-sm hover:text-blue-200 transition-colors"
           >
-            <UserCircle2 size={18} />
+            <UserCircle2 size={24} />
             <span className="hidden sm:inline">Area Riservata</span>
           </Link>
         </div>
@@ -80,14 +80,14 @@ const Header = () => {
           <nav className="hidden md:block">
             <ul className="flex items-center space-x-10">
               {menuItems.map((item) => (
-                <li key={item.label} className="relative group">
+                <li key={item.label} className="relative group ">
                   {item.dropdown ? (
                     <>
-                      <button className="text-gray-700 font-medium py-2 group-hover:text-red-600 transition-colors flex items-center gap-1">
+                      <button className="text-gray-700 font-bold py-2 group-hover:text-red-600 transition-colors flex items-center gap-1">
                         {item.label}
                         <ChevronDown />
                       </button>
-                      <div className="absolute left-0 top-full hidden group-hover:block bg-white border shadow-lg rounded-md min-w-[200px] z-50">
+                      <div className="absolute left-0 top-full hidden group-hover:block bg-white border shadow-lg rounded-md min-w-[250px] z-50">
                         <div className="py-2">
                           {item.items.map((subItem) => (
                             <Link
@@ -97,7 +97,7 @@ const Header = () => {
                                 e.preventDefault();
                                 handleNavigation(subItem.href);
                               }}
-                              className="block px-4 py-2 text-gray-700 hover:bg-gray-50 hover:text-red-600"
+                              className="block px-4 py-2 text-gray-700 hover:text-white hover:bg-red-600 hover:font-bold transition-all duration-100"
                             >
                               {subItem.label}
                             </Link>
@@ -109,7 +109,7 @@ const Header = () => {
                     <Link
                       // @ts-ignore
                       href={item.href}
-                      className="text-gray-700 font-medium py-2 hover:text-red-600 transition-colors"
+                      className="text-gray-700 font-bold py-2 hover:text-red-600 transition-colors"
                     >
                       {item.label}
                     </Link>

@@ -74,7 +74,7 @@ const RecentNews = () => {
                 >
                   <Card className="overflow-hidden bg-white shadow-md">
                     <CardContent className="p-0">
-                      <div className="relative h-40 sm:h-48 lg:h-56">
+                      <div className="relative h-40 sm:h-48 lg:h-56 ">
                         <Image
                           src={item.image}
                           alt="News"

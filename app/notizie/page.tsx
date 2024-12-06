@@ -133,17 +133,17 @@ const ComunicatiPage = () => {
 
     return (
       <div>
-        <h1 className="text-[#1a365d] text-4xl font-bold mb-8 md:text-5xl mt-6 md:mt-0">
+        <h1 className="text-[#1a365d] text-4xl font-bold mb-8">
           COMUNICATI STAMPA
         </h1>
-        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-8">
           {filteredComunicati.map((comunicato) => (
             <div
               key={comunicato.id}
               className="bg-white rounded-lg overflow-hidden shadow-sm"
             >
-              <div className="grid grid-cols-1 md:grid-cols-3">
-                <div className="relative h-64 md:h-auto">
+              <div className="grid grid-cols-3">
+                <div className="relative h-64">
                   <Image
                     src={comunicato.image}
                     alt={comunicato.title}
@@ -183,17 +183,15 @@ const ComunicatiPage = () => {
 
     return (
       <div>
-        <h1 className="text-[#1a365d] text-4xl font-bold mb-8 md:text-5xl mt-6 md:mt-0">
-          NOTIZIE
-        </h1>
-        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+        <h1 className="text-[#1a365d] text-4xl font-bold mb-8">NOTIZIE</h1>
+        <div className="grid gap-8">
           {filteredNotizie.map((notizia) => (
             <div
               key={notizia.id}
               className="bg-white rounded-lg overflow-hidden shadow-sm"
             >
-              <div className="grid grid-cols-1 md:grid-cols-3">
-                <div className="relative h-64 md:h-auto">
+              <div className="grid grid-cols-3">
+                <div className="relative h-64">
                   <Image
                     src={notizia.image}
                     alt={notizia.title}
@@ -250,15 +248,15 @@ const ComunicatiPage = () => {
                   key={item.id}
                   className={`py-4 ${
                     index === 0
-                      ? "border-t-2 border-red-500"
-                      : "border-t border-gray-300"
+                      ? "border-b-2 border-red-500"
+                      : "border-b-2 border-red-500"
                   }`}
                 >
                   <Button
                     variant="ghost"
-                    className={`w-full justify-start text-left ${
+                    className={`w-full hover:font-bold justify-start text-left ${
                       activeSection === item.id
-                        ? "text-red-500"
+                        ? "text-red-500 font-bold"
                         : "text-gray-700"
                     }`}
                     onClick={() => handleSectionChange(item.id)}
@@ -277,7 +275,7 @@ const ComunicatiPage = () => {
 
             {/* Filters */}
             <div>
-              <Button variant="ghost" className="w-full text-left mb-4">
+              <Button variant="ghost" className="w-full text-left mb-4 justify-start">
                 + Filtri
               </Button>
               {activeFilter && (
@@ -289,12 +287,12 @@ const ComunicatiPage = () => {
                   Reset filtri
                 </Button>
               )}
-              <div className="grid gap-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+              <div className="flex flex-col gap-3">
                 {filters.map((filter) => (
                   <Button
                     key={filter.id}
                     variant="ghost"
-                    className={`bg-gray-100 hover:bg-gray-200 rounded-lg px-4 py-3 text-left ${
+                    className={`bg-gray-100 hover:bg-gray-200 rounded-lg px-4 text-md py-3 text-left justify-start ${
                       activeFilter === filter.id ? "bg-gray-200" : ""
                     }`}
                     onClick={() => handleFilterChange(filter.id)}

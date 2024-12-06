@@ -190,12 +190,12 @@ const SegreterieSindacali = () => {
         <div className="md:col-span-2">
           <p className="text-gray-700 mb-6">
             Le Segreterie Sindacali Snalv Confsal rappresentano la voce
-            dell&apos;Organizzazione nel territorio di riferimento. In particolare,
-            le Segreterie provinciali e locali si confrontano con singoli
-            rappresentanti sindacali nelle procedure sindacali collettive, le
-            Segreterie regionali svolgono, invece, funzioni di raccordo e
-            garantiscono l&apos;unitarietà e il coordinamento dell&apos;attività sindacale
-            sul territorio.
+            dell&apos;Organizzazione nel territorio di riferimento. In
+            particolare, le Segreterie provinciali e locali si confrontano con
+            singoli rappresentanti sindacali nelle procedure sindacali
+            collettive, le Segreterie regionali svolgono, invece, funzioni di
+            raccordo e garantiscono l&apos;unitarietà e il coordinamento
+            dell&apos;attività sindacale sul territorio.
           </p>
           <p className="text-gray-700">
             Tutte le Segreterie garantiscono agli iscritti un supporto
@@ -485,24 +485,24 @@ const TerritorioPage = () => {
 
             <div className="space-y-6">
               <div>
-                <h2 className="text-xl font-bold mb-4">
+                <h2 className="text-xl font-bold mb-4 text-blue-600">
                   Lo Snalv Confsal è presente in:
                 </h2>
-                <ul className="list-disc pl-5 space-y-2">
-                  <li>20 Regioni</li>
-                  <li>90 Province</li>
-                  <li>100 Comuni Italiani</li>
+                <ul className="list-disc pl-5 space-y-2 ">
+                  <li className="text-blue-600">20 Regioni</li>
+                  <li className="text-blue-600">90 Province</li>
+                  <li className="text-blue-600">100 Comuni Italiani</li>
                 </ul>
               </div>
 
               <div>
-                <h2 className="text-xl font-bold mb-4">
+                <h2 className="text-xl font-bold mb-4 text-blue-600">
                   Le strutture si dividono in:
                 </h2>
                 <ul className="list-disc pl-5 space-y-2">
-                  <li>20 Segreterie regionali</li>
-                  <li>90 Segreterie provinciali</li>
-                  <li>20 Centri Snalv</li>
+                  <li className="text-blue-600">20 Segreterie regionali</li>
+                  <li className="text-blue-600">90 Segreterie provinciali</li>
+                  <li className="text-blue-600">20 Centri Snalv</li>
                 </ul>
               </div>
 
@@ -651,12 +651,12 @@ const TerritorioPage = () => {
               COLLABORA CON NOI
             </h1>
 
-            <div className="text-center max-w-3xl mx-auto space-y-6">
-              <h2 className="text-xl font-bold text-gray-800 md:text-2xl">
+            <div className="text-left max-w-3xl mx-auto space-y-6">
+              <h2 className="text-xl font-bold text-blue-600 md:text-2xl">
                 Impegnati nel Sindacato e fornisci un supporto di qualità ai
                 lavoratori del tuo territorio!
               </h2>
-              <p className="text-gray-600">
+              <p className="text-blue-600">
                 Il mondo del lavoro è in continua evoluzione e la nostra
                 Organizzazione mira a sviluppare un Sindacato diverso,
                 competente, adeguato alle esigenze attuali.
@@ -665,13 +665,13 @@ const TerritorioPage = () => {
 
             <div className="bg-gray-50 p-8 rounded-lg shadow-sm">
               <div className="max-w-3xl mx-auto space-y-6">
-                <p className="text-gray-700">
+                <p className="text-blue-600">
                   La Segreteria Nazionale è a tua disposizione per aprire una
                   sede sindacale sul territorio: ti garantiamo un&apos;adeguata
                   formazione, il massimo supporto operativo e l&apos;assistenza
                   necessaria per fare i primi passi.
                 </p>
-                <p className="text-gray-700">
+                <p className="text-blue-600">
                   Inoltre, grazie alle collaborazioni di cui si avvale lo SNALV
                   CONFSAL, potrai erogare ai lavoratori, ai pensionati, ai
                   giovani ed ai disoccupati tutti i servizi di utilità sociale
@@ -689,7 +689,7 @@ const TerritorioPage = () => {
 
             <div className="max-w-3xl mx-auto">
               <div className="bg-white p-10 rounded-xl shadow-lg border border-gray-100">
-                <h3 className="text-2xl font-bold text-[#1a365d] mb-8 md:text-3xl">
+                <h3 className="text-2xl font-bold text-white mb-8 md:text-3xl bg-blue-600 p-2 rounded-md">
                   Compila il form per essere ricontattato
                 </h3>
                 <form className="space-y-8">
@@ -843,15 +843,15 @@ const TerritorioPage = () => {
                   key={item.id}
                   className={`py-2 ${
                     index === 0
-                      ? "border-t-2 border-red-500"
-                      : "border-t border-gray-300"
+                      ? "border-b-2 border-red-500"
+                      : "border-b-2 border-red-500"
                   }`}
                 >
                   <Button
                     variant="ghost"
-                    className={`w-full justify-start text-left ${
+                    className={`w-full hover:font-bold justify-start text-left ${
                       activeSection === item.id
-                        ? "text-red-500"
+                        ? "text-red-500 font-bold"
                         : "text-gray-700"
                     }`}
                     onClick={() => {

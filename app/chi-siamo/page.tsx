@@ -21,44 +21,44 @@ const ChiSiamoPage = () => {
   const [activeSection, setActiveSection] = useState("chi-siamo");
   const [showConteggiForm, setShowConteggiForm] = useState(false);
 
-   useEffect(() => {
-     const updateSection = () => {
-       const hash = window.location.hash.slice(1);
-       if (hash) {
-         setActiveSection(hash);
-       }
-     };
+  useEffect(() => {
+    const updateSection = () => {
+      const hash = window.location.hash.slice(1);
+      if (hash) {
+        setActiveSection(hash);
+      }
+    };
 
-     // Gestisci l'hash iniziale
-     updateSection();
+    // Gestisci l'hash iniziale
+    updateSection();
 
-     // Modifica il listener per controllare se siamo nella stessa pagina
-     const handleClick = (e) => {
-       const target = e.target.closest("a");
-       if (target && target.hash) {
-         // Controlla se il link punta alla stessa pagina
-         const currentPath = window.location.pathname;
-         const targetPath = target.pathname;
+    // Modifica il listener per controllare se siamo nella stessa pagina
+    const handleClick = (e) => {
+      const target = e.target.closest("a");
+      if (target && target.hash) {
+        // Controlla se il link punta alla stessa pagina
+        const currentPath = window.location.pathname;
+        const targetPath = target.pathname;
 
-         // Se siamo nella stessa pagina, gestisci solo il cambio di hash
-         if (currentPath === targetPath) {
-           e.preventDefault();
-           const hash = target.hash.slice(1);
-           setActiveSection(hash);
-           window.history.pushState(null, "", `#${hash}`);
-         }
-         // Altrimenti, lascia che la navigazione proceda normalmente
-       }
-     };
+        // Se siamo nella stessa pagina, gestisci solo il cambio di hash
+        if (currentPath === targetPath) {
+          e.preventDefault();
+          const hash = target.hash.slice(1);
+          setActiveSection(hash);
+          window.history.pushState(null, "", `#${hash}`);
+        }
+        // Altrimenti, lascia che la navigazione proceda normalmente
+      }
+    };
 
-     document.addEventListener("click", handleClick);
-     window.addEventListener("hashchange", updateSection);
+    document.addEventListener("click", handleClick);
+    window.addEventListener("hashchange", updateSection);
 
-     return () => {
-       document.removeEventListener("click", handleClick);
-       window.removeEventListener("hashchange", updateSection);
-     };
-   }, []);
+    return () => {
+      document.removeEventListener("click", handleClick);
+      window.removeEventListener("hashchange", updateSection);
+    };
+  }, []);
 
   const menuItems = [
     {
@@ -516,26 +516,28 @@ const ChiSiamoPage = () => {
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-8">
         <div className="space-y-4">
           <div>
-            <label className="block text-sm font-medium mb-1">
+            <label className="text-blue-600 block text-sm font-bold mb-1">
               Ragione sociale/Datore di lavoro
             </label>
             <Input className="w-full bg-white" />
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-1">Cellulare</label>
+            <label className="text-blue-600 block text-sm font-bold mb-1">
+              Cellulare
+            </label>
             <Input className="w-full bg-white" />
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-1">
+            <label className="text-blue-600 block text-sm font-bold mb-1">
               Data inizio rapporto lavoro
             </label>
             <Input type="date" className="w-full bg-white" />
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-1">
+            <label className="text-blue-600 block text-sm font-bold mb-1">
               CCNL applicato
               <span className="text-sm text-gray-500 block">
                 (specificare settore, qualifica e livello)
@@ -545,7 +547,7 @@ const ChiSiamoPage = () => {
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-1">
+            <label className="text-blue-600 block text-sm font-bold mb-1">
               Tipologia di contratto
               <span className="text-sm text-gray-500 block">
                 (specificare se part-time o full time)
@@ -555,7 +557,7 @@ const ChiSiamoPage = () => {
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-1">
+            <label className="text-blue-600 block text-sm font-bold mb-1">
               Eventuali straordinari
             </label>
             <Input className="w-full bg-white" />
@@ -564,38 +566,42 @@ const ChiSiamoPage = () => {
 
         <div className="space-y-4">
           <div>
-            <label className="block text-sm font-medium mb-1">Lavoratore</label>
+            <label className="text-blue-600 block text-sm font-bold mb-1">
+              Lavoratore
+            </label>
             <Input className="w-full bg-white" />
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-1">Email</label>
+            <label className="text-blue-600 block text-sm font-bold mb-1">
+              Email
+            </label>
             <Input type="email" className="w-full bg-white" />
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-1">
+            <label className="text-blue-600 block text-sm font-bold mb-1">
               Data risoluzione rapporto lavoro
             </label>
             <Input type="date" className="w-full bg-white" />
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-1">
+            <label className="text-blue-600 block text-sm font-bold mb-1">
               Retribuzione corrisposta
             </label>
             <Input className="w-full bg-white" />
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-1">
+            <label className="text-blue-600 block text-sm font-bold mb-1">
               Orario di lavoro
             </label>
             <Input className="w-full bg-white" />
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-1">
+            <label className="text-blue-600 block text-sm font-bold mb-1">
               N° ore settimanali
             </label>
             <Input className="w-full bg-white" />
@@ -1051,7 +1057,9 @@ const ChiSiamoPage = () => {
 
               <div className="space-y-4">
                 <div className="bg-gray-100 p-4 rounded">
-                  <h3 className="font-bold mb-2">IL CCNL ANASTE 2022</h3>
+                  <h3 className="font-bold mb-2 border-l-2 border-red-500 pl-3">
+                    IL CCNL ANASTE 2022
+                  </h3>
                   <div className="space-y-2">
                     <Button variant="link">Il Testo integrale</Button>
                     <Button variant="link">
@@ -1062,7 +1070,7 @@ const ChiSiamoPage = () => {
                 </div>
 
                 <div className="bg-blue-900 text-white p-4 rounded">
-                  <h3 className="font-bold mb-2">
+                  <h3 className="font-bold mb-2 border-l-2 border-red-500 pl-3">
                     EVENTO 20 FEBBRAIO 2024 - ROMA
                   </h3>
                   <p>
@@ -1072,7 +1080,7 @@ const ChiSiamoPage = () => {
                 </div>
 
                 <div className="bg-blue-900 text-white p-4 rounded">
-                  <h3 className="font-bold mb-2">
+                  <h3 className="font-bold mb-2 border-l-2 border-red-500 pl-3">
                     ASSICURAZIONE GRATUITA PER GLI ISCRITTI
                   </h3>
                   <p>
@@ -1289,15 +1297,15 @@ const ChiSiamoPage = () => {
                   key={item.id}
                   className={`py-4 ${
                     index === 0
-                      ? "border-t-2 border-red-500"
-                      : "border-t border-gray-300"
+                      ? "border-b-2 border-red-500"
+                      : "border-b-2 border-red-500"
                   }`}
                 >
                   <Button
                     variant="ghost"
-                    className={`w-full justify-start text-left ${
+                    className={`w-full justify-start text-left hover:font-bold ${
                       activeSection === item.id
-                        ? "text-red-500"
+                        ? "text-red-500 font-bold"
                         : "text-gray-700"
                     }`}
                     onClick={() => setActiveSection(item.id)}
@@ -1322,7 +1330,7 @@ const ChiSiamoPage = () => {
                     <Button
                       key={item.id}
                       variant="ghost"
-                      className={`w-full justify-between bg-gray-100 hover:bg-gray-200 py-6 text-left text-wrap ${
+                      className={`w-full justify-between bg-gray-100 hover:bg-gray-200 py-6 text-left text-wrap hover:font-bold ${
                         activeSection === item.id ? "bg-gray-200" : ""
                       }`}
                       onClick={() => setActiveSection(item.id)}
@@ -1333,15 +1341,15 @@ const ChiSiamoPage = () => {
                   <Link href="/territorio#cerca-sede" passHref className="">
                     <Button
                       variant="ghost"
-                      className={`w-full my-2 justify-between bg-gray-100 hover:bg-gray-200 py-6 text-left text-wrap`}
-                    > 
+                      className={`w-full my-2 justify-between bg-gray-100 hover:bg-gray-200 py-6 text-left text-wrap hover:font-bold`}
+                    >
                       Le Segreterie Nazionali
                     </Button>
-                  </Link> 
+                  </Link>
                   <Link href="/territorio#cerca-sede" passHref>
                     <Button
                       variant="ghost"
-                      className={`w-full justify-between bg-gray-100 hover:bg-gray-200 py-6 text-left text-wrap`}
+                      className={`w-full justify-between bg-gray-100 hover:bg-gray-200 py-6 text-left text-wrap hover:font-bold`}
                     >
                       I Centri Snalv
                     </Button>
