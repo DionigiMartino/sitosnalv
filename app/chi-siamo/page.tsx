@@ -1009,9 +1009,9 @@ const ChiSiamoPage = () => {
                     </h2>
                     <p className="text-gray-600 mb-4">
                       Lo Snalv è presente con i propri Rappresentanti nei vari
-                      comparti dell'intera Amministrazione anche a livello
-                      regionale. Scopri di più sull'organizzazione del nostro
-                      comparto!
+                      comparti dell&apos;intera Amministrazione anche a livello
+                      regionale. Scopri di più sull&apos;organizzazione del
+                      nostro comparto!
                     </p>
                     <div className="flex items-center">
                       <Button
@@ -1076,7 +1076,43 @@ const ChiSiamoPage = () => {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               <div className="md:col-span-2">
                 <p className="text-gray-700 mb-6">
-                  Lorem ipsum dolor sit amet...
+                  Lo Snalv Confsal è la federazione rappresentativa della
+                  CONFSAL per il comparto
+                  socio-sanitario-assistenziale-educativo. La politica, miope e
+                  frammentata degli ultimi anni, sta producendo il collasso del
+                  sistema, che tuttavia ancora oggi è sostenuto dall’incredibile
+                  abnegazione di operatori socio sanitari, infermieri, educatori
+                  professionali, terapisti e di tutte le professionalità
+                  operanti all’interno delle strutture accreditate.
+                </p>
+
+                <p className="text-gray-700 mb-6">
+                  Ci sono problemi di fondo che mai nessuno ha voluto affrontare
+                  e che impediscono, anche alla contrattazione collettiva, di
+                  valorizzare adeguatamente le professionalità del comparto. Lo
+                  Snalv Confsal, anche in considerazione dell’iter attuativo
+                  della riforma sull’assistenza agli anziani, ha avviato una
+                  seria e concreta discussione con istituzioni e datori di
+                  lavoro per consentire il miglioramento delle condizioni
+                  lavorative dei dipendenti.
+                </p>
+
+                <p className="text-gray-700 mb-6">
+                  Nello specifico, la nostra mission si compone di tre punti
+                  qualificanti: • Equiparazione degli stipendi e delle
+                  condizioni di lavoro dei dipendenti delle strutture
+                  accreditate a quelle dei colleghi del pubblico impiego; •
+                  Garanzia di un numero minimo di personale adeguato al numero
+                  degli utenti assistiti; • Programmazione efficace del
+                  fabbisogno di personale, in relazione alla crescita
+                  esponenziale della popolazione anziana in Italia. Su questi
+                  presupposti, i lavoratori iscritti al Sindacato hanno
+                  approvato una piattaforma programmatica che prova a sviscerare
+                  le comuni problematiche del personale, indagando sulle cause
+                  che determinano inefficienze organizzative e discriminazioni
+                  contrattuali. Il documento tenta di fornire, al tempo stesso,
+                  indirizzi di politiche pubbliche da attuare nel breve e medio
+                  termine.
                 </p>
 
                 <div className="space-y-4 mt-8">
@@ -1145,7 +1181,57 @@ const ChiSiamoPage = () => {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               <div className="md:col-span-2">
                 <p className="text-gray-700 mb-6">
-                  Lorem ipsum dolor sit amet...
+                  "La qualità della vita all’interno di una società si misura,
+                  in buona parte, dalla capacità di includere coloro che sono
+                  più deboli e bisognosi, nel rispetto effettivo della loro
+                  dignità di uomini e di donne. E la maturità si raggiunge
+                  quando tale inclusione non è percepita come qualcosa di
+                  straordinario, ma di normale. Anche la persona con disabilità
+                  e fragilità fisiche, psichiche o morali, deve poter
+                  partecipare alla vita della società ed essere aiutata ad
+                  attuare le sue potenzialità nelle varie dimensioni. Soltanto
+                  se vengono riconosciuti i diritti dei più deboli, una società
+                  può dire di essere fondata sul diritto e sulla giustizia.”
+                </p>
+
+                <p className="text-gray-700 mb-6">
+                  (Papa Francesco, febbraio 2017)
+                </p>
+
+                <p className="text-gray-700 mb-6">
+                  Sin dall’inizio della pandemia il nostro Sindacato si è
+                  battuto su ogni fronte per tutelare pienamente la categoria
+                  dei lavoratori fragili. Il Covid- 19 ha soltanto esasperato
+                  alcune problematiche che attanagliano da sempre la
+                  quotidianità dei lavoratori. Da qui nasce il nuovo comparto
+                  sindacale dedicato esclusivamente ai lavoratori affetti da
+                  patologie gravi, croniche o invalidanti. Il progetto sindacale
+                  mira a garantire una tutela piena ed effettiva dei lavoratori
+                  e dei loro familiari, con competenze specifiche e settoriali.
+                  Il comparto copre tre aree di intervento: sindacale, legale e
+                  previdenziale. L'obiettivo è garantire sempre una risposta
+                  appropriata alle esigenze derivanti dal mondo della fragilità
+                  e delle disabilità in genere.
+                </p>
+
+                <p className="text-gray-700 mb-6">
+                  Il comparto, inoltre, ha predisposto una proposta di legge che
+                  tutela i lavoratori in tutte le fasi del rapporto lavorativo:
+                  <br />
+                  <br />
+                  - inserimento occupazionale,
+                  <br />
+                  - gestione delle assenze e conciliazione con le esigenze di
+                  cura
+                  <br />
+                  - re-inserimento lavorativo dopo la fase acuta della patologia
+                  <br />- modalità anticipata di pensionamento.
+                </p>
+
+                <p className="text-gray-700 mb-6">
+                  Sproneremo costantemente la politica affinchè tale proposta
+                  diventi presto una Legge dello Stato. Tutelare i lavoratori
+                  fragili è una questione di civiltà!
                 </p>
 
                 <div className="space-y-4 mt-8">
@@ -1287,9 +1373,30 @@ const ChiSiamoPage = () => {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               <div className="md:col-span-2">
                 <p className="text-gray-700 mb-6">
-                  Il Segretario Generale SNALV Confsal ricopre il ruolo di
-                  Coordinatore Nazionale del Dipartimento Confsal dedicato al
-                  Sud Italia. Consulta l&apos;attività svolta finora!
+                  La CONFSAL - prima Organizzazione italiana dei Sindacati
+                  Autonomi per numero di lavoratori iscritti - ha costituito un
+                  proprio Dipartimento dedicato al Sud del nostro Paese.
+                  L'obiettivo del Dipartimento è analizzare ed approfondire i
+                  divari di cittadinanza che caratterizzano tante aree del
+                  Mezzogiorno, al fine di elaborare proposte concrete da
+                  presentare alle istituzioni competenti. A tal proposito, il
+                  Dipartimento ha promosso l'iniziativa "Missione Mediterraneo":
+                  trattasi di un ciclo di seminari da svolgersi nelle diverse
+                  Regioni del Sud, che mira a focalizzare la discussione sulle
+                  potenzialità di sviluppo dei territori in relazione alla
+                  congiuntura economica del momento.
+                </p>
+
+                <p className="text-gray-700 mb-6">
+                  Siamo fermamente convinti che il confronto e il raccordo tra
+                  Rappresentanti europei, Amministrazioni centrali e locali,
+                  Parti sociali potranno favortre una programmazione analitica
+                  ed efficace delle risorse comunitarie ancorata ai reali
+                  fabbisogni dei territori. In quest'ottica, il Dipartimento
+                  intende mettere in rete rappresentanti delle Istituzioni,
+                  imprese, lavoratori, giovani e disoccupati, Università e
+                  ricerca, parti sociali impegnate a vario titolo nella
+                  promozione e nello svlluppo del territorio.
                 </p>
 
                 <div className="space-y-4 mt-8">
