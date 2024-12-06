@@ -669,13 +669,10 @@ const ChiSiamoPage = () => {
                   pubblico.
                 </p>
               </div>
-              <video className="w-full md:w-2/4 h-full rounded-lg" controls poster="/img/sede.jpg">
-                <source
-                  src="/video/chisiamo.mp4"
-                  type="video/mp4"
-                  className=""
-                />
-              </video>
+              <iframe
+                className="w-full md:w-2/4 rounded-md"
+                src="https://www.youtube.com/embed/QPBVvkYdR3c"
+              ></iframe>
             </div>
 
             <div
