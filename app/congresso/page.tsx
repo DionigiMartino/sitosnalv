@@ -1,6 +1,7 @@
 import React from "react";
 import Header from "@/src/components/Header";
 import Footer from "@/src/components/Footer";
+import Link from "next/link";
 
 export default function Congresso() {
   return (
@@ -19,6 +20,12 @@ export default function Congresso() {
           className="w-full h-[65vh] rounded-md"
           src="https://www.youtube.com/embed/BzCl6txNiKo"
         ></iframe>
+
+        <Link className="bg-blue-600 text-white font-bold rounded-md py-3 px-6 hover:opacity-50 transition-all duration-150" href="/docs/relazione.pdf">
+          Relazione del Segretario Nazionale
+        </Link>
+
+        <Link className="bg-blue-600 text-white font-bold rounded-md py-3 px-6 hover:opacity-50 transition-all duration-150" href="/docs/mozione.pdf">Mozione Finale</Link>
       </main>
 
       <Footer />
