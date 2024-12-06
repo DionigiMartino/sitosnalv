@@ -21,11 +21,11 @@ export default function Congresso() {
           src="https://www.youtube.com/embed/BzCl6txNiKo"
         ></iframe>
 
-        <Link className="bg-blue-600 text-white font-bold rounded-md py-3 px-6 hover:opacity-50 transition-all duration-150" href="/docs/relazione.pdf">
+        <Link className="text-center bg-blue-600 text-white font-bold rounded-md py-3 px-6 hover:opacity-50 transition-all duration-150" href="/docs/relazione.pdf">
           Relazione del Segretario Nazionale
         </Link>
 
-        <Link className="bg-blue-600 text-white font-bold rounded-md py-3 px-6 hover:opacity-50 transition-all duration-150" href="/docs/mozione.pdf">Mozione Finale</Link>
+        <Link className="text-center bg-blue-600 text-white font-bold rounded-md py-3 px-6 hover:opacity-50 transition-all duration-150" href="/docs/mozione.pdf">Mozione Finale</Link>
       </main>
 
       <Footer />

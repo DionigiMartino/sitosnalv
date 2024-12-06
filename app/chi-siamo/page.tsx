@@ -686,7 +686,7 @@ const ChiSiamoPage = () => {
                 alt="Congresso"
               />
 
-              <h1 className="text-3xl text-blue-600 md:w-1/3">
+              <h1 className="text-3xl text-blue-600 md:w-1/3 text-center md:text-left">
                 Il Congresso Nazionale del 2018
               </h1>
             </div>
