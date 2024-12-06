@@ -110,31 +110,31 @@ const ServiceSlider = () => {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -20 }}
                   transition={{ duration: 0.3, delay: idx * 0.1 }}
+                  className="flex justify-center"
                 >
-                  <Link href={service.href} className="relative">
-                    <div
-                      className="absolute left-1/2 -translate-x-1/2 -top-12 md:-top-16 w-24 h-24 md:w-32 md:h-32 rounded-full bg-red-100 
-      flex items-center justify-center border-4 border-white z-20 hover:bg-red-200 transition-colors"
-                    >
-                      <Icon className="w-12 h-12 md:w-16 md:h-16 text-red-500" />
-                    </div>
-                    <Card className="pt-16 md:pt-20 pb-8 h-full border-2 border-dashed border-red-500 hover:border-solid transition-all">
-                      <CardContent className="text-center flex flex-col h-full justify-between">
-                        <h3 className="text-lg md:text-xl font-bold text-gray-900 mb-4">
-                          {service.title}
-                        </h3>
-                        <p className="text-gray-600 mb-6">
-                          {service.description}
-                        </p>
-                        <Button
-                          variant="outline"
-                          className="w-full text-red-500 border-red-500 hover:bg-red-50"
-                        >
-                          {service.buttonText}
-                        </Button>
-                      </CardContent>
-                    </Card>
-                  </Link>
+                  <div className="relative w-full max-w-sm">
+                    <Link href={service.href} className="block">
+                      <div className="absolute left-1/2 -translate-x-1/2 -top-12 md:-top-16 w-24 h-24 md:w-32 md:h-32 rounded-full bg-red-100 flex items-center justify-center border-4 border-white z-20 hover:bg-red-200 transition-colors">
+                        <Icon className="w-12 h-12 md:w-16 md:h-16 text-red-500" />
+                      </div>
+                      <Card className="pt-16 md:pt-20 pb-8 h-full border border-dashed border-red-500 hover:border-solid transition-all">
+                        <CardContent className="text-center flex flex-col h-full justify-between px-4">
+                          <h3 className="text-lg md:text-xl font-bold text-gray-900 mb-2">
+                            {service.title}
+                          </h3>
+                          <p className="text-sm text-gray-600 mb-4">
+                            {service.description}
+                          </p>
+                          <Button
+                            variant="outline"
+                            className="w-full text-red-500 border border-red-500 hover:bg-red-50 text-sm"
+                          >
+                            {service.buttonText}
+                          </Button>
+                        </CardContent>
+                      </Card>
+                    </Link>
+                  </div>
                 </motion.div>
               );
             })}
