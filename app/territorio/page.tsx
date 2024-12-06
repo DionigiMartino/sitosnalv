@@ -207,7 +207,9 @@ const SegreterieSindacali = () => {
           <div>
             <button
               onClick={() => setIsRegioneOpen(!isRegioneOpen)}
-              className="w-full flex justify-between items-center p-3 bg-white border rounded-lg text-[#1a365d] hover:bg-gray-50"
+              className={`w-full flex justify-between items-center p-3 border rounded-lg text-[#1a365d] hover:bg-blue-600 hover:text-white ${
+                isRegioneOpen ? "bg-blue-600 text-white" : "bg-white"
+              }`}
             >
               <span>+ Scegli la regione</span>
               <span>{selectedRegione}</span>
@@ -235,7 +237,9 @@ const SegreterieSindacali = () => {
             <div>
               <button
                 onClick={() => setIsProvinciaOpen(!isProvinciaOpen)}
-                className="w-full flex justify-between items-center p-3 bg-white border rounded-lg text-[#1a365d] hover:bg-gray-50"
+                className={`w-full flex justify-between items-center p-3 border rounded-lg text-[#1a365d] hover:bg-blue-600 hover:text-white ${
+                  isProvinciaOpen ? "bg-blue-600 text-white" : "bg-white"
+                }`}
               >
                 <span>+ Scegli la provincia</span>
                 <span>{selectedProvincia}</span>
@@ -321,7 +325,9 @@ const CentriSnalv = () => {
           <div>
             <button
               onClick={() => setIsRegioneOpen(!isRegioneOpen)}
-              className="w-full flex justify-between items-center p-3 bg-white border rounded-lg text-[#1a365d] hover:bg-gray-50"
+              className={`w-full flex justify-between items-center p-3 border rounded-lg text-[#1a365d] hover:bg-blue-600 hover:text-white ${
+                isRegioneOpen ? "bg-blue-600 text-white" : "bg-white"
+              }`}
             >
               <span>+ Scegli la regione</span>
               <span>{selectedRegione}</span>
@@ -349,7 +355,9 @@ const CentriSnalv = () => {
             <div>
               <button
                 onClick={() => setIsProvinciaOpen(!isProvinciaOpen)}
-                className="w-full flex justify-between items-center p-3 bg-white border rounded-lg text-[#1a365d] hover:bg-gray-50"
+                className={`w-full flex justify-between items-center p-3 border rounded-lg text-[#1a365d] hover:bg-blue-600 hover:text-white ${
+                  isProvinciaOpen ? "bg-blue-600 text-white" : "bg-white"
+                }`}
               >
                 <span>+ Scegli la provincia</span>
                 <span>{selectedProvincia}</span>
