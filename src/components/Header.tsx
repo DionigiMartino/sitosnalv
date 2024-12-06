@@ -5,16 +5,28 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { ChevronDown, Menu, X } from "lucide-react";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const router = useRouter();
+
+  const handleNavigation = (href) => {
+    const [path, hash] = href.split("#");
+    router.push(href);
+
+    if (hash) {
+      const event = new CustomEvent("sectionChange", { detail: hash });
+      window.dispatchEvent(event);
+    }
+  };
 
   const menuItems = [
     {
       label: "IL SINDACATO",
       dropdown: true,
       items: [
-        { label: "Chi siamo", href: "/chi-siamo" },
+        { label: "Chi siamo", href: "/chi-siamo#chi-siamo" },
         { label: "La struttura nazionale", href: "/chi-siamo#struttura" },
         { label: "Tutele e servizi", href: "/chi-siamo#tutele" },
         { label: "Comparti specifici", href: "/chi-siamo#comparti" },
@@ -61,6 +73,10 @@ const Header = () => {
                           <Link
                             key={subItem.label}
                             href={subItem.href}
+                            onClick={(e) => {
+                              e.preventDefault();
+                              handleNavigation(subItem.href);
+                            }}
                             className="block px-4 py-2 text-gray-700 hover:bg-gray-50 hover:text-red-600"
                           >
                             {subItem.label}

@@ -21,12 +21,37 @@ const ChiSiamoPage = () => {
   const [activeSection, setActiveSection] = useState("chi-siamo");
   const [showConteggiForm, setShowConteggiForm] = useState(false);
 
-  useEffect(() => {
-    const hash = window.location.hash.slice(1);
-    if (hash) {
-      setActiveSection(hash);
-    }
-  }, []);
+   useEffect(() => {
+     // Crea un router custom per intercettare i cambi di hash
+     const updateSection = () => {
+       const hash = window.location.hash.slice(1);
+       if (hash) {
+         setActiveSection(hash);
+       }
+     };
+
+     // Gestisci l'hash iniziale
+     updateSection();
+
+     // Aggiungi un listener per i click sui link con hash
+     const handleClick = (e) => {
+       const target = e.target.closest("a");
+       if (target && target.hash) {
+         e.preventDefault();
+         const hash = target.hash.slice(1);
+         setActiveSection(hash);
+         window.history.pushState(null, "", `#${hash}`);
+       }
+     };
+
+     document.addEventListener("click", handleClick);
+     window.addEventListener("hashchange", updateSection);
+
+     return () => {
+       document.removeEventListener("click", handleClick);
+       window.removeEventListener("hashchange", updateSection);
+     };
+   }, []);
 
   const menuItems = [
     {
