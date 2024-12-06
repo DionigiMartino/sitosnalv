@@ -21,6 +21,14 @@ const NewsComponent = ({ category }: any) => {
         description:
           "Lorem ipsum dolor sit amet, adipisicing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna",
       },
+      {
+        id: 3,
+        date: "10 NOVEMBRE",
+        image: "/img/sede.jpg",
+        title: "Formazione professionale: nuovi corsi per operatori sanitari",
+        description:
+          "Lorem ipsum dolor sit amet, adipisicing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna",
+      },
     ],
     fragili: [
       {
@@ -111,7 +119,7 @@ const NewsComponent = ({ category }: any) => {
                 fill
                 className="object-cover"
               />
-              <div className="absolute top-4 left-4 bg-white px-3 py-1 text-sm font-medium">
+              <div className="absolute bottom-0 left-4 bg-blue-600 text-white px-3 py-2 text-sm font-bold">
                 {news.date}
               </div>
             </div>
@@ -121,9 +129,9 @@ const NewsComponent = ({ category }: any) => {
               </p>
               <Button
                 variant="secondary"
-                className="w-full bg-gray-200 hover:bg-gray-300 text-gray-700"
+                className="w-full bg-gray-200 hover:bg-gray-300 text-gray-700 uppercase"
               >
-                LEARN MORE
+                leggi di più
               </Button>
             </div>
           </div>

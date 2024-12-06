@@ -822,9 +822,17 @@ const ChiSiamoPage = () => {
                     />
                   </div>
                   <div>
-                    <h3 className="text-[#1a365d] font-semibold mb-2">
-                      {office.title}
-                    </h3>
+                    <div className="flex items-center gap-1">
+                      <Image
+                        src="/icon/struttura.jpg"
+                        alt=""
+                        width={15}
+                        height={15}
+                      />
+                      <h3 className="text-[#1a365d] font-semibold">
+                        {office.title}
+                      </h3>
+                    </div>
                     {office.email && (
                       <p className="text-gray-600">{office.email}</p>
                     )}
@@ -1137,7 +1145,7 @@ const ChiSiamoPage = () => {
                 </div>
 
                 <div className="bg-blue-900 text-white p-4 rounded">
-                  <h3 className="font-bold mb-2">
+                  <h3 className="font-bold mb-2 border-l-2 border-red-500 pl-3">
                     EVENTO 20 FEBBRAIO 2024 - ROMA
                   </h3>
                   <p>
@@ -1147,7 +1155,7 @@ const ChiSiamoPage = () => {
                 </div>
 
                 <div className="bg-blue-900 text-white p-4 rounded">
-                  <h3 className="font-bold mb-2">
+                  <h3 className="font-bold mb-2 border-l-2 border-red-500 pl-3">
                     ASSICURAZIONE GRATUITA PER GLI ISCRITTI
                   </h3>
                   <p>
