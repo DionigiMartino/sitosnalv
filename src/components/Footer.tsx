@@ -70,32 +70,53 @@ const Footer = () => {
             </div>
             <div className="space-y-2">
               <div className="flex items-center gap-2">
-                <Phone size={20} />
+                <div className="border rounded-full p-1.5">
+                  <Phone size={20} />
+                </div>
                 <p>06 70492451</p>
               </div>
               <div className="flex items-center gap-2">
-                <FaWhatsapp size={20} />
+                <div className="border rounded-full p-1.5">
+                  <FaWhatsapp size={20} />
+                </div>
                 <p>345 0511636</p>
               </div>
               <div className="flex items-center gap-2">
-                <Mail size={20} />
+                <div className="border rounded-full p-1.5">
+                  <Mail size={20} />
+                </div>
                 <p>snalv@pec.it / info@snalv.it</p>
               </div>
             </div>
             <div className="flex space-x-4 mt-4">
-              <Link href="#" className="hover:text-gray-300">
+              <Link
+                href="#"
+                className="border rounded-full p-1.5 hover:text-gray-300 hover:border-gray-300"
+              >
                 <Facebook size={24} />
               </Link>
-              <Link href="#" className="hover:text-gray-300">
+              <Link
+                href="#"
+                className="border rounded-full p-1.5 hover:text-gray-300 hover:border-gray-300"
+              >
                 <Instagram size={24} />
               </Link>
-              <Link href="#" className="hover:text-gray-300">
+              <Link
+                href="#"
+                className="border rounded-full p-1.5 hover:text-gray-300 hover:border-gray-300"
+              >
                 <FaXTwitter size={24} />
               </Link>
-              <Link href="#" className="hover:text-gray-300">
+              <Link
+                href="#"
+                className="border rounded-full p-1.5 hover:text-gray-300 hover:border-gray-300"
+              >
                 <Linkedin size={24} />
               </Link>
-              <Link href="#" className="hover:text-gray-300">
+              <Link
+                href="#"
+                className="border rounded-full p-1.5 hover:text-gray-300 hover:border-gray-300"
+              >
                 <Youtube size={24} />
               </Link>
             </div>

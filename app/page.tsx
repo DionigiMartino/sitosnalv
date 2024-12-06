@@ -19,7 +19,7 @@ const HomePage = () => {
 
       {/* Hero Section */}
       <div className="relative min-h-[80vh] flex items-center">
-        <div className="absolute inset-0 z-0">
+        <div className="absolute inset-0 z-0 border-b-[8px] border-red-200">
           <Image
             src="/img/Home.jpg"
             alt="Sezione Hero"
