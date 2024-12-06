@@ -87,7 +87,7 @@ const ServiceSlider = () => {
 
   return (
     <div className="w-full md:w-3/4 mx-auto px-4 my-24 relative z-10">
-      <div className="flex flex-col md:flex-row gap-16 md:gap-8  auto-rows-fr">
+      <div className="flex flex-col md:flex-row gap-16 md:gap-8 justify-between auto-rows-fr">
         <AnimatePresence mode="wait">
           {services
             .slice(currentIndex, currentIndex + 3)
@@ -98,7 +98,7 @@ const ServiceSlider = () => {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
                 transition={{ duration: 0.3, delay: idx * 0.1 }}
-                className="flex justify-center"
+                className="flex w-full md:w-1/3 justify-center"
               >
                 <div className="relative w-full max-w-lg">
                   <Link href={service.href} className="block h-full">

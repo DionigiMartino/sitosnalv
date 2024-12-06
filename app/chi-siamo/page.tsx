@@ -669,7 +669,7 @@ const ChiSiamoPage = () => {
                   pubblico.
                 </p>
               </div>
-              <video className="w-full md:w-2/4 h-full rounded-lg" controls>
+              <video className="w-full md:w-2/4 h-full rounded-lg" controls poster="/img/sede.jpg">
                 <source
                   src="/video/chisiamo.mp4"
                   type="video/mp4"
@@ -689,7 +689,7 @@ const ChiSiamoPage = () => {
                 alt="Congresso"
               />
 
-              <h1 className="text-3xl text-blue-600 w-1/3">
+              <h1 className="text-3xl text-blue-600 md:w-1/3">
                 Il Congresso Nazionale del 2018
               </h1>
             </div>
