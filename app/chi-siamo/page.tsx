@@ -713,7 +713,7 @@ const ChiSiamoPage = () => {
                 </div>
                 <div>
                   <Image
-                    src="/img/placeholder.jpg"
+                    src="/img/mamone.jpg"
                     alt="Maria Mamone"
                     width={300}
                     height={300}
@@ -739,7 +739,7 @@ const ChiSiamoPage = () => {
                 </div>
                 <div>
                   <Image
-                    src="/img/placeholder.jpg"
+                    src="/img/nesci.jpg"
                     alt="Cosimo Nesci"
                     width={300}
                     height={300}
