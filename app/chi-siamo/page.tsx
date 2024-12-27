@@ -341,7 +341,6 @@ const ChiSiamoPage = () => {
             hanno bisogno, come ad esempio:
           </p>
 
-          
           <ul className="list-disc pl-5 space-y-2 rounded-md border-2 border-blue-600 p-2">
             <li>
               <span className="font-bold">ISEE</span> (Indicatore della
@@ -1116,6 +1115,14 @@ const ChiSiamoPage = () => {
                   termine.
                 </p>
 
+                <Image
+                  src="/img/sociosanitario.jpg"
+                  alt="Socio-Sanitario"
+                  width={600}
+                  className="rounded-md"
+                  height={500}
+                />
+
                 <div className="space-y-4 mt-8">
                   <h2 className="text-[#1a365d] text-2xl font-bold md:text-3xl">
                     CONTATTACI
@@ -1235,6 +1242,14 @@ const ChiSiamoPage = () => {
                   fragili è una questione di civiltà!
                 </p>
 
+                <Image
+                  src="/img/fragili.jpg"
+                  alt="Lavoratori Fragili"
+                  width={600}
+                  className="rounded-md"
+                  height={500}
+                />
+
                 <div className="space-y-4 mt-8">
                   <h2 className="text-[#1a365d] text-2xl font-bold md:text-3xl">
                     CONTATTACI
@@ -1301,45 +1316,62 @@ const ChiSiamoPage = () => {
             </p>
 
             <div>
-              <h2 className="text-xl font-bold mb-4 md:text-2xl">
+              <h2 className="text-xl text-blue-600 font-bold mb-4 md:text-2xl">
                 Il Sindacato rappresenta, in particolare, le lavoratrici e i
                 lavoratori dei seguenti ENTI:
               </h2>
-              <ul className="list-disc pl-5 space-y-2 md:columns-2">
-                <li>
+              <ul className="list-none ps-0 pl-5 space-y-2 md:columns-2">
+                <li className="h-[90px] flex items-center justify-start rounded-md border-2 border-blue-600 p-2 text-blue-600 font-bold">
                   Regioni a statuto ordinario e degli Enti pubblici non
                   economici dalle stesse dipendenti
                 </li>
-                <li>
+                <li className="h-[90px] flex items-center justify-start rounded-md border-2 border-blue-600 p-2 text-blue-600 font-bold">
                   Province, Città metropolitane, Enti di area vasta, Liberi
                   consorzi comunali di cui alla legge 4 agosto 2015, n. 15 della
                   regione Sicilia
                 </li>
-                <li>Comuni montani</li>
-                <li>
+                <li className="h-[90px] flex items-center justify-start rounded-md border-2 border-blue-600 p-2 text-blue-600 font-bold">
+                  Comuni
+                </li>
+                <li className="h-[90px] flex items-center justify-start rounded-md border-2 border-blue-600 p-2 text-blue-600 font-bold">
+                  Comuni montani
+                </li>
+                <li className="h-[90px] flex items-center justify-start rounded-md border-2 border-blue-600 p-2 text-blue-600 font-bold">
                   ex Istituti autonomi per le case popolari comunque denominati
                 </li>
-                <li>Consorzi e associazioni, incluse le Unioni di Comuni</li>
-                <li>
+                <li className="h-[90px] flex items-center justify-start rounded-md border-2 border-blue-600 p-2 text-blue-600 font-bold">
+                  Consorzi e associazioni, incluse le Unioni di Comuni
+                </li>
+                <li className="h-[90px] flex items-center justify-start rounded-md border-2 border-blue-600 p-2 text-blue-600 font-bold">
                   Aziende pubbliche di servizi alla persona (ex IPAB), che
                   svolgono prevalentemente funzioni assistenziali
                 </li>
-                <li>
+                <li className="h-[90px] flex items-center justify-start rounded-md border-2 border-blue-600 p-2 text-blue-600 font-bold">
                   Università agrarie ed associazioni agrarie dipendenti dagli
                   enti locali
                 </li>
-                <li>
+                <li className="h-[90px] flex items-center justify-start rounded-md border-2 border-blue-600 p-2 text-blue-600 font-bold">
                   Camere di commercio, industria, artigianato e agricoltura
                 </li>
-                <li>
+                <li className="h-[90px] flex items-center justify-start rounded-md border-2 border-blue-600 p-2 text-blue-600 font-bold">
                   Autorità di bacino, ai sensi della legge 21 ottobre 1994, n.
                   584
                 </li>
               </ul>
             </div>
 
+            <Image
+              src="/img/entilocali.jpg"
+              alt="Enti Locali"
+              width={600}
+              height={500}
+              className="rounded-md"
+            />
+
             <div className="bg-gray-100 p-6 rounded-lg">
-              <h2 className="text-xl font-bold mb-4 md:text-2xl">CONTATTACI</h2>
+              <h2 className="text-xl font-bold mb-4 md:text-2xl text-blue-600">
+                CONTATTACI
+              </h2>
               <div className="space-y-2">
                 <p>
                   <span className="font-bold">Coordinatore nazionale:</span>{" "}
@@ -1399,6 +1431,14 @@ const ChiSiamoPage = () => {
                   ricerca, parti sociali impegnate a vario titolo nella
                   promozione e nello svlluppo del territorio.
                 </p>
+
+                <Image
+                  src="/img/confsal.jpeg"
+                  alt="Confsal Sud"
+                  width={600}
+                  className="rounded-md"
+                  height={500}
+                />
 
                 <div className="space-y-4 mt-8">
                   <h2 className="text-[#1a365d] text-2xl font-bold md:text-3xl">
