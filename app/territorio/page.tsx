@@ -857,7 +857,7 @@ const TerritorioPage = () => {
                 >
                   <Button
                     variant="ghost"
-                    className={`w-full hover:font-bold justify-start text-left ${
+                    className={`w-full hover:font-bold justify-start text-left uppercase ${
                       activeSection === item.id
                         ? "text-red-500 font-bold"
                         : "text-gray-700"

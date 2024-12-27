@@ -135,7 +135,7 @@ const ChiSiamoPage = () => {
         "TUTELA SINDACALE DEI LAVORATORI, DEI DISOCCUPATI E DEI PENSIONATI",
       content: (
         <div className="space-y-6">
-          <div>
+          <div className="border-2 p-2 rounded-md border-blue-600">
             <h4 className="font-bold mb-2">
               • Consulenza ed eventuale avvio vertenza per:
             </h4>
@@ -152,7 +152,7 @@ const ChiSiamoPage = () => {
             </p>
           </div>
 
-          <div>
+          <div className="border-2 p-2 rounded-md border-blue-600">
             <h4 className="font-bold mb-2">
               • Conteggi differenze retributive
             </h4>
@@ -172,7 +172,7 @@ const ChiSiamoPage = () => {
             </p>
           </div>
 
-          <div>
+          <div className="border-2 p-2 rounded-md border-blue-600">
             <h4 className="font-bold mb-2">• Dimissioni telematiche:</h4>
             <p>
               Assistenza e supporto in fase di recesso dal proprio rapporto di
@@ -184,7 +184,7 @@ const ChiSiamoPage = () => {
             </p>
           </div>
 
-          <div>
+          <div className="border-2 p-2 rounded-md border-blue-600">
             <h4 className="font-bold mb-2">• Conciliazioni sindacali:</h4>
             <p>
               L&apos;Ufficio Vertenze fornisce ad iscritti e Conciliatori
@@ -194,7 +194,7 @@ const ChiSiamoPage = () => {
             </p>
           </div>
 
-          <div>
+          <div className="border-2 p-2 rounded-md border-blue-600">
             <h4 className="font-bold mb-2">
               • Tutela collettiva dei lavoratori:
             </h4>
@@ -212,7 +212,7 @@ const ChiSiamoPage = () => {
             </p>
           </div>
 
-          <div>
+          <div className="border-2 p-2 rounded-md border-blue-600">
             <h4 className="font-bold mb-2">• Assistenza legale:</h4>
             <p>
               Qualora fallisca ogni tentativo stragiudiziale, lo Snalv Confsal
@@ -223,7 +223,7 @@ const ChiSiamoPage = () => {
             </p>
           </div>
 
-          <div>
+          <div className="border-2 p-2 rounded-md border-blue-600">
             <h4 className="font-bold mb-2">
               • Tutela dei disoccupati ed invio domande di prestazioni di
               sostegno al reddito:
@@ -239,7 +239,7 @@ const ChiSiamoPage = () => {
             </p>
           </div>
 
-          <div>
+          <div className="border-2 p-2 rounded-md border-blue-600">
             <h4 className="font-bold mb-2">• Tutela dei pensionati:</h4>
             <p>
               Grazie alla collaborazione con UNIPE – Unione Pensionati, lo Snalv
@@ -262,7 +262,7 @@ const ChiSiamoPage = () => {
           </p>
 
           <div className="space-y-4">
-            <div>
+            <div className="border-2 p-2 rounded-md border-blue-600">
               <h4 className="font-bold mb-2">
                 • PRESTAZIONI DI SOSTEGNO AL REDDITO
               </h4>
@@ -273,7 +273,7 @@ const ChiSiamoPage = () => {
               </p>
             </div>
 
-            <div>
+            <div className="border-2 p-2 rounded-md border-blue-600">
               <h4 className="font-bold mb-2">• PENSIONE E PREVIDENZA</h4>
               <p>
                 Inoltro domanda di pensione di Vecchiaia, Pensione Anticipata,
@@ -284,7 +284,7 @@ const ChiSiamoPage = () => {
               </p>
             </div>
 
-            <div>
+            <div className="border-2 p-2 rounded-md border-blue-600">
               <h4 className="font-bold mb-2">• INVALIDITÀ E DISABILITÀ</h4>
               <p>
                 Richiesta di assegno ordinario di invalidità, invio domanda
@@ -294,7 +294,7 @@ const ChiSiamoPage = () => {
               </p>
             </div>
 
-            <div>
+            <div className="border-2 p-2 rounded-md border-blue-600">
               <h4 className="font-bold mb-2">• MATERNITÀ/PATERNITÀ</h4>
               <p>
                 Inoltro richiesta di indennità di maternità e paternità
@@ -306,7 +306,7 @@ const ChiSiamoPage = () => {
               </p>
             </div>
 
-            <div>
+            <div className="border-2 p-2 rounded-md border-blue-600">
               <h4 className="font-bold">• Altri servizi:</h4>
               <ul className="list-disc pl-5 space-y-1">
                 <li>
@@ -341,7 +341,8 @@ const ChiSiamoPage = () => {
             hanno bisogno, come ad esempio:
           </p>
 
-          <ul className="list-disc pl-5 space-y-2">
+          
+          <ul className="list-disc pl-5 space-y-2 rounded-md border-2 border-blue-600 p-2">
             <li>
               <span className="font-bold">ISEE</span> (Indicatore della
               situazione economica equivalente, necessario per alcune tipologie
@@ -394,7 +395,7 @@ const ChiSiamoPage = () => {
             del lavoro. Nello specifico, ti supportiamo:
           </p>
 
-          <ul className="list-disc pl-5 space-y-2">
+          <ul className="list-disc pl-5 space-y-2 rounded-md border-2 border-blue-600 p-2">
             <li>
               nella ricerca di un lavoro o di un percorso formativo, accedendo
               ad iniziative a carattere nazionale, regionale e anche europeo;
@@ -418,7 +419,7 @@ const ChiSiamoPage = () => {
       title: "ALTRI SERVIZI IN CONVENZIONE",
       content: (
         <div className="space-y-6">
-          <div>
+          <div className="border-2 p-2 rounded-md border-blue-600">
             <h4 className="font-bold mb-2">
               • Assistenza e tutela dei consumatori
             </h4>
@@ -431,7 +432,7 @@ const ChiSiamoPage = () => {
             </p>
           </div>
 
-          <div>
+          <div className="border-2 p-2 rounded-md border-blue-600">
             <h4 className="font-bold mb-2">
               • Assistenza e tutela degli inquilini
             </h4>
@@ -468,7 +469,7 @@ const ChiSiamoPage = () => {
             </p>
           </div>
 
-          <ul className="list-disc pl-5 space-y-2">
+          <ul className="list-disc pl-5 space-y-2 rounded-md border-2 border-blue-600 p-2">
             <li>
               <span className="font-bold">Università PEGASO</span> (sconti sulle
               iscrizioni universitarie)
@@ -1443,7 +1444,7 @@ const ChiSiamoPage = () => {
                 >
                   <Button
                     variant="ghost"
-                    className={`w-full justify-start text-left hover:font-bold ${
+                    className={`w-full justify-start text-left hover:font-bold uppercase ${
                       activeSection === item.id
                         ? "text-red-500 font-bold"
                         : "text-gray-700"

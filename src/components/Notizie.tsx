@@ -14,32 +14,32 @@ const RecentNews = () => {
     {
       date: "10 NOVEMBRE",
       text: "Lorem ipsum dolor sit amet, adipisicing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna.",
-      image: "/img/sede.jpg",
+      image: "/img/notizia1.jpg",
     },
     {
       date: "10 NOVEMBRE",
       text: "Lorem ipsum dolor sit amet, adipisicing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna.",
-      image: "/img/sede.jpg",
+      image: "/img/notizia1.jpg",
     },
     {
       date: "10 NOVEMBRE",
       text: "Lorem ipsum dolor sit amet, adipisicing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna.",
-      image: "/img/sede.jpg",
+      image: "/img/notizia1.jpg",
     },
     {
       date: "9 NOVEMBRE",
       text: "Lorem ipsum dolor sit amet, adipisicing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna.",
-      image: "/img/sede.jpg",
+      image: "/img/notizia1.jpg",
     },
     {
       date: "9 NOVEMBRE",
       text: "Lorem ipsum dolor sit amet, adipisicing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna.",
-      image: "/img/sede.jpg",
+      image: "/img/notizia1.jpg",
     },
     {
       date: "9 NOVEMBRE",
       text: "Lorem ipsum dolor sit amet, adipisicing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna.",
-      image: "/img/sede.jpg",
+      image: "/img/notizia1.jpg",
     },
   ];
 
@@ -55,9 +55,9 @@ const RecentNews = () => {
   const currentSlide = Math.floor(currentIndex / 3);
 
   return (
-    <div className="bg-gray-100 py-16">
+    <div className="py-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
-        <h2 className="text-5xl font-bold text-[#1a365d] mb-12 text-center sm:text-3xl lg:text-4xl">
+        <h2 className="text-5xl font-bold text-white mb-12 text-center sm:text-3xl lg:text-4xl">
           NOTIZIE RECENTI
         </h2>
 
