@@ -228,7 +228,8 @@ const News = () => {
     const data = {
       title,
       content,
-      linkNews,
+        linkNews,
+      tipo: "notizia",
       categories: selectedCategories, // Usa l'array di categorie
       images,
       coverImage,

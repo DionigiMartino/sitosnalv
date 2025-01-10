@@ -237,7 +237,8 @@ const News = () => {
       content,
       linkNews,
       categories: selectedCategories, // Usa l'array di categorie
-      images,
+        images,
+      tipo: "comunicato",
       coverImage,
       updatedAt: serverTimestamp(),
     };

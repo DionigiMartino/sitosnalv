@@ -160,10 +160,10 @@ const ComunicatiPage = () => {
           {filteredPosts.map((item) => (
             <div
               key={item.id}
-              className="bg-white rounded-lg overflow-hidden shadow-sm"
+              className="bg-white rounded-lg overflow-hidden shadow-md"
             >
               <div className="grid grid-cols-3">
-                <div className="relative h-64">
+                <div className="relative ">
                   <Image
                     src={item.coverImage || "/img/sede.jpg"}
                     alt={item.title}
@@ -180,12 +180,19 @@ const ComunicatiPage = () => {
                   )}
                 </div>
                 <div className="col-span-2 p-6">
-                  <h2 className="text-xl font-bold mb-4">{item.title}</h2>
+                  <h2 className="text-xl font-bold mb-2 text-blue-600">
+                    {item.title}
+                  </h2>
+                  <h3 className="text-sm font-medium mb-6 text-gray-400">
+                    {item.categories.join(", ")}
+                  </h3>
                   <p className="text-gray-600 mb-6 line-clamp-3">
                     {item.content}
                   </p>
                   <Link
-                    href={item.linkNews ? `/notizia/${item.linkNews}` : "#"}
+                    href={
+                      item.linkNews ? `/${item.tipo}/${item.linkNews}` : "#"
+                    }
                     onClick={(e) => {
                       if (!item.linkNews) {
                         e.preventDefault();
