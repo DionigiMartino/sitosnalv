@@ -15,7 +15,7 @@ type Props = {
 };
 
 // Modifica generateMetadata per gestire meglio il caso undefined
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
+export async function generateMetadata({ params }: any): Promise<Metadata> {
   if (!params.linkNews) {
     return {
       title: "Contenuto non trovato",
@@ -96,7 +96,7 @@ async function getPost(linkNews: string) {
   }
 }
 
-export default async function NewsPage({ params }: Props) {
+export default async function NewsPage({ params }: any) {
   const { linkNews } = params;
 
   if (!linkNews) {
