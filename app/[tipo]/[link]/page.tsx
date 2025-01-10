@@ -67,7 +67,7 @@ async function getPost(tipo: string, link: string) {
   }
 }
 
-export default async function PostPage({ params }: Props) {
+export default async function PostPage({ params }: any) {
   console.log("Page params:", params);
 
   if (!params.link || !params.tipo) {
