@@ -4,61 +4,87 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Card } from "@/components/ui/card";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import Image from "next/image";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { collection, getDocs, query, orderBy } from "firebase/firestore";
+import { db } from "@/src/lib/firebase";
 
-const ComunicatiStampa = () => {
+const ComunicatiStampa = ({ category }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [comunicati, setComunicati] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const comunicati = [
-    {
-      date: "10 NOVEMBRE",
-      text: "Lorem ipsum dolor sit amet, adipisicing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.",
-      image: "/img/notizia1.jpg",
-    },
-    {
-      date: "8 NOVEMBRE",
-      text: "Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat.",
-      image: "/img/notizia1.jpg",
-    },
-    {
-      date: "5 NOVEMBRE",
-      text: "Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat.",
-      image: "/img/notizia1.jpg",
-    },
-    {
-      date: "1 NOVEMBRE",
-      text: "Nam liber tempor cum soluta nobis eleifend option congue nihil imperdiet doming id quod mazim placerat facer possim assum.",
-      image: "/img/notizia1.jpg",
-    },
-    {
-      date: "28 OTTOBRE",
-      text: "Typi non habent claritatem insitam; est usus legentis in iis qui facit eorum claritatem.",
-      image: "/img/notizia1.jpg",
-    },
-  ];
+  useEffect(() => {
+    const fetchComunicati = async () => {
+      try {
+        const comunicatiQuery = query(
+          collection(db, "notizie"),
+          orderBy("createdAt", "desc")
+        );
+        const querySnapshot = await getDocs(comunicatiQuery);
+        const comunicatiData = querySnapshot.docs
+          .map((doc) => ({
+            id: doc.id,
+            ...doc.data(),
+            createdAt: doc.data().createdAt?.toDate(),
+          }))
+          // @ts-ignore
+          .filter((item) => item.categories?.includes(category)); // Filtra per la categoria passata come prop
+
+        setComunicati(comunicatiData);
+      } catch (error) {
+        console.error("Error fetching comunicati:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchComunicati();
+  }, [category]);
+
+  const formatDate = (date) => {
+    if (!date) return "";
+    return new Date(date)
+      .toLocaleDateString("it-IT", {
+        day: "numeric",
+        month: "long",
+      })
+      .toUpperCase();
+  };
 
   const nextSlide = () =>
     setCurrentIndex((prev) => (prev + 1) % comunicati.length);
+
   const prevSlide = () =>
     setCurrentIndex(
       (prev) => (prev - 1 + comunicati.length) % comunicati.length
     );
 
+  if (isLoading) {
+    return <div className="text-center py-8">Caricamento...</div>;
+  }
+
+  if (comunicati.length === 0) {
+    return (
+      <div className="text-center py-8">
+        Nessun comunicato disponibile per questa categoria
+      </div>
+    );
+  }
+
   return (
     <div className="relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 my-8 sm:my-16">
         <div className="flex flex-col gap-4 md:flex-row items-center justify-between w-full">
-          {/* Comunicati Stampa Card */}
-
-          {/* News Cards */}
           <div className="flex flex-col gap-4 md:flex-row items-center justify-between w-full">
             <AnimatePresence mode="wait">
-              {[0, 3, 6].map((offset) => {
+              {[0, 1, 2].map((offset) => {
                 const index = (currentIndex + offset) % comunicati.length;
+                const comunicato = comunicati[index];
+
                 return (
                   <motion.div
-                    key={`${index}-${offset}`}
-                    className="bg-white rounded-lg shadow-sm overflow-hidden w-[30%]"
+                    key={`${comunicato.id}-${offset}`}
+                    className="bg-white rounded-lg shadow-sm overflow-hidden w-full md:w-[30%]"
                     initial={{ opacity: 0, x: 50 }}
                     animate={{ opacity: 1, x: 0 }}
                     exit={{ opacity: 0, x: -50 }}
@@ -66,19 +92,18 @@ const ComunicatiStampa = () => {
                   >
                     <div className="relative h-40 sm:h-48 md:h-64 border-b-[6px] border-blue-600">
                       <Image
-                        src={comunicati[index].image}
-                        alt={comunicati[index].text}
+                        src={comunicato.coverImage || "/img/notizia1.jpg"}
+                        alt={comunicato.title}
                         fill
                         className="object-cover"
                       />
-
                       <div className="absolute bottom-0 left-4 bg-blue-600 text-white px-4 font-bold py-2 text-xs sm:text-sm">
-                        {comunicati[index].date}
+                        {formatDate(comunicato.createdAt)}
                       </div>
                     </div>
                     <div className="p-4 sm:p-6">
                       <p className="text-gray-800 mb-4 sm:mb-6 line-clamp-3">
-                        {comunicati[index].text}
+                        {comunicato.title}
                       </p>
                       <button className="w-full uppercase py-2 text-center border border-snalv-200 text-snalv-600 rounded-md hover:bg-snalv-50 transition-colors">
                         leggi di più
@@ -92,21 +117,22 @@ const ComunicatiStampa = () => {
         </div>
       </div>
 
-      {/* Navigation Controls */}
-      <div className="flex justify-center gap-4 mt-8">
-        <button
-          onClick={prevSlide}
-          className="w-10 h-10 flex items-center justify-center bg-white rounded-full shadow-md hover:bg-snalv-50 text-snalv-500"
-        >
-          <ChevronLeft className="w-6 h-6" />
-        </button>
-        <button
-          onClick={nextSlide}
-          className="w-10 h-10 flex items-center justify-center bg-white rounded-full shadow-md hover:bg-snalv-50 text-snalv-500"
-        >
-          <ChevronRight className="w-6 h-6" />
-        </button>
-      </div>
+      {comunicati.length > 3 && (
+        <div className="flex justify-center gap-4 mt-8">
+          <button
+            onClick={prevSlide}
+            className="w-10 h-10 flex items-center justify-center bg-white rounded-full shadow-md hover:bg-snalv-50 text-snalv-500"
+          >
+            <ChevronLeft className="w-6 h-6" />
+          </button>
+          <button
+            onClick={nextSlide}
+            className="w-10 h-10 flex items-center justify-center bg-white rounded-full shadow-md hover:bg-snalv-50 text-snalv-500"
+          >
+            <ChevronRight className="w-6 h-6" />
+          </button>
+        </div>
+      )}
     </div>
   );
 };

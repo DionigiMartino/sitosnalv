@@ -4,15 +4,19 @@ import { useState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import Header from "@/src/components/Header";
 import Footer from "@/src/components/Footer";
-import NewsComponent from "@/src/components/CategoryNews";
 import { Button } from "@/components/ui/button";
 import { FiSearch } from "react-icons/fi";
 import HeroSection from "@/src/components/Hero";
 import Image from "next/image";
+import { collection, getDocs, query, orderBy } from "firebase/firestore";
+import { db } from "@/src/lib/firebase";
 
 const ComunicatiPage = () => {
   const [activeSection, setActiveSection] = useState("comunicati");
   const [activeFilter, setActiveFilter] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
+  const [posts, setPosts] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
 
   const menuItems = [
     { id: "comunicati", label: "Comunicati stampa" },
@@ -20,66 +24,18 @@ const ComunicatiPage = () => {
   ];
 
   const filters = [
-    { id: "territorio", label: "Territorio" },
-    { id: "sociosanitario", label: "Sociosanitario" },
-    { id: "fragili", label: "Fragili" },
-    { id: "entilocali", label: "Enti Locali" },
-    { id: "servizi", label: "Servizi" },
-    { id: "evidenza", label: "In evidenza" },
+    { id: "Fragili", label: "Fragili" },
+    { id: "Socio Sanitario", label: "Socio Sanitario" },
+    { id: "Enti Locali", label: "Enti Locali" },
+    { id: "Dipartimento SUD", label: "Dipartimento SUD" },
+    { id: "Servizi", label: "Servizi" },
+    { id: "In Evidenza", label: "In Evidenza" },
+    { id: "Territorio", label: "Territorio" },
   ];
 
-  const comunicatiData = [
-    {
-      id: 1,
-      title: "Nuovo contratto settore socio-sanitario",
-      date: "10 NOVEMBRE",
-      description:
-        "Lorem ipsum dolor sit amet, adipisicing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna",
-      image: "/img/sede.jpg",
-      category: "sociosanitario",
-      featured: true,
-    },
-    {
-      id: 2,
-      title: "Tutele per i lavoratori fragili",
-      date: "8 NOVEMBRE",
-      description:
-        "Lorem ipsum dolor sit amet, adipisicing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna",
-      image: "/img/sede.jpg",
-      category: "fragili",
-    },
-    {
-      id: 3,
-      title: "Nuova sede territoriale a Milano",
-      date: "7 NOVEMBRE",
-      description:
-        "Lorem ipsum dolor sit amet, adipisicing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna",
-      image: "/img/sede.jpg",
-      category: "territorio",
-    },
-  ];
-
-  const notizieData = [
-    {
-      id: 1,
-      title: "Rinnovo contratto enti locali",
-      date: "10 NOVEMBRE",
-      description:
-        "Lorem ipsum dolor sit amet, adipisicing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna",
-      image: "/img/sede.jpg",
-      category: "entilocali",
-      featured: true,
-    },
-    {
-      id: 2,
-      title: "Nuovi servizi per gli iscritti",
-      date: "9 NOVEMBRE",
-      description:
-        "Lorem ipsum dolor sit amet, adipisicing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna",
-      image: "/img/sede.jpg",
-      category: "servizi",
-    },
-  ];
+  useEffect(() => {
+    fetchPosts();
+  }, [activeSection]); // Rifetch quando cambia la sezione
 
   useEffect(() => {
     const hash = window.location.hash.slice(1);
@@ -95,9 +51,44 @@ const ComunicatiPage = () => {
     }
   }, []);
 
-  const updateURL = (section: any, filter: any) => {
-    // @ts-ignore
+  const fetchPosts = async () => {
+    setIsLoading(true);
+    try {
+      const collectionName =
+        activeSection === "comunicati" ? "comunicati" : "notizie";
 
+      const postsQuery = query(
+        collection(db, collectionName),
+        orderBy("createdAt", "desc")
+      );
+
+      const querySnapshot = await getDocs(postsQuery);
+      const postsData = querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+        createdAt: doc.data().createdAt?.toDate(),
+      }));
+
+      setPosts(postsData);
+    } catch (error) {
+      console.error("Error fetching posts:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const formatDate = (date) => {
+    if (!date) return "";
+    return new Date(date)
+      .toLocaleDateString("it-IT", {
+        day: "numeric",
+        month: "long",
+      })
+      .toUpperCase();
+  };
+
+  const updateURL = (section, filter) => {
+    // @ts-ignore
     const url = new URL(window.location);
     url.hash = section;
 
@@ -110,7 +101,7 @@ const ComunicatiPage = () => {
     window.history.pushState({}, "", url);
   };
 
-  const handleSectionChange = (section: any) => {
+  const handleSectionChange = (section) => {
     setActiveSection(section);
     // @ts-ignore
     const url = new URL(window.location);
@@ -118,52 +109,82 @@ const ComunicatiPage = () => {
     window.history.pushState({}, "", url.toString());
   };
 
-  const handleFilterChange = (filter: any) => {
+  const handleFilterChange = (filter) => {
     setActiveFilter(filter);
     updateURL(activeSection, filter);
   };
 
-  // Separate sections
-  const ComunicatiSection = () => {
-    const filteredComunicati = activeFilter
-      ? activeFilter === "evidenza"
-        ? comunicatiData.filter((com) => com.featured)
-        : comunicatiData.filter((com) => com.category === activeFilter)
-      : comunicatiData;
+  const filterPosts = () => {
+    let filtered = [...posts];
+
+    if (searchTerm) {
+      filtered = filtered.filter(
+        (item) =>
+          item.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          item.content?.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    }
+
+    if (activeFilter) {
+      filtered = filtered.filter((item) =>
+        item.categories?.includes(activeFilter)
+      );
+    }
+
+    return filtered;
+  };
+
+  const PostsSection = () => {
+    const filteredPosts = filterPosts();
+
+    if (isLoading) {
+      return <div className="text-center py-8">Caricamento...</div>;
+    }
+
+    if (filteredPosts.length === 0) {
+      return (
+        <div className="text-center py-8">
+          Nessun {activeSection === "comunicati" ? "comunicato" : "notizia"}{" "}
+          trovato
+        </div>
+      );
+    }
 
     return (
       <div>
         <h1 className="text-[#1a365d] text-4xl font-bold mb-8">
-          COMUNICATI STAMPA
+          {activeSection === "comunicati" ? "COMUNICATI STAMPA" : "NOTIZIE"}
         </h1>
         <div className="grid gap-8">
-          {filteredComunicati.map((comunicato) => (
+          {filteredPosts.map((item) => (
             <div
-              key={comunicato.id}
+              key={item.id}
               className="bg-white rounded-lg overflow-hidden shadow-sm"
             >
               <div className="grid grid-cols-3">
                 <div className="relative h-64">
                   <Image
-                    src={comunicato.image}
-                    alt={comunicato.title}
+                    src={item.coverImage || "/img/sede.jpg"}
+                    alt={item.title}
                     fill
                     className="object-cover"
                   />
                   <div className="absolute bottom-0 left-4 bg-blue-600 text-white font-bold px-3 py-3 text-sm">
-                    {comunicato.date}
+                    {formatDate(item.createdAt)}
                   </div>
-                  {comunicato.featured && (
+                  {item.categories?.includes("In Evidenza") && (
                     <div className="absolute top-4 right-4 bg-red-500 text-white px-3 py-1 text-sm">
                       In evidenza
                     </div>
                   )}
                 </div>
                 <div className="col-span-2 p-6">
-                  <h2 className="text-xl font-bold mb-4">{comunicato.title}</h2>
-                  <p className="text-gray-600 mb-6">{comunicato.description}</p>
+                  <h2 className="text-xl font-bold mb-4">{item.title}</h2>
+                  <p className="text-gray-600 mb-6 line-clamp-3">
+                    {item.content}
+                  </p>
                   <Button className="bg-red-400 hover:bg-red-600">
-                    LEARN MORE
+                    LEGGI DI PIÙ
                   </Button>
                 </div>
               </div>
@@ -172,65 +193,6 @@ const ComunicatiPage = () => {
         </div>
       </div>
     );
-  };
-
-  const NotizieSection = () => {
-    const filteredNotizie = activeFilter
-      ? activeFilter === "evidenza"
-        ? notizieData.filter((news) => news.featured)
-        : notizieData.filter((news) => news.category === activeFilter)
-      : notizieData;
-
-    return (
-      <div>
-        <h1 className="text-[#1a365d] text-4xl font-bold mb-8">NOTIZIE</h1>
-        <div className="grid gap-8">
-          {filteredNotizie.map((notizia) => (
-            <div
-              key={notizia.id}
-              className="bg-white rounded-lg overflow-hidden shadow-sm"
-            >
-              <div className="grid grid-cols-3">
-                <div className="relative h-64">
-                  <Image
-                    src={notizia.image}
-                    alt={notizia.title}
-                    fill
-                    className="object-cover"
-                  />
-                  <div className="absolute bottom-0 left-4 bg-blue-600 text-white font-bold px-3 py-3 text-sm">
-                    {notizia.date}
-                  </div>
-                  {notizia.featured && (
-                    <div className="absolute top-4 right-4 bg-red-500 text-white px-3 py-1 text-sm">
-                      In evidenza
-                    </div>
-                  )}
-                </div>
-                <div className="col-span-2 p-6">
-                  <h2 className="text-xl font-bold mb-4">{notizia.title}</h2>
-                  <p className="text-gray-600 mb-6">{notizia.description}</p>
-                  <Button className="bg-red-400 hover:bg-red-600">
-                    LEARN MORE
-                  </Button>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-    );
-  };
-
-  const renderContent = () => {
-    switch (activeSection) {
-      case "comunicati":
-        return <ComunicatiSection />;
-      case "notizie":
-        return <NotizieSection />;
-      default:
-        return null;
-    }
   };
 
   return (
@@ -269,7 +231,13 @@ const ComunicatiPage = () => {
 
             {/* Search */}
             <div className="relative">
-              <Input type="text" placeholder="CERCA" className="w-full pl-10" />
+              <Input
+                type="text"
+                placeholder="CERCA"
+                className="w-full pl-10"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
               <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
             </div>
 
@@ -308,7 +276,9 @@ const ComunicatiPage = () => {
           </div>
 
           {/* Main Content */}
-          <div className="col-span-3">{renderContent()}</div>
+          <div className="col-span-3">
+            <PostsSection />
+          </div>
         </div>
       </main>
       <Footer />

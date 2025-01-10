@@ -4,44 +4,53 @@ import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { motion, AnimatePresence } from "framer-motion";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { collection, getDocs, query, orderBy } from "firebase/firestore";
+import { db } from "@/src/lib/firebase";
 
 const RecentNews = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [news, setNews] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const news = [
-    {
-      date: "10 NOVEMBRE",
-      text: "Lorem ipsum dolor sit amet, adipisicing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna.",
-      image: "/img/notizia1.jpg",
-    },
-    {
-      date: "10 NOVEMBRE",
-      text: "Lorem ipsum dolor sit amet, adipisicing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna.",
-      image: "/img/notizia1.jpg",
-    },
-    {
-      date: "10 NOVEMBRE",
-      text: "Lorem ipsum dolor sit amet, adipisicing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna.",
-      image: "/img/notizia1.jpg",
-    },
-    {
-      date: "9 NOVEMBRE",
-      text: "Lorem ipsum dolor sit amet, adipisicing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna.",
-      image: "/img/notizia1.jpg",
-    },
-    {
-      date: "9 NOVEMBRE",
-      text: "Lorem ipsum dolor sit amet, adipisicing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna.",
-      image: "/img/notizia1.jpg",
-    },
-    {
-      date: "9 NOVEMBRE",
-      text: "Lorem ipsum dolor sit amet, adipisicing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna.",
-      image: "/img/notizia1.jpg",
-    },
-  ];
+  useEffect(() => {
+    const fetchNews = async () => {
+      try {
+        const newsQuery = query(
+          collection(db, "notizie"),
+          orderBy("createdAt", "desc")
+        );
+        const querySnapshot = await getDocs(newsQuery);
+        const newsData = querySnapshot.docs
+          .map((doc) => ({
+            id: doc.id,
+            ...doc.data(),
+            createdAt: doc.data().createdAt?.toDate(),
+          }))
+          // @ts-ignore
+          .filter((item) => item.categories?.includes("In Evidenza")); // Filtra solo le notizie in evidenza
+
+        setNews(newsData);
+      } catch (error) {
+        console.error("Error fetching news:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchNews();
+  }, []);
+
+  const formatDate = (date) => {
+    if (!date) return "";
+    return new Date(date)
+      .toLocaleDateString("it-IT", {
+        day: "numeric",
+        month: "long",
+      })
+      .toUpperCase();
+  };
 
   const nextSlide = () => {
     setCurrentIndex((prev) => (prev + 3) % news.length);
@@ -53,6 +62,18 @@ const RecentNews = () => {
 
   const totalSlides = Math.ceil(news.length / 3);
   const currentSlide = Math.floor(currentIndex / 3);
+
+  if (isLoading) {
+    return <div className="py-16 text-center text-white">Caricamento...</div>;
+  }
+
+  if (news.length === 0) {
+    return (
+      <div className="py-16 text-center text-white">
+        Nessuna notizia in evidenza disponibile
+      </div>
+    );
+  }
 
   return (
     <div className="py-16">
@@ -66,7 +87,7 @@ const RecentNews = () => {
             <AnimatePresence mode="wait">
               {news.slice(currentIndex, currentIndex + 3).map((item, index) => (
                 <motion.div
-                  key={currentIndex + index}
+                  key={item.id}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -20 }}
@@ -76,18 +97,18 @@ const RecentNews = () => {
                     <CardContent className="p-0">
                       <div className="relative h-40 sm:h-48 lg:h-56 border-b-[6px] border-blue-600">
                         <Image
-                          src={item.image}
-                          alt="News"
+                          src={item.coverImage || "/img/notizia1.jpg"} // Usa l'immagine di default se non c'è copertina
+                          alt={item.title}
                           fill
                           className="object-cover"
                         />
                         <div className="absolute bottom-0 left-4 bg-blue-600 text-white px-4 font-bold py-2 text-xs sm:text-sm">
-                          {item.date}
+                          {formatDate(item.createdAt)}
                         </div>
                       </div>
                       <div className="p-4 sm:p-6">
                         <p className="text-gray-800 mb-4 sm:mb-6 line-clamp-3">
-                          {item.text}
+                          {item.title}
                         </p>
                         <Button
                           variant="secondary"
@@ -119,20 +140,22 @@ const RecentNews = () => {
         </div>
 
         {/* Arrow Navigation */}
-        <div className="absolute left-2 right-2 top-1/2 -translate-y-1/2 flex justify-between z-10">
-          <button
-            onClick={prevSlide}
-            className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-white shadow-lg flex items-center justify-center hover:bg-gray-50 transition-colors"
-          >
-            <ChevronLeft className="w-4 h-4 sm:w-6 sm:h-6" />
-          </button>
-          <button
-            onClick={nextSlide}
-            className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-white shadow-lg flex items-center justify-center hover:bg-gray-50 transition-colors"
-          >
-            <ChevronRight className="w-4 h-4 sm:w-6 sm:h-6" />
-          </button>
-        </div>
+        {news.length > 3 && (
+          <div className="absolute left-2 right-2 top-1/2 -translate-y-1/2 flex justify-between z-10">
+            <button
+              onClick={prevSlide}
+              className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-white shadow-lg flex items-center justify-center hover:bg-gray-50 transition-colors"
+            >
+              <ChevronLeft className="w-4 h-4 sm:w-6 sm:h-6" />
+            </button>
+            <button
+              onClick={nextSlide}
+              className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-white shadow-lg flex items-center justify-center hover:bg-gray-50 transition-colors"
+            >
+              <ChevronRight className="w-4 h-4 sm:w-6 sm:h-6" />
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );
