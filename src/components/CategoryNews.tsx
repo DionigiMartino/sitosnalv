@@ -1,148 +1,147 @@
+"use client";
+
 import { useState, useEffect } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { collection, getDocs, query, orderBy } from "firebase/firestore";
+import { db } from "@/src/lib/firebase";
+import { motion, AnimatePresence } from "framer-motion";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
-const NewsComponent = ({ category }: any) => {
-  const newsData: any = {
-    sociosanitario: [
-      {
-        id: 1,
-        date: "15 NOVEMBRE",
-        image: "/img/sede.jpg",
-        title: "Nuovo CCNL per il settore socio-sanitario: tutte le novità",
-        description:
-          "Lorem ipsum dolor sit amet, adipisicing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna",
-      },
-      {
-        id: 2,
-        date: "10 NOVEMBRE",
-        image: "/img/sede.jpg",
-        title: "Formazione professionale: nuovi corsi per operatori sanitari",
-        description:
-          "Lorem ipsum dolor sit amet, adipisicing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna",
-      },
-      {
-        id: 3,
-        date: "10 NOVEMBRE",
-        image: "/img/sede.jpg",
-        title: "Formazione professionale: nuovi corsi per operatori sanitari",
-        description:
-          "Lorem ipsum dolor sit amet, adipisicing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna",
-      },
-    ],
-    fragili: [
-      {
-        id: 1,
-        date: "12 NOVEMBRE",
-        image: "/img/sede.jpg",
-        title: "Nuove tutele per i lavoratori con patologie croniche",
-        description:
-          "Lorem ipsum dolor sit amet, adipisicing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna",
-      },
-      {
-        id: 2,
-        date: "8 NOVEMBRE",
-        image: "/img/sede.jpg",
-        title: "Smart working: estese le misure per i lavoratori fragili",
-        description:
-          "Lorem ipsum dolor sit amet, adipisicing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna",
-      },
-    ],
-    entilocali: [
-      {
-        id: 1,
-        date: "14 NOVEMBRE",
-        image: "/img/sede.jpg",
-        title: "Rinnovo contratto enti locali: le proposte del sindacato",
-        description:
-          "Lorem ipsum dolor sit amet, adipisicing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna",
-      },
-      {
-        id: 2,
-        date: "9 NOVEMBRE",
-        image: "/img/sede.jpg",
-        title: "Nuove assunzioni negli enti locali: il piano 2024",
-        description:
-          "Lorem ipsum dolor sit amet, adipisicing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna",
-      },
-    ],
-    confsalsud: [
-      {
-        id: 1,
-        date: "13 NOVEMBRE",
-        image: "/img/sede.jpg",
-        title: "Sviluppo del Mezzogiorno: le iniziative Confsal",
-        description:
-          "Lorem ipsum dolor sit amet, adipisicing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna",
-      },
-      {
-        id: 2,
-        date: "7 NOVEMBRE",
-        image: "/img/sede.jpg",
-        title: "PNRR e Sud Italia: le proposte del sindacato",
-        description:
-          "Lorem ipsum dolor sit amet, adipisicing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna",
-      },
-    ],
-    territorio: [
-      {
-        id: 1,
-        date: "13 NOVEMBRE",
-        image: "/img/sede.jpg",
-        title: "Sviluppo del Mezzogiorno: le iniziative Confsal",
-        description:
-          "Lorem ipsum dolor sit amet, adipisicing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna",
-      },
-      {
-        id: 2,
-        date: "7 NOVEMBRE",
-        image: "/img/sede.jpg",
-        title: "PNRR e Sud Italia: le proposte del sindacato",
-        description:
-          "Lorem ipsum dolor sit amet, adipisicing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna",
-      },
-    ],
+interface Props {
+  categories: string[];
+  currentLink?: string;
+}
+
+const NewsComponent = ({ categories, currentLink }: Props) => {
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [news, setNews] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchNews = async () => {
+      try {
+        const newsQuery = query(
+          collection(db, "notizie"),
+          orderBy("createdAt", "desc")
+        );
+        const querySnapshot = await getDocs(newsQuery);
+        const newsData = querySnapshot.docs
+          .map((doc) => ({
+            id: doc.id,
+            ...doc.data(),
+            createdAt: doc.data().createdAt?.toDate(),
+            tipo: "notizia",
+          }))
+          .filter((item) => {
+            const hasMatchingCategory = categories.some((category) =>
+              // @ts-ignore
+              item.categories?.includes(category)
+            );
+            // @ts-ignore
+            const isNotCurrent = !currentLink || item.linkNews !== currentLink;
+            return hasMatchingCategory && isNotCurrent;
+          });
+
+        setNews(newsData);
+      } catch (error) {
+        console.error("Error fetching news:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchNews();
+  }, [categories, currentLink]);
+
+  const formatDate = (date) => {
+    if (!date) return "";
+    return new Date(date)
+      .toLocaleDateString("it-IT", {
+        day: "numeric",
+        month: "long",
+      })
+      .toUpperCase();
   };
 
+  const nextSlide = () => {
+    setCurrentIndex((prev) => (prev + 6 >= news.length ? 0 : prev + 6));
+  };
+
+  const prevSlide = () => {
+    setCurrentIndex((prev) =>
+      prev - 6 < 0 ? Math.max(0, news.length - 6) : prev - 6
+    );
+  };
+
+  if (isLoading) {
+    return <div className="text-center py-8">Caricamento...</div>;
+  }
+
+  if (news.length === 0) {
+    return null;
+  }
+
+  const visibleNews = news.slice(currentIndex, currentIndex + 6);
+
   return (
-    <div>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {newsData[category]?.map((news: any) => (
-          <div
-            key={news.id}
-            className="bg-white rounded-lg overflow-hidden shadow-sm"
-          >
-            <div className="relative h-48 md:h-56">
-              <Image
-                src={news.image}
-                alt={news.title}
-                fill
-                className="object-cover"
-              />
-              <div className="absolute bottom-0 left-4 bg-blue-600 text-white px-3 py-2 text-sm font-bold">
-                {news.date}
-              </div>
-            </div>
-            <div className="p-4">
-              <p className="text-gray-800 mb-4 line-clamp-2">
-                {news.description}
-              </p>
-              <Button
-                variant="secondary"
-                className="w-full bg-gray-200 hover:bg-gray-300 text-gray-700 uppercase"
+    <div className="relative">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 my-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <AnimatePresence mode="wait">
+            {visibleNews.map((item, index) => (
+              <motion.div
+                key={item.id}
+                className="bg-white rounded-lg overflow-hidden shadow-sm"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.3, delay: index * 0.1 }}
               >
-                leggi di più
-              </Button>
-            </div>
-          </div>
-        ))}
+                <Link href={`/${item.tipo}/${item.linkNews}`}>
+                  <div className="relative h-48 md:h-56 border-b-[6px] border-blue-600">
+                    <Image
+                      src={item.coverImage || "/img/notizia1.jpg"}
+                      alt={item.title}
+                      fill
+                      className="object-cover"
+                    />
+                    <div className="absolute bottom-0 left-4 bg-blue-600 text-white px-3 py-2 text-sm font-bold">
+                      {formatDate(item.createdAt)}
+                    </div>
+                  </div>
+                  <div className="p-4">
+                    <p className="text-gray-800 mb-4 line-clamp-2">
+                      {item.title}
+                    </p>
+                    <div className="w-full py-2 text-center border border-snalv-200 text-snalv-600 rounded-md hover:bg-snalv-50 transition-colors uppercase">
+                      leggi di più
+                    </div>
+                  </div>
+                </Link>
+              </motion.div>
+            ))}
+          </AnimatePresence>
+        </div>
       </div>
-      {/* Pagination dots */}
-      <div className="flex justify-center mt-6 gap-2">
-        <div className="w-2 h-2 rounded-full bg-gray-500"></div>
-        <div className="w-2 h-2 rounded-full bg-gray-300"></div>
-        <div className="w-2 h-2 rounded-full bg-gray-300"></div>
-      </div>
+
+      {news.length > 6 && (
+        <div className="flex justify-center gap-4 mt-8">
+          <button
+            onClick={prevSlide}
+            className="w-10 h-10 flex items-center justify-center bg-white rounded-full shadow-md hover:bg-snalv-50 text-snalv-500"
+          >
+            <ChevronLeft className="w-6 h-6" />
+          </button>
+          <button
+            onClick={nextSlide}
+            className="w-10 h-10 flex items-center justify-center bg-white rounded-full shadow-md hover:bg-snalv-50 text-snalv-500"
+          >
+            <ChevronRight className="w-6 h-6" />
+          </button>
+        </div>
+      )}
     </div>
   );
 };
