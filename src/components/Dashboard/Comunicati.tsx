@@ -438,7 +438,7 @@ const News = () => {
                 <h2 className="text-2xl font-bold">{selectedNews?.title}</h2>
                 <div className="flex gap-4 text-sm text-gray-500">
                   <div>Link Comunicato: {selectedNews?.linkNews}</div>
-                  <div>Categoria: {selectedNews?.category}</div>
+                  <div>Categoria: {selectedNews?.categories?.join(", ")}</div>
                   <div>Data: {formatDate(selectedNews?.createdAt)}</div>
                 </div>
 

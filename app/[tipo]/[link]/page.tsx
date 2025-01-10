@@ -1,29 +1,21 @@
-// app/notizia/[linkNews]/page.tsx
-
+// app/[type]/[linkNews]/page.tsx
 import { collection, query, where, getDocs } from "firebase/firestore";
 import { db } from "@/src/lib/firebase";
 import Image from "next/image";
 import Header from "@/src/components/Header";
 import Footer from "@/src/components/Footer";
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 
-// Definiamo il tipo per i params
 type Props = {
   params: {
-    linkNews: string;
+    tipo: string; // cambiato da type a tipo
+    link: string; // cambiato da linkNews a link
   };
 };
 
-// Modifica generateMetadata per gestire meglio il caso undefined
 export async function generateMetadata({ params }: any): Promise<Metadata> {
-  if (!params.linkNews) {
-    return {
-      title: "Contenuto non trovato",
-      description: "Il contenuto richiesto non è disponibile",
-    };
-  }
-
-  const post: any = await getPost(params.linkNews);
+  const post: any = await getPost(params.type, params.linkNews);
 
   if (!post) {
     return {
@@ -33,96 +25,62 @@ export async function generateMetadata({ params }: any): Promise<Metadata> {
   }
 
   return {
-    title: post.title || "Notizia",
+    title: post.title,
     description: post.content?.slice(0, 160) || "",
   };
 }
 
-async function searchInCollection(collectionName: string, linkNews: string) {
-  if (!linkNews) return null;
+async function getPost(tipo: string, link: string) {
+  console.log("Fetching post with:", { tipo, link });
 
   try {
+    // Determina la collezione corretta
+    const collectionName = tipo === "notizie" ? "notizie" : "comunicati";
+    console.log("Using collection:", collectionName);
+
     const q = query(
       collection(db, collectionName),
-      where("linkNews", "==", linkNews.trim())
+      where("linkNews", "==", link)
     );
 
     const querySnapshot = await getDocs(q);
+    console.log("Query results:", querySnapshot.size);
 
     if (!querySnapshot.empty) {
       const doc = querySnapshot.docs[0];
       const data = doc.data();
+      console.log("Found document:", data);
+
       return {
         id: doc.id,
         ...data,
         createdAt: data.createdAt?.toDate() || null,
+        type: collectionName,
       };
     }
 
+    console.log("No document found");
     return null;
   } catch (error) {
-    console.error("Error searching in collection:", error);
+    console.error("Error in getPost:", error);
     return null;
   }
 }
 
-async function getPost(linkNews: string) {
-  if (!linkNews) {
-    return null;
+export default async function PostPage({ params }: Props) {
+  console.log("Page params:", params);
+
+  if (!params.link || !params.tipo) {
+    console.log("Invalid params detected");
+    return notFound();
   }
 
-  try {
-    // Cerca nelle notizie
-    let post = await searchInCollection("comunicati", linkNews);
-    let type = "comunicato";
-
-    // Se non trovato nei comunicati, cerca nelle notizie
-    if (!post) {
-      post = await searchInCollection("notizie", linkNews);
-      type = "notizia";
-    }
-
-    if (post) {
-      return {
-        ...post,
-        type,
-      };
-    }
-
-    return null;
-  } catch (error) {
-    console.error("Error fetching post:", error);
-    return null;
-  }
-}
-
-export default async function NewsPage({ params }: any) {
-  const { linkNews } = params;
-
-  if (!linkNews) {
-    return (
-      <>
-        <Header />
-        <div className="min-h-screen flex items-center justify-center">
-          <div className="text-2xl">Link non valido</div>
-        </div>
-        <Footer />
-      </>
-    );
-  }
-
-  const post: any = await getPost(linkNews);
+  const post: any = await getPost(params.tipo, params.link);
+  console.log("Retrieved post:", post);
 
   if (!post) {
-    return (
-      <>
-        <Header />
-        <div className="min-h-screen flex items-center justify-center">
-          <div className="text-2xl">Contenuto non trovato</div>
-        </div>
-        <Footer />
-      </>
-    );
+    console.log("Post not found");
+    return notFound();
   }
 
   const formatDate = (date: Date | null) => {
@@ -155,7 +113,7 @@ export default async function NewsPage({ params }: any) {
             <div>{formatDate(post.createdAt)}</div>
             <div>·</div>
             <div>
-              {post.type === "notizia" ? "Notizia" : "Comunicato Stampa"}
+              {post.type === "notizie" ? "Notizia" : "Comunicato Stampa"}
             </div>
             {post.categories && post.categories.length > 0 && (
               <>

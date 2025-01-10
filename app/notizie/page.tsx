@@ -11,6 +11,7 @@ import Image from "next/image";
 import { collection, getDocs, query, orderBy } from "firebase/firestore";
 import { db } from "@/src/lib/firebase";
 import Link from "next/link";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 const ComunicatiPage = () => {
   const [activeSection, setActiveSection] = useState("comunicati");
@@ -298,7 +299,9 @@ const ComunicatiPage = () => {
 
           {/* Main Content */}
           <div className="col-span-3">
-            <PostsSection />
+            <ScrollArea className="h-[calc(100vh-200px)]">
+              <PostsSection />
+            </ScrollArea>
           </div>
         </div>
       </main>
