@@ -10,6 +10,7 @@ import HeroSection from "@/src/components/Hero";
 import Image from "next/image";
 import { collection, getDocs, query, orderBy } from "firebase/firestore";
 import { db } from "@/src/lib/firebase";
+import Link from "next/link";
 
 const ComunicatiPage = () => {
   const [activeSection, setActiveSection] = useState("comunicati");
@@ -183,9 +184,22 @@ const ComunicatiPage = () => {
                   <p className="text-gray-600 mb-6 line-clamp-3">
                     {item.content}
                   </p>
-                  <Button className="bg-red-400 hover:bg-red-600">
-                    LEGGI DI PIÙ
-                  </Button>
+                  <Link
+                    href={item.linkNews ? `/notizia/${item.linkNews}` : "#"}
+                    onClick={(e) => {
+                      if (!item.linkNews) {
+                        e.preventDefault();
+                        alert("Link non disponibile");
+                      }
+                    }}
+                  >
+                    <Button
+                      className="bg-red-400 hover:bg-red-600"
+                      disabled={!item.linkNews}
+                    >
+                      LEGGI DI PIÙ
+                    </Button>
+                  </Link>
                 </div>
               </div>
             </div>

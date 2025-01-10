@@ -73,6 +73,7 @@ const News = () => {
   const [isLinkDialogOpen, setIsLinkDialogOpen] = useState(false);
   const [linkUrl, setLinkUrl] = useState("");
   const [linkText, setLinkText] = useState("");
+  const [linkNews, setLinkNews] = useState("");
   const [coverImage, setCoverImage] = useState("");
   const [selectedCategories, setSelectedCategories] = useState([]); // invece di category
 
@@ -93,6 +94,7 @@ const News = () => {
   useEffect(() => {
     if (selectedNews) {
       setTitle(selectedNews.title || "");
+      setLinkNews(selectedNews.linkNews || "");
       setContent(selectedNews.content || "");
       setSelectedCategories(selectedNews.categories || []); // Aggiorna per usare l'array
       setImages(selectedNews.images || []);
@@ -105,6 +107,7 @@ const News = () => {
   const resetForm = () => {
     setTitle("");
     setContent("");
+    setLinkNews("");
     setSelectedCategories([]); // Reset categorie multiple
     setImages([]);
     setLinkUrl("");
@@ -225,6 +228,7 @@ const News = () => {
     const data = {
       title,
       content,
+      linkNews,
       categories: selectedCategories, // Usa l'array di categorie
       images,
       coverImage,
@@ -342,6 +346,7 @@ const News = () => {
                 <TableRow>
                   <TableHead>Data</TableHead>
                   <TableHead>Titolo</TableHead>
+                  <TableHead>Link Notizia</TableHead>
                   <TableHead>Categoria</TableHead>
                   <TableHead>Azioni</TableHead>
                 </TableRow>
@@ -351,6 +356,7 @@ const News = () => {
                   <TableRow key={item.id}>
                     <TableCell>{formatDate(item.createdAt)}</TableCell>
                     <TableCell>{item.title}</TableCell>
+                    <TableCell>{item.linkNews}</TableCell>
                     <TableCell>{item.categories?.join(", ") || ""}</TableCell>
                     <TableCell className="flex gap-2">
                       <Button
@@ -408,6 +414,7 @@ const News = () => {
               <div className="space-y-4">
                 <h2 className="text-2xl font-bold">{selectedNews?.title}</h2>
                 <div className="flex gap-4 text-sm text-gray-500">
+                  <div>Link Notizia: {selectedNews?.linkNews}</div>
                   <div>Categoria: {selectedNews?.category}</div>
                   <div>Data: {formatDate(selectedNews?.createdAt)}</div>
                 </div>
@@ -460,6 +467,16 @@ const News = () => {
                     id="title"
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
+                    required
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="linkNews">Link Notizia</Label>
+                  <Input
+                    id="linkNews"
+                    value={linkNews}
+                    onChange={(e) => setLinkNews(e.target.value)}
                     required
                   />
                 </div>
