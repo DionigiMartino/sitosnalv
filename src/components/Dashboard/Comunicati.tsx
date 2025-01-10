@@ -296,7 +296,7 @@ const News = () => {
       alert("Comunicato eliminato con successo!");
     } catch (error) {
       console.error("Error deleting news:", error);
-      alert("Errore durante l'eliminazione");
+      alert("Errore durante l'eliminazione del comunicato");
     } finally {
       setIsLoading(false);
     }
