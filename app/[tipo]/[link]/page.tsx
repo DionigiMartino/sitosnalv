@@ -1,4 +1,3 @@
-// app/[type]/[linkNews]/page.tsx
 import { collection, query, where, getDocs } from "firebase/firestore";
 import { db } from "@/src/lib/firebase";
 import Image from "next/image";
@@ -7,13 +6,7 @@ import Footer from "@/src/components/Footer";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import ComunicatiPage from "@/src/components/Comunicati";
-
-type Props = {
-  params: {
-    tipo: string; // cambiato da type a tipo
-    link: string; // cambiato da linkNews a link
-  };
-};
+import NewsComponent from "@/src/components/CategoryNews";
 
 export async function generateMetadata({ params }: any): Promise<Metadata> {
   const post: any = await getPost(params.type, params.linkNews);
@@ -35,7 +28,6 @@ async function getPost(tipo: string, link: string) {
   console.log("Fetching post with:", { tipo, link });
 
   try {
-    // Determina la collezione corretta
     const collectionName = tipo === "notizia" ? "notizie" : "comunicati";
     console.log("Using collection:", collectionName);
 
@@ -101,7 +93,7 @@ export default async function PostPage({ params }: any) {
           {post.coverImage && (
             <div className="relative aspect-video w-full min-h-[100vh] mb-8 rounded-lg overflow-hidden">
               <Image
-                src={post.coverImage}
+                src={post.coverImage || "/img/logo.jpg"}
                 alt={post.title}
                 fill
                 className="object-cover"
@@ -156,8 +148,16 @@ export default async function PostPage({ params }: any) {
           )}
         </article>
 
-        {post.type === "comunicati" && (
-          <ComunicatiPage categories={post.categories} currentLink={post.linkNews} />
+        {post.type === "comunicati" ? (
+          <ComunicatiPage
+            categories={post.categories}
+            currentLink={post.linkNews}
+          />
+        ) : (
+          <NewsComponent
+            categories={post.categories}
+            currentLink={post.linkNews}
+          />
         )}
       </main>
       <Footer />

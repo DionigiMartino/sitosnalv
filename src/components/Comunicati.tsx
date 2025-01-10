@@ -103,10 +103,14 @@ const ComunicatiStampa = ({ categories, currentLink }: Props) => {
                 <Link href={`/${comunicato.tipo}/${comunicato.linkNews}`}>
                   <div className="relative h-40 sm:h-48 md:h-64 border-b-[6px] border-blue-600">
                     <Image
-                      src={comunicato.coverImage || "/img/notizia1.jpg"}
+                      src={comunicato.coverImage || "/img/logo.jpg"}
                       alt={comunicato.title}
                       fill
-                      className="object-cover"
+                      className={
+                        comunicato.coverImage
+                          ? "object-cover"
+                          : "object-contain"
+                      }
                     />
                     <div className="absolute bottom-0 left-4 bg-blue-600 text-white px-4 font-bold py-2 text-xs sm:text-sm">
                       {formatDate(comunicato.createdAt)}

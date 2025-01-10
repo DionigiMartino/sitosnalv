@@ -102,10 +102,10 @@ const NewsComponent = ({ categories, currentLink }: Props) => {
                 <Link href={`/${item.tipo}/${item.linkNews}`}>
                   <div className="relative h-48 md:h-56 border-b-[6px] border-blue-600">
                     <Image
-                      src={item.coverImage || "/img/notizia1.jpg"}
+                      src={item.coverImage || "/img/logo.jpg"}
                       alt={item.title}
                       fill
-                      className="object-cover"
+                      className={`${item.coverImage ? "object-cover" : "object-contain"}`}
                     />
                     <div className="absolute bottom-0 left-4 bg-blue-600 text-white px-3 py-2 text-sm font-bold">
                       {formatDate(item.createdAt)}
