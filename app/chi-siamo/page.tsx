@@ -32,10 +32,8 @@ const ChiSiamoPage = () => {
       }
     };
 
-    // Gestisci l'hash iniziale
     updateSection();
 
-    // Modifica il listener per controllare se siamo nella stessa pagina
     const handleClick = (e) => {
       const target = e.target.closest("a");
       if (target && target.hash) {

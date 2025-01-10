@@ -166,10 +166,10 @@ const ComunicatiPage = () => {
               <div className="grid grid-cols-3">
                 <div className="relative ">
                   <Image
-                    src={item.coverImage || "/img/sede.jpg"}
+                    src={item.coverImage || "/img/logo.jpg"}
                     alt={item.title}
                     fill
-                    className="object-cover"
+                    className={`${item.coverImage ? "object-cover" : "object-contain"}`}
                   />
                   <div className="absolute bottom-0 left-4 bg-blue-600 text-white font-bold px-3 py-3 text-sm">
                     {formatDate(item.createdAt)}

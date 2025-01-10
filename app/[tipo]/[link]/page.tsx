@@ -36,7 +36,7 @@ async function getPost(tipo: string, link: string) {
 
   try {
     // Determina la collezione corretta
-    const collectionName = tipo === "notizie" ? "notizie" : "comunicati";
+    const collectionName = tipo === "notizia" ? "notizie" : "comunicati";
     console.log("Using collection:", collectionName);
 
     const q = query(
