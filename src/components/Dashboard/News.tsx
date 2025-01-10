@@ -13,13 +13,6 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
   Table,
   TableBody,
   TableCell,
@@ -57,6 +50,8 @@ import {
   serverTimestamp,
 } from "firebase/firestore";
 import { db } from "@/src/lib/firebase";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Checkbox } from "@/components/ui/checkbox";
 
 const News = () => {
   // Stati per la lista
@@ -79,8 +74,17 @@ const News = () => {
   const [linkUrl, setLinkUrl] = useState("");
   const [linkText, setLinkText] = useState("");
   const [coverImage, setCoverImage] = useState("");
+  const [selectedCategories, setSelectedCategories] = useState([]); // invece di category
 
-  const categories = ["Fragili", "Socio Sanitario", "Enti", "Confsal"];
+  const availableCategories = [
+    "Fragili",
+    "Socio Sanitario",
+    "Enti Locali",
+    "Dipartimento SUD",
+    "Servizi",
+    "In Evidenza",
+    "Territorio",
+  ];
 
   useEffect(() => {
     fetchNews();
@@ -90,9 +94,9 @@ const News = () => {
     if (selectedNews) {
       setTitle(selectedNews.title || "");
       setContent(selectedNews.content || "");
-      setCategory(selectedNews.category || "");
+      setSelectedCategories(selectedNews.categories || []); // Aggiorna per usare l'array
       setImages(selectedNews.images || []);
-      setCoverImage(selectedNews.coverImage || ""); // Carica la copertina esistente
+      setCoverImage(selectedNews.coverImage || "");
     } else {
       resetForm();
     }
@@ -101,11 +105,11 @@ const News = () => {
   const resetForm = () => {
     setTitle("");
     setContent("");
-    setCategory("");
+    setSelectedCategories([]); // Reset categorie multiple
     setImages([]);
     setLinkUrl("");
     setLinkText("");
-    setCoverImage(""); // Reset anche della copertina
+    setCoverImage("");
   };
 
   const fetchNews = async () => {
@@ -221,9 +225,9 @@ const News = () => {
     const data = {
       title,
       content,
-      category,
+      categories: selectedCategories, // Usa l'array di categorie
       images,
-      coverImage, // Aggiungi la copertina ai dati
+      coverImage,
       updatedAt: serverTimestamp(),
     };
 
@@ -347,7 +351,7 @@ const News = () => {
                   <TableRow key={item.id}>
                     <TableCell>{formatDate(item.createdAt)}</TableCell>
                     <TableCell>{item.title}</TableCell>
-                    <TableCell>{item.category}</TableCell>
+                    <TableCell>{item.categories?.join(", ") || ""}</TableCell>
                     <TableCell className="flex gap-2">
                       <Button
                         variant="outline"
@@ -389,269 +393,282 @@ const News = () => {
 
       {/* Form Dialog */}
       <Dialog open={showForm} onOpenChange={setShowForm}>
-        <DialogContent className="max-w-4xl">
-          <DialogHeader>
-            <DialogTitle>
-              {isViewMode
-                ? "Visualizza Notizia"
-                : selectedNews
-                ? "Modifica Notizia"
-                : "Nuova Notizia"}
-            </DialogTitle>
-          </DialogHeader>
-          {isViewMode ? (
-            <div className="space-y-4">
-              <h2 className="text-2xl font-bold">{selectedNews?.title}</h2>
-              <div className="flex gap-4 text-sm text-gray-500">
-                <div>Categoria: {selectedNews?.category}</div>
-                <div>Data: {formatDate(selectedNews?.createdAt)}</div>
-              </div>
+        <DialogContent className="max-w-6xl">
+          <ScrollArea className="h-[600px]">
+            <DialogHeader>
+              <DialogTitle>
+                {isViewMode
+                  ? "Visualizza Notizia"
+                  : selectedNews
+                  ? "Modifica Notizia"
+                  : "Nuova Notizia"}
+              </DialogTitle>
+            </DialogHeader>
+            {isViewMode ? (
+              <div className="space-y-4">
+                <h2 className="text-2xl font-bold">{selectedNews?.title}</h2>
+                <div className="flex gap-4 text-sm text-gray-500">
+                  <div>Categoria: {selectedNews?.category}</div>
+                  <div>Data: {formatDate(selectedNews?.createdAt)}</div>
+                </div>
 
-              {/* Visualizzazione copertina */}
-              {selectedNews?.coverImage && (
-                <div className="relative aspect-video w-full overflow-hidden rounded-lg">
-                  <img
-                    src={selectedNews.coverImage}
-                    alt="Copertina"
-                    className="w-full h-full object-cover"
+                {/* Visualizzazione copertina */}
+                {selectedNews?.coverImage && (
+                  <div className="relative aspect-video w-full overflow-hidden rounded-lg">
+                    <img
+                      src={selectedNews.coverImage}
+                      alt="Copertina"
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                )}
+
+                <div className="prose max-w-none whitespace-pre-wrap">
+                  {selectedNews?.content}
+                </div>
+
+                {/* Visualizzazione altre immagini */}
+                {selectedNews?.images?.length > 0 && (
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                    {selectedNews.images.map((url, index) => (
+                      <div key={index} className="relative group">
+                        <img
+                          src={url}
+                          alt={`Image ${index + 1}`}
+                          className="rounded-lg w-full h-48 object-cover"
+                        />
+                        <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-all duration-300 flex items-center justify-center">
+                          <a
+                            href={url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="opacity-0 group-hover:opacity-100 bg-white text-black px-4 py-2 rounded-lg shadow-lg transition-opacity duration-300"
+                          >
+                            Vedi immagine
+                          </a>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            ) : (
+              <form onSubmit={handleSubmit} className="space-y-6">
+                <div className="space-y-2">
+                  <Label htmlFor="title">Titolo</Label>
+                  <Input
+                    id="title"
+                    value={title}
+                    onChange={(e) => setTitle(e.target.value)}
+                    required
                   />
                 </div>
-              )}
 
-              <div className="prose max-w-none whitespace-pre-wrap">
-                {selectedNews?.content}
-              </div>
-
-              {/* Visualizzazione altre immagini */}
-              {selectedNews?.images?.length > 0 && (
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                  {selectedNews.images.map((url, index) => (
-                    <div key={index} className="relative group">
-                      <img
-                        src={url}
-                        alt={`Image ${index + 1}`}
-                        className="rounded-lg w-full h-48 object-cover"
-                      />
-                      <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-all duration-300 flex items-center justify-center">
-                        <a
-                          href={url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="opacity-0 group-hover:opacity-100 bg-white text-black px-4 py-2 rounded-lg shadow-lg transition-opacity duration-300"
+                <div className="space-y-2">
+                  <Label>Categorie</Label>
+                  <div className="grid grid-cols-2 gap-4">
+                    {availableCategories.map((cat) => (
+                      <div key={cat} className="flex items-center space-x-2">
+                        <Checkbox
+                          id={cat}
+                          checked={selectedCategories.includes(cat)}
+                          onCheckedChange={(checked) => {
+                            setSelectedCategories((prev) =>
+                              checked
+                                ? [...prev, cat]
+                                : prev.filter((c) => c !== cat)
+                            );
+                          }}
+                        />
+                        <label
+                          htmlFor={cat}
+                          className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                         >
-                          Vedi immagine
-                        </a>
+                          {cat}
+                        </label>
                       </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-          ) : (
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div className="space-y-2">
-                <Label htmlFor="title">Titolo</Label>
-                <Input
-                  id="title"
-                  value={title}
-                  onChange={(e) => setTitle(e.target.value)}
-                  required
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="category">Categoria</Label>
-                <Select value={category} onValueChange={setCategory} required>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Seleziona categoria" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {categories.map((cat) => (
-                      <SelectItem key={cat} value={cat}>
-                        {cat}
-                      </SelectItem>
                     ))}
-                  </SelectContent>
-                </Select>
-              </div>
+                  </div>
+                </div>
 
-              {/* Sezione Copertina */}
-              <div className="space-y-2">
-                <Label>Immagine di Copertina</Label>
-                <div className="space-y-4">
-                  {coverImage && (
-                    <div className="relative aspect-video w-full overflow-hidden rounded-lg">
-                      <img
-                        src={coverImage}
-                        alt="Cover Preview"
-                        className="w-full h-full object-cover"
-                      />
+                {/* Sezione Copertina */}
+                <div className="space-y-2">
+                  <Label>Immagine di Copertina</Label>
+                  <div className="space-y-4">
+                    {coverImage && (
+                      <div className="relative aspect-video w-full overflow-hidden rounded-lg">
+                        <img
+                          src={coverImage}
+                          alt="Cover Preview"
+                          className="w-full h-full object-cover"
+                        />
+                        <Button
+                          type="button"
+                          variant="destructive"
+                          size="icon"
+                          className="absolute top-2 right-2"
+                          onClick={() => setCoverImage("")}
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    )}
+                    <div>
                       <Button
                         type="button"
-                        variant="destructive"
-                        size="icon"
-                        className="absolute top-2 right-2"
-                        onClick={() => setCoverImage("")}
+                        variant="outline"
+                        onClick={() =>
+                          document.getElementById("cover-upload").click()
+                        }
+                        disabled={isLoading}
                       >
-                        <Trash2 className="h-4 w-4" />
+                        <Image className="h-4 w-4 mr-2" />
+                        {coverImage ? "Cambia Copertina" : "Carica Copertina"}
                       </Button>
+                      <input
+                        id="cover-upload"
+                        type="file"
+                        accept="image/*"
+                        onChange={handleCoverUpload}
+                        className="hidden"
+                      />
                     </div>
-                  )}
-                  <div>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Label>Testo</Label>
+                    <div className="flex gap-2">
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="icon"
+                        onClick={() => handleTextFormat("bold")}
+                      >
+                        <Bold className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="icon"
+                        onClick={() => handleTextFormat("italic")}
+                      >
+                        <Italic className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="icon"
+                        onClick={() => handleTextFormat("underline")}
+                      >
+                        <Underline className="h-4 w-4" />
+                      </Button>
+                      <Dialog
+                        open={isLinkDialogOpen}
+                        onOpenChange={setIsLinkDialogOpen}
+                      >
+                        <DialogTrigger asChild>
+                          <Button type="button" variant="outline" size="icon">
+                            <Link className="h-4 w-4" />
+                          </Button>
+                        </DialogTrigger>
+                        <DialogContent>
+                          <DialogHeader>
+                            <DialogTitle>Inserisci Link</DialogTitle>
+                          </DialogHeader>
+                          <div className="space-y-4 py-4">
+                            <div className="space-y-2">
+                              <Label>Testo da visualizzare</Label>
+                              <Input
+                                value={linkText}
+                                onChange={(e) => setLinkText(e.target.value)}
+                                placeholder="es: Google"
+                              />
+                            </div>
+                            <div className="space-y-2">
+                              <Label>URL</Label>
+                              <Input
+                                value={linkUrl}
+                                onChange={(e) => setLinkUrl(e.target.value)}
+                                placeholder="es: https://www.google.com"
+                              />
+                            </div>
+                            <Button
+                              type="button"
+                              onClick={insertLink}
+                              className="w-full"
+                            >
+                              Inserisci Link
+                            </Button>
+                          </div>
+                        </DialogContent>
+                      </Dialog>
+                    </div>
+                  </div>
+                  <Textarea
+                    value={content}
+                    onChange={(e) => setContent(e.target.value)}
+                    rows={10}
+                    required
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label>Altre Immagini</Label>
+                  <div className="flex flex-wrap gap-4">
+                    {images.map((url, index) => (
+                      <div key={index} className="relative group">
+                        <img
+                          src={url}
+                          alt={`Uploaded ${index + 1}`}
+                          className="w-24 h-24 object-cover rounded"
+                        />
+                        <Button
+                          type="button"
+                          variant="destructive"
+                          size="icon"
+                          className="absolute top-1 right-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                          onClick={() =>
+                            setImages(images.filter((_, i) => i !== index))
+                          }
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    ))}
                     <Button
                       type="button"
                       variant="outline"
                       onClick={() =>
-                        document.getElementById("cover-upload").click()
+                        document.getElementById("image-upload").click()
                       }
                       disabled={isLoading}
                     >
                       <Image className="h-4 w-4 mr-2" />
-                      {coverImage ? "Cambia Copertina" : "Carica Copertina"}
+                      Carica Immagini
                     </Button>
                     <input
-                      id="cover-upload"
+                      id="image-upload"
                       type="file"
+                      multiple
                       accept="image/*"
-                      onChange={handleCoverUpload}
+                      onChange={handleImageUpload}
                       className="hidden"
                     />
                   </div>
                 </div>
-              </div>
 
-              <div className="space-y-2">
-                <div className="flex items-center gap-2 mb-2">
-                  <Label>Testo</Label>
-                  <div className="flex gap-2">
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="icon"
-                      onClick={() => handleTextFormat("bold")}
-                    >
-                      <Bold className="h-4 w-4" />
-                    </Button>
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="icon"
-                      onClick={() => handleTextFormat("italic")}
-                    >
-                      <Italic className="h-4 w-4" />
-                    </Button>
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="icon"
-                      onClick={() => handleTextFormat("underline")}
-                    >
-                      <Underline className="h-4 w-4" />
-                    </Button>
-                    <Dialog
-                      open={isLinkDialogOpen}
-                      onOpenChange={setIsLinkDialogOpen}
-                    >
-                      <DialogTrigger asChild>
-                        <Button type="button" variant="outline" size="icon">
-                          <Link className="h-4 w-4" />
-                        </Button>
-                      </DialogTrigger>
-                      <DialogContent>
-                        <DialogHeader>
-                          <DialogTitle>Inserisci Link</DialogTitle>
-                        </DialogHeader>
-                        <div className="space-y-4 py-4">
-                          <div className="space-y-2">
-                            <Label>Testo da visualizzare</Label>
-                            <Input
-                              value={linkText}
-                              onChange={(e) => setLinkText(e.target.value)}
-                              placeholder="es: Google"
-                            />
-                          </div>
-                          <div className="space-y-2">
-                            <Label>URL</Label>
-                            <Input
-                              value={linkUrl}
-                              onChange={(e) => setLinkUrl(e.target.value)}
-                              placeholder="es: https://www.google.com"
-                            />
-                          </div>
-                          <Button
-                            type="button"
-                            onClick={insertLink}
-                            className="w-full"
-                          >
-                            Inserisci Link
-                          </Button>
-                        </div>
-                      </DialogContent>
-                    </Dialog>
-                  </div>
-                </div>
-                <Textarea
-                  value={content}
-                  onChange={(e) => setContent(e.target.value)}
-                  rows={10}
-                  required
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label>Altre Immagini</Label>
-                <div className="flex flex-wrap gap-4">
-                  {images.map((url, index) => (
-                    <div key={index} className="relative group">
-                      <img
-                        src={url}
-                        alt={`Uploaded ${index + 1}`}
-                        className="w-24 h-24 object-cover rounded"
-                      />
-                      <Button
-                        type="button"
-                        variant="destructive"
-                        size="icon"
-                        className="absolute top-1 right-1 opacity-0 group-hover:opacity-100 transition-opacity"
-                        onClick={() =>
-                          setImages(images.filter((_, i) => i !== index))
-                        }
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  ))}
-                  <Button
-                    type="button"
-                    variant="outline"
-                    onClick={() =>
-                      document.getElementById("image-upload").click()
-                    }
-                    disabled={isLoading}
-                  >
-                    <Image className="h-4 w-4 mr-2" />
-                    Carica Immagini
-                  </Button>
-                  <input
-                    id="image-upload"
-                    type="file"
-                    multiple
-                    accept="image/*"
-                    onChange={handleImageUpload}
-                    className="hidden"
-                  />
-                </div>
-              </div>
-
-              <Button type="submit" disabled={isLoading}>
-                {isLoading
-                  ? "Salvataggio..."
-                  : selectedNews
-                  ? "Aggiorna"
-                  : "Salva"}
-              </Button>
-            </form>
-          )}
+                <Button type="submit" disabled={isLoading}>
+                  {isLoading
+                    ? "Salvataggio..."
+                    : selectedNews
+                    ? "Aggiorna"
+                    : "Salva"}
+                </Button>
+              </form>
+            )}
+          </ScrollArea>
         </DialogContent>
       </Dialog>
 
