@@ -46,7 +46,7 @@ const HomePage = () => {
           <h2 className="text-5xl font-bold text-white mb-12 text-center">
             IN EVIDENZA
           </h2>
-          <ComunicatiStampa category="In Evidenza" />
+          <ComunicatiStampa categories={["In Evidenza"]} />
 
           <Notizie />
         </div>

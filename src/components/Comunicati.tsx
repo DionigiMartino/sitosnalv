@@ -4,11 +4,17 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Card } from "@/components/ui/card";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 import { useState, useEffect } from "react";
 import { collection, getDocs, query, orderBy } from "firebase/firestore";
 import { db } from "@/src/lib/firebase";
 
-const ComunicatiStampa = ({ category }) => {
+interface Props {
+  categories: string[];
+  currentLink?: string;
+}
+
+const ComunicatiStampa = ({ categories, currentLink }: Props) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [comunicati, setComunicati] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -17,7 +23,7 @@ const ComunicatiStampa = ({ category }) => {
     const fetchComunicati = async () => {
       try {
         const comunicatiQuery = query(
-          collection(db, "notizie"),
+          collection(db, "comunicati"),
           orderBy("createdAt", "desc")
         );
         const querySnapshot = await getDocs(comunicatiQuery);
@@ -26,9 +32,17 @@ const ComunicatiStampa = ({ category }) => {
             id: doc.id,
             ...doc.data(),
             createdAt: doc.data().createdAt?.toDate(),
+            tipo: "comunicati",
           }))
-          // @ts-ignore
-          .filter((item) => item.categories?.includes(category)); // Filtra per la categoria passata come prop
+          .filter((item) => {
+            const hasMatchingCategory = categories.some((category) =>
+              // @ts-ignore
+              item.categories?.includes(category)
+            );
+            // @ts-ignore
+            const isNotCurrent = !currentLink || item.linkNews !== currentLink;
+            return hasMatchingCategory && isNotCurrent;
+          });
 
         setComunicati(comunicatiData);
       } catch (error) {
@@ -39,7 +53,7 @@ const ComunicatiStampa = ({ category }) => {
     };
 
     fetchComunicati();
-  }, [category]);
+  }, [categories, currentLink]);
 
   const formatDate = (date) => {
     if (!date) return "";
@@ -51,73 +65,69 @@ const ComunicatiStampa = ({ category }) => {
       .toUpperCase();
   };
 
-  const nextSlide = () =>
-    setCurrentIndex((prev) => (prev + 1) % comunicati.length);
+  const nextSlide = () => {
+    setCurrentIndex((prev) => (prev + 6 >= comunicati.length ? 0 : prev + 6));
+  };
 
-  const prevSlide = () =>
-    setCurrentIndex(
-      (prev) => (prev - 1 + comunicati.length) % comunicati.length
+  const prevSlide = () => {
+    setCurrentIndex((prev) =>
+      prev - 6 < 0 ? Math.max(0, comunicati.length - 6) : prev - 6
     );
+  };
 
   if (isLoading) {
     return <div className="text-center py-8">Caricamento...</div>;
   }
 
   if (comunicati.length === 0) {
-    return (
-      <div className="text-center py-8">
-        Nessun comunicato disponibile per questa categoria
-      </div>
-    );
+    return null;
   }
+
+  // Slice per mostrare 6 elementi alla volta
+  const visibleComunicati = comunicati.slice(currentIndex, currentIndex + 6);
 
   return (
     <div className="relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 my-8 sm:my-16">
-        <div className="flex flex-col gap-4 md:flex-row items-center justify-between w-full">
-          <div className="flex flex-col gap-4 md:flex-row items-center justify-between w-full">
-            <AnimatePresence mode="wait">
-              {[0, 1, 2].map((offset) => {
-                const index = (currentIndex + offset) % comunicati.length;
-                const comunicato = comunicati[index];
-
-                return (
-                  <motion.div
-                    key={`${comunicato.id}-${offset}`}
-                    className="bg-white rounded-lg shadow-sm overflow-hidden w-full md:w-[30%]"
-                    initial={{ opacity: 0, x: 50 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: -50 }}
-                    transition={{ duration: 0.3 }}
-                  >
-                    <div className="relative h-40 sm:h-48 md:h-64 border-b-[6px] border-blue-600">
-                      <Image
-                        src={comunicato.coverImage || "/img/notizia1.jpg"}
-                        alt={comunicato.title}
-                        fill
-                        className="object-cover"
-                      />
-                      <div className="absolute bottom-0 left-4 bg-blue-600 text-white px-4 font-bold py-2 text-xs sm:text-sm">
-                        {formatDate(comunicato.createdAt)}
-                      </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <AnimatePresence mode="wait">
+            {visibleComunicati.map((comunicato, index) => (
+              <motion.div
+                key={comunicato.id}
+                className="bg-white rounded-lg shadow-sm overflow-hidden"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.3, delay: index * 0.1 }}
+              >
+                <Link href={`/${comunicato.tipo}/${comunicato.linkNews}`}>
+                  <div className="relative h-40 sm:h-48 md:h-64 border-b-[6px] border-blue-600">
+                    <Image
+                      src={comunicato.coverImage || "/img/notizia1.jpg"}
+                      alt={comunicato.title}
+                      fill
+                      className="object-cover"
+                    />
+                    <div className="absolute bottom-0 left-4 bg-blue-600 text-white px-4 font-bold py-2 text-xs sm:text-sm">
+                      {formatDate(comunicato.createdAt)}
                     </div>
-                    <div className="p-4 sm:p-6">
-                      <p className="text-gray-800 mb-4 sm:mb-6 line-clamp-3">
-                        {comunicato.title}
-                      </p>
-                      <button className="w-full uppercase py-2 text-center border border-snalv-200 text-snalv-600 rounded-md hover:bg-snalv-50 transition-colors">
-                        leggi di più
-                      </button>
+                  </div>
+                  <div className="p-4 sm:p-6">
+                    <p className="text-gray-800 mb-4 sm:mb-6 line-clamp-3">
+                      {comunicato.title}
+                    </p>
+                    <div className="w-full uppercase py-2 text-center border border-snalv-200 text-snalv-600 rounded-md hover:bg-snalv-50 transition-colors">
+                      leggi di più
                     </div>
-                  </motion.div>
-                );
-              })}
-            </AnimatePresence>
-          </div>
+                  </div>
+                </Link>
+              </motion.div>
+            ))}
+          </AnimatePresence>
         </div>
       </div>
 
-      {comunicati.length > 3 && (
+      {comunicati.length > 6 && (
         <div className="flex justify-center gap-4 mt-8">
           <button
             onClick={prevSlide}

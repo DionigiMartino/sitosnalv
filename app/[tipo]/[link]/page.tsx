@@ -6,6 +6,7 @@ import Header from "@/src/components/Header";
 import Footer from "@/src/components/Footer";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import ComunicatiPage from "@/src/components/Comunicati";
 
 type Props = {
   params: {
@@ -98,7 +99,7 @@ export default async function PostPage({ params }: any) {
       <main className="max-w-7xl mx-auto px-4 py-12">
         <article className="prose lg:prose-xl mx-auto">
           {post.coverImage && (
-            <div className="relative aspect-video w-full mb-8 rounded-lg overflow-hidden">
+            <div className="relative aspect-video w-full min-h-[100vh] mb-8 rounded-lg overflow-hidden">
               <Image
                 src={post.coverImage}
                 alt={post.title}
@@ -154,6 +155,10 @@ export default async function PostPage({ params }: any) {
             </div>
           )}
         </article>
+
+        {post.type === "comunicati" && (
+          <ComunicatiPage categories={post.categories} currentLink={post.linkNews} />
+        )}
       </main>
       <Footer />
     </>
