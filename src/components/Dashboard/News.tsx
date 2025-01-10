@@ -76,6 +76,12 @@ const News = () => {
   const [linkNews, setLinkNews] = useState("");
   const [coverImage, setCoverImage] = useState("");
   const [selectedCategories, setSelectedCategories] = useState([]); // invece di category
+  const [isDuplicateLink, setIsDuplicateLink] = useState(false);
+
+  useEffect(() => {
+    const linkExists = news.some((item) => item.linkNews === linkNews);
+    setIsDuplicateLink(linkExists);
+  }, [news, linkNews]);
 
   const availableCategories = [
     "Fragili",
@@ -228,7 +234,7 @@ const News = () => {
     const data = {
       title,
       content,
-        linkNews,
+      linkNews,
       tipo: "notizia",
       categories: selectedCategories, // Usa l'array di categorie
       images,
@@ -478,8 +484,19 @@ const News = () => {
                     id="linkNews"
                     value={linkNews}
                     onChange={(e) => setLinkNews(e.target.value)}
+                    className={`${
+                      isDuplicateLink
+                        ? "border-red-500 focus:border-red-500 focus:ring-red-500"
+                        : ""
+                    }`}
                     required
                   />
+
+                  {isDuplicateLink && (
+                    <p className="text-red-500 text-sm mt-1">
+                      Questo link esiste già in un altro comunicato.
+                    </p>
+                  )}
                 </div>
 
                 <div className="space-y-2">

@@ -83,6 +83,13 @@ const News = () => {
   const [coverImage, setCoverImage] = useState("");
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [linkNews, setLinkNews] = useState("");
+  const [isDuplicateLink, setIsDuplicateLink] = useState(false);
+
+  // Modifica l'useEffect esistente per impostare lo stato di duplicazione
+  useEffect(() => {
+    const linkExists = news.some((item) => item.linkNews === linkNews);
+    setIsDuplicateLink(linkExists);
+  }, [news, linkNews]);
 
   const availableCategories = [
     "Fragili",
@@ -228,6 +235,14 @@ const News = () => {
     setContent(newContent);
   };
 
+  useEffect(() => {
+    if (news.some((item) => item.linkNews === linkNews)) {
+      console.log("Link trovato");
+    } else {
+      console.log("Non trovato");
+    }
+  }, [news, linkNews]); // Array di dipendenze
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
@@ -237,7 +252,7 @@ const News = () => {
       content,
       linkNews,
       categories: selectedCategories, // Usa l'array di categorie
-        images,
+      images,
       tipo: "comunicato",
       coverImage,
       updatedAt: serverTimestamp(),
@@ -485,8 +500,19 @@ const News = () => {
                     id="linkNews"
                     value={linkNews}
                     onChange={(e) => setLinkNews(e.target.value)}
+                    className={`${
+                      isDuplicateLink
+                        ? "border-red-500 focus:border-red-500 focus:ring-red-500"
+                        : ""
+                    }`}
                     required
                   />
+
+                  {isDuplicateLink && (
+                    <p className="text-red-500 text-sm mt-1">
+                      Questo link esiste già in un altro comunicato.
+                    </p>
+                  )}
                 </div>
 
                 <div className="space-y-2">

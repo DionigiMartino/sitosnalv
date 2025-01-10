@@ -145,8 +145,8 @@ const ComunicatiPage = () => {
     if (filteredPosts.length === 0) {
       return (
         <div className="text-center py-8">
-          Nessun {activeSection === "comunicati" ? "comunicato" : "notizia"}{" "}
-          trovato
+          {activeSection === "comunicati" ? "Nessun comunicato" : "Nessuna notizia"}{" "}
+          
         </div>
       );
     }
