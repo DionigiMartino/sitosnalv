@@ -1174,7 +1174,7 @@ const ChiSiamoPage = () => {
               <h2 className="text-[#1a365d] text-2xl font-bold mb-6 md:text-3xl">
                 NOTIZIE COMPARTO SOCIOSANITARIO
               </h2>
-              <CategoryNews category="sociosanitario" />
+              <CategoryNews categories={["Socio Sanitario"]} />
             </div>
           </div>
         );
@@ -1299,7 +1299,7 @@ const ChiSiamoPage = () => {
               <h2 className="text-[#1a365d] text-2xl font-bold mb-6 md:text-3xl">
                 NOTIZIE COMPARTO LAVORATORI FRAGILI
               </h2>
-              <CategoryNews category="fragili" />
+              <CategoryNews categories={["Fragili"]} />
             </div>
           </div>
         );
@@ -1391,7 +1391,7 @@ const ChiSiamoPage = () => {
               <h2 className="text-[#1a365d] text-2xl font-bold mb-6 md:text-3xl">
                 NOTIZIE COMPARTO ENTI LOCALI
               </h2>
-              <CategoryNews category="entilocali" />
+              <CategoryNews categories={["Enti Locali"]} />
             </div>
           </div>
         );
@@ -1453,7 +1453,7 @@ const ChiSiamoPage = () => {
               <h2 className="text-[#1a365d] text-2xl font-bold mb-6 md:text-3xl">
                 NOTIZIE DIPARTIMENTO SUD
               </h2>
-              <CategoryNews category="confsalsud" />
+              <CategoryNews categories={["Dipartimento SUD"]} />
             </div>
           </div>
         );

@@ -617,7 +617,7 @@ const TerritorioPage = () => {
               <h2 className="text-xl font-bold mb-6">
                 NOTIZIE E COMUNICATI STAMPA DEL TERRITORIO
               </h2>
-              <NewsComponent category="territorio" />
+              <NewsComponent categories={["Territorio"]} />
             </div>
           </div>
         );
