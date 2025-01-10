@@ -32,7 +32,9 @@
     "tailwindcss-animate": "^1.0.7"
   },
   "devDependencies": {
-    "@types/firebase": "^3.2.3",
+    "@firebase/app-types": "^0.9.3",
+    "@firebase/firestore-types": "^3.0.3",
+    "@firebase/storage-types": "^0.8.3",
     "@types/leaflet": "^1.9.15",
     "@types/node": "^20",
     "@types/react": "^18",

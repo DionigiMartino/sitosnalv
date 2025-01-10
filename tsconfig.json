@@ -14,6 +14,10 @@
     "jsx": "preserve",
     "incremental": true,
     "noImplicitAny": false,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+    "allowUnusedLabels": true,
+    "types": ["@firebase/app-types", "@firebase/firestore-types", "@firebase/storage-types"],
     "plugins": [
       {
         "name": "next"
