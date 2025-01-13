@@ -480,7 +480,7 @@ const Sedi = () => {
                 <Label>Email</Label>
                 <Input
                   name="email"
-                  type="email"
+                  type="text"
                   value={formData.email}
                   onChange={handleInputChange}
                   
@@ -491,7 +491,7 @@ const Sedi = () => {
                 <Label>PEC</Label>
                 <Input
                   name="pec"
-                  type="email"
+                  type="text"
                   value={formData.pec}
                   onChange={handleInputChange}
                   
