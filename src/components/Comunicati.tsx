@@ -100,7 +100,7 @@ const ComunicatiStampa = ({ categories, currentLink }: Props) => {
                 exit={{ opacity: 0, y: -20 }}
                 transition={{ duration: 0.3, delay: index * 0.1 }}
               >
-                <Link href={`/${comunicato.tipo}/${comunicato.linkNews}`}>
+                <Link href={`/comunicato/${comunicato.linkNews}`}>
                   <div className="relative h-40 sm:h-48 md:h-64 border-b-[6px] border-blue-600">
                     <Image
                       src={comunicato.coverImage || "/img/logo.jpg"}

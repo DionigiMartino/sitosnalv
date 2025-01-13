@@ -8,6 +8,7 @@ import { useState, useEffect } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { collection, getDocs, query, orderBy } from "firebase/firestore";
 import { db } from "@/src/lib/firebase";
+import Link from "next/link";
 
 const RecentNews = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -110,12 +111,11 @@ const RecentNews = () => {
                         <p className="text-gray-800 mb-4 sm:mb-6 line-clamp-3">
                           {item.title}
                         </p>
-                        <Button
-                          variant="secondary"
-                          className="w-full bg-gray-300 hover:bg-gray-400 font-bold uppercase text-blue-600"
+                        <Link href={`/notizia/${item.linkNews}`}
+                          className="w-full  hover:bg-gray-400 font-bold uppercase bg-blue-600 p-4 rounded-md text-white"
                         >
                           leggi di più
-                        </Button>
+                        </Link>
                       </div>
                     </CardContent>
                   </Card>

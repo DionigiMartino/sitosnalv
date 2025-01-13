@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import News from "@/src/components/Dashboard/News";
 import Comunicati from "@/src/components/Dashboard/Comunicati";
+import Sedi from "@/src/components/Dashboard/Sedi";
 
 const DashboardLayout = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -44,7 +45,7 @@ const DashboardLayout = () => {
         return <Comunicati />;
       case "locations":
         // Quando creerai il componente delle sedi
-        return <div>Sedi Component</div>;
+        return <Sedi />;
       default:
         return <News />;
     }

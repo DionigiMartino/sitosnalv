@@ -45,33 +45,27 @@ const MapComponent = ({ center, zoom, locations }: any) => {
 
   return (
     <MapContainer
-      center={center}
-      zoom={zoom}
-      style={{ height: "100%", width: "100%" }}
-      key="map"
-      ref={mapRef}
+      center={center || [41.9028, 12.4964]}
+      zoom={zoom || 6}
+      className="w-full h-full"
     >
-      <MapController center={center} zoom={zoom} />
-      <TileLayer
-        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-      />
-      {locations.map((location: any, index: number) => (
-        <Marker
-          key={`marker-${index}`}
-          position={location.position}
-          icon={customIcon}
-        >
-          <Popup>
-            <div className="p-2">
-              <h3 className="font-bold">{location.name}</h3>
-              <p>{location.address}</p>
-              <p>CAP: {location.cap}</p>
-              <p className="text-sm text-gray-600">{location.type}</p>
-            </div>
-          </Popup>
-        </Marker>
-      ))}
+      <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+      {locations?.map((location, index) =>
+        location.position &&
+        Array.isArray(location.position) &&
+        location.position.length === 2 ? (
+          <Marker key={index} position={location.position} icon={customIcon}>
+            <Popup>
+              <div>
+                <h3 className="font-bold">{location.name}</h3>
+                <p>{location.address}</p>
+                <p>CAP: {location.cap}</p>
+                <p>{location.type}</p>
+              </div>
+            </Popup>
+          </Marker>
+        ) : null
+      )}
     </MapContainer>
   );
 };

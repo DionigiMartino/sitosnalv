@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo} from "react";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import { Icon } from "leaflet";
 import { Input } from "@/components/ui/input";
@@ -12,13 +12,15 @@ import "leaflet/dist/leaflet.css";
 import { FiChevronLeft } from "react-icons/fi";
 import HeroSection from "@/src/components/Hero";
 import dynamic from "next/dynamic";
+import { getDocs, query, collection, orderBy, where } from "firebase/firestore";
+import { db } from "@/src/lib/firebase";
 
 const MapComponent = dynamic(() => import("@/src/components/Map"), {
   ssr: false,
   loading: () => <div className="w-full h-[500px] bg-gray-100" />,
 });
 
-const regioni: any = [
+const regioni = [
   "Abruzzo",
   "Basilicata",
   "Calabria",
@@ -41,9 +43,31 @@ const regioni: any = [
   "Veneto",
 ];
 
-const province: any = {
+const province: { [key: string]: string[] } = {
+  Abruzzo: ["Chieti", "L'Aquila", "Pescara", "Teramo"],
+  Basilicata: ["Matera", "Potenza"],
+  Calabria: [
+    "Catanzaro",
+    "Cosenza",
+    "Crotone",
+    "Reggio Calabria",
+    "Vibo Valentia",
+  ],
   Campania: ["Avellino", "Benevento", "Caserta", "Napoli", "Salerno"],
+  "Emilia-Romagna": [
+    "Bologna",
+    "Ferrara",
+    "Forlì-Cesena",
+    "Modena",
+    "Parma",
+    "Piacenza",
+    "Ravenna",
+    "Reggio Emilia",
+    "Rimini",
+  ],
+  "Friuli-Venezia Giulia": ["Gorizia", "Pordenone", "Trieste", "Udine"],
   Lazio: ["Frosinone", "Latina", "Rieti", "Roma", "Viterbo"],
+  Liguria: ["Genova", "Imperia", "La Spezia", "Savona"],
   Lombardia: [
     "Bergamo",
     "Brescia",
@@ -51,37 +75,70 @@ const province: any = {
     "Cremona",
     "Lecco",
     "Lodi",
+    "Mantova",
     "Milano",
-    "Monza",
+    "Monza e Brianza",
     "Pavia",
+    "Sondrio",
     "Varese",
   ],
+  Marche: ["Ancona", "Ascoli Piceno", "Fermo", "Macerata", "Pesaro e Urbino"],
+  Molise: ["Campobasso", "Isernia"],
+  Piemonte: [
+    "Alessandria",
+    "Asti",
+    "Biella",
+    "Cuneo",
+    "Novara",
+    "Torino",
+    "Verbano-Cusio-Ossola",
+    "Vercelli",
+  ],
+  Puglia: [
+    "Bari",
+    "Barletta-Andria-Trani",
+    "Brindisi",
+    "Foggia",
+    "Lecce",
+    "Taranto",
+  ],
+  Sardegna: ["Cagliari", "Nuoro", "Oristano", "Sassari", "Sud Sardegna"],
+  Sicilia: [
+    "Agrigento",
+    "Caltanissetta",
+    "Catania",
+    "Enna",
+    "Messina",
+    "Palermo",
+    "Ragusa",
+    "Siracusa",
+    "Trapani",
+  ],
+  Toscana: [
+    "Arezzo",
+    "Firenze",
+    "Grosseto",
+    "Livorno",
+    "Lucca",
+    "Massa-Carrara",
+    "Pisa",
+    "Pistoia",
+    "Prato",
+    "Siena",
+  ],
+  "Trentino-Alto Adige": ["Bolzano", "Trento"],
+  Umbria: ["Perugia", "Terni"],
+  "Valle d'Aosta": ["Aosta"],
+  Veneto: [
+    "Belluno",
+    "Padova",
+    "Rovigo",
+    "Treviso",
+    "Venezia",
+    "Verona",
+    "Vicenza",
+  ],
 };
-
-// Database delle sedi
-const sediList = [
-  {
-    name: "Sede Roma Centro",
-    address: "Via di Porta Maggiore, 9",
-    cap: "00185",
-    position: [41.9028, 12.4964],
-    type: "Segreteria nazionale",
-  },
-  {
-    name: "Sede Milano",
-    address: "Via Roma 111",
-    cap: "20019",
-    position: [45.4642, 9.19],
-    type: "Segreteria regionale",
-  },
-  {
-    name: "Sede Napoli",
-    address: "Via Roma 41",
-    cap: "80100",
-    position: [40.8518, 14.2681],
-    type: "Centro Snalv",
-  },
-];
 
 const segreterieSedi: any = {
   Campania: {
@@ -179,6 +236,43 @@ const SegreterieSindacali = () => {
   const [selectedProvincia, setSelectedProvincia] = useState("");
   const [isRegioneOpen, setIsRegioneOpen] = useState(false);
   const [isProvinciaOpen, setIsProvinciaOpen] = useState(false);
+  const [sediList, setSediList] = useState<any[]>([]);
+
+  // Usiamo gli stessi array di regioni e province del componente CentriSnalv
+
+  useEffect(() => {
+    const fetchSedi = async () => {
+      try {
+        const sediQuery = query(
+          collection(db, "sedi"),
+          where("tipo", "==", "Ufficio Provinciale")
+          // si può anche usare 'in' se ci sono più tipi di uffici:
+          // where("tipo", "in", ["Ufficio Provinciale", "Ufficio Regionale"])
+        );
+        const querySnapshot = await getDocs(sediQuery);
+        const sedi = querySnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+        setSediList(sedi);
+      } catch (error) {
+        console.error("Error fetching sedi:", error);
+      }
+    };
+
+    fetchSedi();
+  }, []);
+
+  const filteredSedi = useMemo(() => {
+    if (!selectedRegione && !selectedProvincia) return [];
+
+    return sediList.filter((sede) => {
+      if (selectedRegione && sede.regione !== selectedRegione) return false;
+      if (selectedProvincia && sede.provincia !== selectedProvincia)
+        return false;
+      return true;
+    });
+  }, [sediList, selectedRegione, selectedProvincia]);
 
   return (
     <div className="space-y-8">
@@ -270,23 +364,26 @@ const SegreterieSindacali = () => {
           <h2 className="text-xl font-bold text-[#1a365d] mb-4 md:text-2xl">
             Segreterie in {selectedProvincia} ({selectedRegione})
           </h2>
-          {segreterieSedi[selectedRegione]?.[selectedProvincia] ? (
+          {filteredSedi.length > 0 ? (
             <div className="space-y-4 md:grid md:grid-cols-2 md:gap-6">
-              {segreterieSedi[selectedRegione][selectedProvincia].map(
-                (sede: any, index: any) => (
-                  <div
-                    key={index}
-                    className="bg-white p-4 rounded-lg shadow-sm"
-                  >
-                    <h3 className="font-bold text-lg mb-2">{sede.nome}</h3>
-                    <div className="space-y-1 text-gray-600">
-                      <p>📍 {sede.indirizzo}</p>
-                      <p>📞 {sede.telefono}</p>
-                      <p>✉️ {sede.email}</p>
-                    </div>
+              {filteredSedi.map((sede) => (
+                <div
+                  key={sede.id}
+                  className="bg-white p-4 rounded-lg shadow-sm"
+                >
+                  <h3 className="font-bold text-lg mb-2">
+                    {sede.tipo} {sede.citta}
+                  </h3>
+                  <div className="space-y-1 text-gray-600">
+                    <p>📍 {sede.indirizzo}</p>
+                    {sede.tel && <p>📞 {sede.tel}</p>}
+                    {sede.cel && <p>📱 {sede.cel}</p>}
+                    <p>✉️ {sede.email}</p>
+                    {sede.pec && <p>📧 PEC: {sede.pec}</p>}
+                    <p>👤 Responsabile: {sede.responsabile}</p>
                   </div>
-                )
-              )}
+                </div>
+              ))}
             </div>
           ) : (
             <p className="text-gray-600">
@@ -305,6 +402,57 @@ const CentriSnalv = () => {
   const [selectedProvincia, setSelectedProvincia] = useState("");
   const [isRegioneOpen, setIsRegioneOpen] = useState(false);
   const [isProvinciaOpen, setIsProvinciaOpen] = useState(false);
+  const [sediList, setSediList] = useState<any[]>([]);
+
+  console.log("Centri snalv", sediList)
+
+  
+
+  useEffect(() => {
+    const fetchSedi = async () => {
+      try {
+        // Prima facciamo un log di tutte le sedi per vedere i loro tipi
+        const allSediQuery = query(collection(db, "sedi"));
+        const snapshot = await getDocs(allSediQuery);
+        console.log(
+          "Tutti i tipi di sedi:",
+          snapshot.docs.map((doc) => doc.data().tipo)
+        );
+
+        // Poi modifichiamo la query per includere anche 'tipo' case-insensitive
+        const sediQuery = query(
+          collection(db, "sedi"),
+          where("tipo", "in", ["Centro Snalv", "Centro SNALV", "centro snalv"]) // includiamo varianti
+        );
+        const querySnapshot = await getDocs(sediQuery);
+        console.log(
+          "Sedi filtrate:",
+          querySnapshot.docs.map((doc) => doc.data())
+        );
+
+        const sedi = querySnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+        setSediList(sedi);
+      } catch (error) {
+        console.error("Error fetching sedi:", error);
+      }
+    };
+
+    fetchSedi();
+  }, []);
+
+  const filteredSedi = useMemo(() => {
+    if (!selectedRegione && !selectedProvincia) return [];
+
+    return sediList.filter((sede) => {
+      if (selectedRegione && sede.regione !== selectedRegione) return false;
+      if (selectedProvincia && sede.provincia !== selectedProvincia)
+        return false;
+      return true;
+    });
+  }, [sediList, selectedRegione, selectedProvincia]);
 
   return (
     <div className="space-y-8">
@@ -388,25 +536,30 @@ const CentriSnalv = () => {
           <h2 className="text-xl font-bold text-[#1a365d] mb-4 md:text-2xl">
             Centri in {selectedProvincia} ({selectedRegione})
           </h2>
-          {centriSedi[selectedRegione]?.[selectedProvincia] ? (
+          {filteredSedi.length > 0 ? (
             <div className="space-y-4 md:grid md:grid-cols-2 md:gap-6">
-              {centriSedi[selectedRegione][selectedProvincia].map(
-                (centro: any, index: any) => (
-                  <div
-                    key={index}
-                    className="bg-white p-4 rounded-lg shadow-sm"
-                  >
-                    <h3 className="font-bold text-lg mb-2">{centro.nome}</h3>
-                    <div className="space-y-1 text-gray-600">
-                      <p>📍 {centro.indirizzo}</p>
-                      <p>📞 {centro.telefono}</p>
-                      <p>✉️ {centro.email}</p>
+              {filteredSedi.map((centro: any, index: number) => (
+                <div
+                  key={centro.id}
+                  className="bg-white p-4 rounded-lg shadow-sm"
+                >
+                  <h3 className="font-bold text-lg mb-2">
+                    {centro.tipo} {centro.citta}
+                  </h3>
+                  <div className="space-y-1 text-gray-600">
+                    <p>📍 {centro.indirizzo}</p>
+                    {centro.tel && <p>📞 {centro.tel}</p>}
+                    {centro.cel && <p>📱 {centro.cel}</p>}
+                    <p>✉️ {centro.email}</p>
+                    {centro.pec && <p>📧 PEC: {centro.pec}</p>}
+                    <p>👤 Responsabile: {centro.responsabile}</p>
+                    {centro.servizi && centro.servizi.length > 0 && (
                       <div className="mt-2">
                         <p className="font-medium text-sm text-gray-500">
                           Servizi disponibili:
                         </p>
                         <div className="flex flex-wrap gap-2 mt-1">
-                          {centro.servizi.map((servizio: any, i: any) => (
+                          {centro.servizi.map((servizio: string, i: number) => (
                             <span
                               key={i}
                               className="px-2 py-1 bg-red-50 text-red-600 rounded-full text-sm"
@@ -416,10 +569,10 @@ const CentriSnalv = () => {
                           ))}
                         </div>
                       </div>
-                    </div>
+                    )}
                   </div>
-                )
-              )}
+                </div>
+              ))}
             </div>
           ) : (
             <p className="text-gray-600">
@@ -439,6 +592,105 @@ const TerritorioPage = () => {
   const [searchResults, setSearchResults] = useState<any>([]);
   const [mapCenter, setMapCenter] = useState([41.9028, 12.4964]);
   const [mapZoom, setMapZoom] = useState(6);
+  const [sediList, setSediList] = useState<any[]>([]);
+  const [segreterieSedi, setSegreterieSedi] = useState<any>({});
+  const [centriSedi, setCentriSedi] = useState<any>({});
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const hash = window.location.hash.slice(1);
+    if (hash) {
+      setActiveSection(hash);
+    }
+    fetchSedi();
+  }, []);
+
+  console.log("Sedi", sediList)
+
+  const fetchSedi = async () => {
+    setIsLoading(true);
+    try {
+      const sediQuery = query(
+        collection(db, "sedi"),
+        orderBy("createdAt", "desc")
+      );
+      const querySnapshot = await getDocs(sediQuery);
+
+      // Lista completa per la mappa
+      const allSedi = querySnapshot.docs.map((doc) => {
+        const data = doc.data();
+        return {
+          name: data.tipo + " " + data.citta, // es: "Ufficio Provinciale Pisa"
+          address: data.indirizzo,
+          cap: data.cap || "",
+          position: data.coordinate
+            ? [parseFloat(data.coordinate.lat), parseFloat(data.coordinate.lng)]
+            : [41.9028, 12.4964], // coordinate di default se mancanti
+          type: data.tipo,
+        };
+      });
+      setSediList(allSedi);
+
+      // Organizza segreterie per regione/provincia
+      const segreterie = querySnapshot.docs
+        .filter((doc) => {
+          const data = doc.data();
+          return data.tipo?.includes("Ufficio");
+        })
+        .reduce((acc, doc) => {
+          const data = doc.data();
+          if (!data.regione || !data.provincia) return acc;
+
+          if (!acc[data.regione]) acc[data.regione] = {};
+          if (!acc[data.regione][data.provincia])
+            acc[data.regione][data.provincia] = [];
+
+          acc[data.regione][data.provincia].push({
+            nome: data.tipo + " " + data.citta,
+            indirizzo: data.indirizzo,
+            telefono: data.tel || "",
+            cellulare: data.cel || "",
+            email: data.email,
+            pec: data.pec,
+            responsabile: data.responsabile,
+          });
+          return acc;
+        }, {});
+      setSegreterieSedi(segreterie);
+
+      // Organizza centri per regione/provincia
+      const centri = querySnapshot.docs
+        .filter((doc) => {
+          const data = doc.data();
+          return data.tipo === "Centro Snalv";
+        })
+        .reduce((acc, doc) => {
+          const data = doc.data();
+          if (!data.regione || !data.provincia) return acc;
+
+          if (!acc[data.regione]) acc[data.regione] = {};
+          if (!acc[data.regione][data.provincia])
+            acc[data.regione][data.provincia] = [];
+
+          acc[data.regione][data.provincia].push({
+            nome: data.tipo + " " + data.citta,
+            indirizzo: data.indirizzo,
+            telefono: data.tel || "",
+            cellulare: data.cel || "",
+            email: data.email,
+            pec: data.pec,
+            responsabile: data.responsabile,
+            servizi: data.servizi || [],
+          });
+          return acc;
+        }, {});
+      setCentriSedi(centri);
+    } catch (error) {
+      console.error("Error fetching sedi:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   useEffect(() => {
     const hash = window.location.hash.slice(1);
