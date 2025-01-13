@@ -59,8 +59,13 @@ const MapComponent = ({ center, zoom, locations }: any) => {
               <div>
                 <h3 className="font-bold">{location.name}</h3>
                 <p>{location.address}</p>
-                <p>CAP: {location.cap}</p>
                 <p>{location.type}</p>
+                <p>Regione: {location.regione}</p>
+                <p>Provincia: {location.provincia}</p>
+                <p>Responsabile: {location.responsabile}</p>
+                <p>Telefono: {location.telefono}</p>
+                <p>Email: {location.email}</p>
+                <p>PEC: {location.pec}</p>
               </div>
             </Popup>
           </Marker>

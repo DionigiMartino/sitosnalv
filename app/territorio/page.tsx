@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useMemo} from "react";
+import { useState, useEffect, useMemo } from "react";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import { Icon } from "leaflet";
 import { Input } from "@/components/ui/input";
@@ -404,9 +404,7 @@ const CentriSnalv = () => {
   const [isProvinciaOpen, setIsProvinciaOpen] = useState(false);
   const [sediList, setSediList] = useState<any[]>([]);
 
-  console.log("Centri snalv", sediList)
-
-  
+  console.log("Centri snalv", sediList);
 
   useEffect(() => {
     const fetchSedi = async () => {
@@ -605,7 +603,7 @@ const TerritorioPage = () => {
     fetchSedi();
   }, []);
 
-  console.log("Sedi", sediList)
+  console.log("Sedi", sediList);
 
   const fetchSedi = async () => {
     setIsLoading(true);
@@ -627,6 +625,13 @@ const TerritorioPage = () => {
             ? [parseFloat(data.coordinate.lat), parseFloat(data.coordinate.lng)]
             : [41.9028, 12.4964], // coordinate di default se mancanti
           type: data.tipo,
+          regione: data.regione,
+          provincia: data.provincia,
+          responsabile: data.responsabile,
+          telefono: data.tel || "",
+          cellulare: data.cel || "",
+          email: data.email,
+          pec: data.pec,
         };
       });
       setSediList(allSedi);
