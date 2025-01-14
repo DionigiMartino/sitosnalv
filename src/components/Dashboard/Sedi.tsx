@@ -731,7 +731,6 @@ const Sedi = () => {
                 name="responsabile"
                 value={formData.responsabile}
                 onChange={handleInputChange}
-                required
               />
             </div>
 
