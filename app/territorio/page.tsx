@@ -245,15 +245,20 @@ const SegreterieSindacali = () => {
       try {
         const sediQuery = query(
           collection(db, "sedi"),
-          where("tipo", "==", "Ufficio Provinciale")
-          // si può anche usare 'in' se ci sono più tipi di uffici:
-          // where("tipo", "in", ["Ufficio Provinciale", "Ufficio Regionale"])
+          where("tipo", "in", ["Ufficio Provinciale", "Ufficio Regionale"]) // per le segreterie
+          // oppure
+          // where("tipo", "==", "Centro Snalv") // per i centri
         );
         const querySnapshot = await getDocs(sediQuery);
-        const sedi = querySnapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        }));
+        const sedi = querySnapshot.docs.map((doc) => {
+          const data = doc.data();
+          console.log("Sede trovata:", data); // debug
+          return {
+            id: doc.id,
+            ...data,
+          };
+        });
+        console.log("Tutte le sedi:", sedi); // debug
         setSediList(sedi);
       } catch (error) {
         console.error("Error fetching sedi:", error);
@@ -264,14 +269,35 @@ const SegreterieSindacali = () => {
   }, []);
 
   const filteredSedi = useMemo(() => {
+    console.log(
+      "Filtraggio con regione:",
+      selectedRegione,
+      "provincia:",
+      selectedProvincia
+    );
+    console.log("Sedi disponibili:", sediList);
+
     if (!selectedRegione && !selectedProvincia) return [];
 
-    return sediList.filter((sede) => {
-      if (selectedRegione && sede.regione !== selectedRegione) return false;
-      if (selectedProvincia && sede.provincia !== selectedProvincia)
-        return false;
-      return true;
+    const filtered = sediList.filter((sede) => {
+      const matchRegione = !selectedRegione || sede.regione === selectedRegione;
+      const matchProvincia =
+        !selectedProvincia || sede.provincia === selectedProvincia;
+
+      console.log(
+        "Sede:",
+        sede,
+        "matchRegione:",
+        matchRegione,
+        "matchProvincia:",
+        matchProvincia
+      );
+
+      return matchRegione && matchProvincia;
     });
+
+    console.log("Sedi filtrate:", filtered);
+    return filtered;
   }, [sediList, selectedRegione, selectedProvincia]);
 
   return (
