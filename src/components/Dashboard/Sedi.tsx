@@ -1,11 +1,5 @@
-// src/components/dashboard/Sedi.tsx
 import { useState, useEffect } from "react";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -31,8 +25,18 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { PlusCircle, Edit, Trash2, MapPin } from "lucide-react";
-import { collection, addDoc, getDocs, updateDoc, deleteDoc, doc, orderBy, query, serverTimestamp } from "firebase/firestore";
+import { PlusCircle, Edit, Trash2, MapPin, Search, X } from "lucide-react";
+import {
+  collection,
+  addDoc,
+  getDocs,
+  updateDoc,
+  deleteDoc,
+  doc,
+  orderBy,
+  query,
+  serverTimestamp,
+} from "firebase/firestore";
 import { db } from "@/src/lib/firebase";
 
 type TipoSede = "Ufficio Provinciale" | "Ufficio Regionale" | "Centro SNALV";
@@ -60,18 +64,113 @@ interface Sede {
 const tipiSede = [
   "Ufficio Provinciale",
   "Ufficio Regionale",
-  "Centro SNALV"
+  "Centro SNALV",
 ] as const;
 
-const regioni = [
-  "Abruzzo", "Basilicata", "Calabria", "Campania", "Emilia-Romagna",
-  "Friuli-Venezia Giulia", "Lazio", "Liguria", "Lombardia", "Marche",
-  "Molise", "Piemonte", "Puglia", "Sardegna", "Sicilia", "Toscana",
-  "Trentino-Alto Adige", "Umbria", "Valle d'Aosta", "Veneto"
-] as const;
+const provincePerRegione = {
+  Abruzzo: ["Chieti", "L'Aquila", "Pescara", "Teramo"],
+  Basilicata: ["Matera", "Potenza"],
+  Calabria: [
+    "Catanzaro",
+    "Cosenza",
+    "Crotone",
+    "Reggio Calabria",
+    "Vibo Valentia",
+  ],
+  Campania: ["Avellino", "Benevento", "Caserta", "Napoli", "Salerno"],
+  "Emilia-Romagna": [
+    "Bologna",
+    "Ferrara",
+    "Forlì-Cesena",
+    "Modena",
+    "Parma",
+    "Piacenza",
+    "Ravenna",
+    "Reggio Emilia",
+    "Rimini",
+  ],
+  "Friuli-Venezia Giulia": ["Gorizia", "Pordenone", "Trieste", "Udine"],
+  Lazio: ["Frosinone", "Latina", "Rieti", "Roma", "Viterbo"],
+  Liguria: ["Genova", "Imperia", "La Spezia", "Savona"],
+  Lombardia: [
+    "Bergamo",
+    "Brescia",
+    "Como",
+    "Cremona",
+    "Lecco",
+    "Lodi",
+    "Mantova",
+    "Milano",
+    "Monza e Brianza",
+    "Pavia",
+    "Sondrio",
+    "Varese",
+  ],
+  Marche: ["Ancona", "Ascoli Piceno", "Fermo", "Macerata", "Pesaro e Urbino"],
+  Molise: ["Campobasso", "Isernia"],
+  Piemonte: [
+    "Alessandria",
+    "Asti",
+    "Biella",
+    "Cuneo",
+    "Novara",
+    "Torino",
+    "Verbano-Cusio-Ossola",
+    "Vercelli",
+  ],
+  Puglia: [
+    "Bari",
+    "Barletta-Andria-Trani",
+    "Brindisi",
+    "Foggia",
+    "Lecce",
+    "Taranto",
+  ],
+  Sardegna: ["Cagliari", "Nuoro", "Oristano", "Sassari", "Sud Sardegna"],
+  Sicilia: [
+    "Agrigento",
+    "Caltanissetta",
+    "Catania",
+    "Enna",
+    "Messina",
+    "Palermo",
+    "Ragusa",
+    "Siracusa",
+    "Trapani",
+  ],
+  Toscana: [
+    "Arezzo",
+    "Firenze",
+    "Grosseto",
+    "Livorno",
+    "Lucca",
+    "Massa-Carrara",
+    "Pisa",
+    "Pistoia",
+    "Prato",
+    "Siena",
+  ],
+  "Trentino-Alto Adige": ["Bolzano", "Trento"],
+  Umbria: ["Perugia", "Terni"],
+  "Valle d'Aosta": ["Aosta"],
+  Veneto: [
+    "Belluno",
+    "Padova",
+    "Rovigo",
+    "Treviso",
+    "Venezia",
+    "Verona",
+    "Vicenza",
+  ],
+} as const;
 
-// Funzione per ottenere le coordinate da un indirizzo
-async function getCoordinates(indirizzo: string, citta: string, provincia: string) {
+const regioni = Object.keys(provincePerRegione);
+
+async function getCoordinates(
+  indirizzo: string,
+  citta: string,
+  provincia: string
+) {
   const query = `${indirizzo}, ${citta}, ${provincia}, Italy`;
   const encodedQuery = encodeURIComponent(query);
   const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodedQuery}`;
@@ -79,32 +178,37 @@ async function getCoordinates(indirizzo: string, citta: string, provincia: strin
   try {
     const response = await fetch(url, {
       headers: {
-        'Accept': 'application/json',
-        'User-Agent': 'SNALV Website'
-      }
+        Accept: "application/json",
+        "User-Agent": "SNALV Website",
+      },
     });
     const data = await response.json();
-    
+
     if (data && data[0]) {
       return {
         lat: data[0].lat,
-        lng: data[0].lon
+        lng: data[0].lon,
       };
     }
     return null;
   } catch (error) {
-    console.error('Error getting coordinates:', error);
+    console.error("Error getting coordinates:", error);
     return null;
   }
 }
 
 const Sedi = () => {
   const [sedi, setSedi] = useState<Sede[]>([]);
+  const [filteredSedi, setFilteredSedi] = useState<Sede[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [selectedSede, setSelectedSede] = useState<Sede | null>(null);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [sedeToDelete, setSedeToDelete] = useState<Sede | null>(null);
+
+  // Filter states
+  const [filterRegione, setFilterRegione] = useState<string>("all");
+  const [filterProvincia, setFilterProvincia] = useState("all");
 
   // Form state
   const [formData, setFormData] = useState<Sede>({
@@ -133,6 +237,25 @@ const Sedi = () => {
     }
   }, [selectedSede]);
 
+  // Apply filters effect
+  useEffect(() => {
+    let result = [...sedi];
+
+    if (filterRegione) {
+      result = result.filter(
+        (sede) => sede.regione.toLowerCase() === filterRegione.toLowerCase()
+      );
+    }
+
+    if (filterProvincia) {
+      result = result.filter((sede) =>
+        sede.provincia.toLowerCase().includes(filterProvincia.toLowerCase())
+      );
+    }
+
+    setFilteredSedi(result);
+  }, [sedi, filterRegione, filterProvincia]);
+
   const fetchSedi = async () => {
     try {
       const sediQuery = query(
@@ -147,12 +270,20 @@ const Sedi = () => {
         updatedAt: doc.data().updatedAt?.toDate(),
       })) as Sede[];
       setSedi(sediData);
+      setFilteredSedi(sediData);
     } catch (error) {
       console.error("Error fetching sedi:", error);
     } finally {
       setIsLoading(false);
     }
   };
+
+  // Reset provincia in form when regione changes
+  useEffect(() => {
+    if (formData.regione) {
+      setFormData((prev) => ({ ...prev, provincia: "" }));
+    }
+  }, [formData.regione]);
 
   const resetForm = () => {
     setFormData({
@@ -168,6 +299,11 @@ const Sedi = () => {
       responsabile: "",
       coordinate: { lat: "", lng: "" },
     });
+  };
+
+  const resetFilters = () => {
+    setFilterRegione("all");
+    setFilterProvincia("all");
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -296,6 +432,63 @@ const Sedi = () => {
           </Button>
         </CardHeader>
         <CardContent>
+          {/* Filters */}
+          <div className="mb-6 space-y-4">
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label>Filtra per Regione</Label>
+                <Select value={filterRegione} onValueChange={setFilterRegione}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Seleziona regione" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">Tutte le regioni</SelectItem>
+                    {regioni.map((regione) => (
+                      <SelectItem key={regione} value={regione}>
+                        {regione}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-2">
+                <Label>Filtra per Provincia</Label>
+                <div className="flex gap-2">
+                  <Select
+                    value={filterProvincia}
+                    onValueChange={setFilterProvincia}
+                    disabled={!filterRegione || filterRegione === "all"}
+                  >
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Seleziona provincia" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">Tutte le province</SelectItem>
+                      {filterRegione &&
+                        filterRegione !== "all" &&
+                        provincePerRegione[filterRegione].map((provincia) => (
+                          <SelectItem key={provincia} value={provincia}>
+                            {provincia}
+                          </SelectItem>
+                        ))}
+                    </SelectContent>
+                  </Select>
+                  {(filterRegione !== "all" || filterProvincia !== "all") && (
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      onClick={resetFilters}
+                      className="shrink-0"
+                    >
+                      <X className="h-4 w-4" />
+                    </Button>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+
           {isLoading ? (
             <div className="text-center py-4">Caricamento...</div>
           ) : (
@@ -314,7 +507,7 @@ const Sedi = () => {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {sedi.map((sede) => (
+                {filteredSedi.map((sede) => (
                   <TableRow key={sede.id}>
                     <TableCell>{sede.tipo}</TableCell>
                     <TableCell>{sede.provincia}</TableCell>
@@ -410,12 +603,25 @@ const Sedi = () => {
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label>Provincia</Label>
-                <Input
-                  name="provincia"
+                <Select
                   value={formData.provincia}
-                  onChange={handleInputChange}
-                  
-                />
+                  onValueChange={(value) =>
+                    setFormData((prev) => ({ ...prev, provincia: value }))
+                  }
+                  disabled={!formData.regione}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Seleziona provincia" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {formData.regione &&
+                      provincePerRegione[formData.regione].map((provincia) => (
+                        <SelectItem key={provincia} value={provincia}>
+                          {provincia}
+                        </SelectItem>
+                      ))}
+                  </SelectContent>
+                </Select>
               </div>
 
               <div className="space-y-2">
@@ -424,7 +630,7 @@ const Sedi = () => {
                   name="citta"
                   value={formData.citta}
                   onChange={handleInputChange}
-                  
+                  required
                 />
               </div>
             </div>
@@ -435,7 +641,7 @@ const Sedi = () => {
                 name="indirizzo"
                 value={formData.indirizzo}
                 onChange={handleInputChange}
-                
+                required
               />
             </div>
 
@@ -480,10 +686,10 @@ const Sedi = () => {
                 <Label>Email</Label>
                 <Input
                   name="email"
-                  type="text"
+                  type="email"
                   value={formData.email}
                   onChange={handleInputChange}
-                  
+                  required
                 />
               </div>
 
@@ -491,10 +697,10 @@ const Sedi = () => {
                 <Label>PEC</Label>
                 <Input
                   name="pec"
-                  type="text"
+                  type="email"
                   value={formData.pec}
                   onChange={handleInputChange}
-                  
+                  required
                 />
               </div>
             </div>
@@ -527,7 +733,7 @@ const Sedi = () => {
                 name="responsabile"
                 value={formData.responsabile}
                 onChange={handleInputChange}
-                
+                required
               />
             </div>
 
