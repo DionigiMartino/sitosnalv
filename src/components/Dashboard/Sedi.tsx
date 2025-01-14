@@ -689,7 +689,6 @@ const Sedi = () => {
                   type="email"
                   value={formData.email}
                   onChange={handleInputChange}
-                  required
                 />
               </div>
 
@@ -700,7 +699,6 @@ const Sedi = () => {
                   type="email"
                   value={formData.pec}
                   onChange={handleInputChange}
-                  required
                 />
               </div>
             </div>
