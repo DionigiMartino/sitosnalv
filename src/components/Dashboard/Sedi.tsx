@@ -207,8 +207,8 @@ const Sedi = () => {
   const [sedeToDelete, setSedeToDelete] = useState<Sede | null>(null);
 
   // Filter states
-  const [filterRegione, setFilterRegione] = useState<string>("all");
-  const [filterProvincia, setFilterProvincia] = useState("all");
+  const [filterRegione, setFilterRegione] = useState<string>("");
+  const [filterProvincia, setFilterProvincia] = useState("");
 
   // Form state
   const [formData, setFormData] = useState<Sede>({
@@ -302,8 +302,8 @@ const Sedi = () => {
   };
 
   const resetFilters = () => {
-    setFilterRegione("all");
-    setFilterProvincia("all");
+    setFilterRegione("");
+    setFilterProvincia("");
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -458,10 +458,10 @@ const Sedi = () => {
                   <Select
                     value={filterProvincia}
                     onValueChange={setFilterProvincia}
-                    disabled={!filterRegione || filterRegione === "all"}
+                    disabled={!filterRegione}
                   >
                     <SelectTrigger className="w-full">
-                      <SelectValue placeholder="Seleziona provincia" />
+                      <SelectValue placeholder="Tutte le province" />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="all">Tutte le province</SelectItem>
@@ -474,7 +474,7 @@ const Sedi = () => {
                         ))}
                     </SelectContent>
                   </Select>
-                  {(filterRegione !== "all" || filterProvincia !== "all") && (
+                  {(filterRegione || filterProvincia) && (
                     <Button
                       variant="outline"
                       size="icon"
