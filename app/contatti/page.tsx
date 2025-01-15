@@ -16,6 +16,7 @@ const ContattiPage = () => {
     tel: "",
     mail: "",
   });
+   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [newsletter, setNewsletter] = useState("");
 
@@ -42,56 +43,60 @@ const ContattiPage = () => {
               <p className="text-gray-600">Contattaci subito!</p>
             </div>
 
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <Input
-                    placeholder="NOME"
-                    value={formData.nome}
-                    onChange={(e) =>
-                      setFormData({ ...formData, nome: e.target.value })
-                    }
-                    className="bg-gray-50"
-                  />
-                </div>
-                <div>
-                  <Input
-                    placeholder="COGNOME"
-                    value={formData.cognome}
-                    onChange={(e) =>
-                      setFormData({ ...formData, cognome: e.target.value })
-                    }
-                    className="bg-gray-50"
-                  />
-                </div>
+            <form onSubmit={handleSubmit} className="space-y-4 max-w-full">
+              <div>
+                <Input
+                  placeholder="NOME"
+                  value={formData.nome}
+                  onChange={(e) =>
+                    setFormData({ ...formData, nome: e.target.value })
+                  }
+                  className="bg-gray-50"
+                  required
+                />
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div>
-                  <Input
-                    placeholder="TEL"
-                    value={formData.tel}
-                    onChange={(e) =>
-                      setFormData({ ...formData, tel: e.target.value })
-                    }
-                    className="bg-gray-50"
-                  />
-                </div>
-                <div>
-                  <Input
-                    placeholder="MAIL"
-                    type="email"
-                    value={formData.mail}
-                    onChange={(e) =>
-                      setFormData({ ...formData, mail: e.target.value })
-                    }
-                    className="bg-gray-50"
-                  />
-                </div>
-                <div>
-                  <Button className="w-full bg-red-500 hover:bg-red-600 text-white font-bold">
-                    INVIA
-                  </Button>
-                </div>
+              <div>
+                <Input
+                  placeholder="COGNOME"
+                  value={formData.cognome}
+                  onChange={(e) =>
+                    setFormData({ ...formData, cognome: e.target.value })
+                  }
+                  className="bg-gray-50"
+                  required
+                />
+              </div>
+              <div>
+                <Input
+                  placeholder="TEL"
+                  value={formData.tel}
+                  onChange={(e) =>
+                    setFormData({ ...formData, tel: e.target.value })
+                  }
+                  className="bg-gray-50"
+                  required
+                />
+              </div>
+              <div>
+                <Input
+                  placeholder="MAIL"
+                  type="email"
+                  value={formData.mail}
+                  onChange={(e) =>
+                    setFormData({ ...formData, mail: e.target.value })
+                  }
+                  className="bg-gray-50"
+                  required
+                />
+              </div>
+              <div>
+                <Button
+                  type="submit"
+                  className="w-full bg-red-500 hover:bg-red-600 text-white font-bold"
+                  disabled={isSubmitting}
+                >
+                  {isSubmitting ? "INVIO..." : "INVIA"}
+                </Button>
               </div>
             </form>
 

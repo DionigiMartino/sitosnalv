@@ -906,15 +906,7 @@ const ChiSiamoPage = () => {
                   <h2 className="text-[#1a365d] text-2xl font-bold">
                     SERVIZI, CONVENZIONI ED AGEVOLAZIONI
                   </h2>
-                  <h3 className="text-red-500 text-xl mt-2">
-                    LE ULTIME NOTIZIE
-                  </h3>
-                  <Button
-                    variant="link"
-                    className="text-blue-600 hover:text-blue-800 p-0 mt-2"
-                  >
-                    SCOPRI DI PIÙ
-                  </Button>
+                  <CategoryNews categories={["Servizi"]} />
                 </div>
               </>
             )}
