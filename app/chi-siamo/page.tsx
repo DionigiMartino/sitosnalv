@@ -1256,41 +1256,6 @@ const ChiSiamoPage = () => {
                   <p>Telefono: 06.70492451</p>
                 </div>
               </div>
-
-              <div className="space-y-4">
-                <div className="bg-gray-100 p-4 rounded">
-                  <h3 className="font-bold mb-2">IL CCNL ANASTE 2022</h3>
-                  <div className="space-y-2">
-                    <Button variant="link">Il Testo integrale</Button>
-                    <Button variant="link">
-                      Verbale integrativo 28.04.2023
-                    </Button>
-                    <Button variant="link">Scheda di approfondimento</Button>
-                  </div>
-                </div>
-
-                <div className="bg-blue-900 text-white p-4 rounded">
-                  <h3 className="font-bold mb-2 border-l-2 border-red-500 pl-3">
-                    EVENTO 20 FEBBRAIO 2024 - ROMA
-                  </h3>
-                  <p>
-                    SETTORE SOCIO SANITARIO, valorizzare il LAVORO per garantire
-                    la QUALITÀ dei servizi
-                  </p>
-                </div>
-
-                <div className="bg-blue-900 text-white p-4 rounded">
-                  <h3 className="font-bold mb-2 border-l-2 border-red-500 pl-3">
-                    ASSICURAZIONE GRATUITA PER GLI ISCRITTI
-                  </h3>
-                  <p>
-                    I lavoratori delle strutture
-                    socio-sanitarie-assistenziali-educative possono avere
-                    l&apos;assicurazione per colpa grave totalmente gratuita se
-                    sei iscritto al sindacato
-                  </p>
-                </div>
-              </div>
             </div>
 
             <div className="mt-12">
