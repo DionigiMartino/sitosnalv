@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 
 const Footer = () => {
   return (
-    <footer className="relative text-white py-12 md:h-[45vh] mt-auto border-t-4 border-white">
+    <footer className="relative text-white py-12 md:min-h-[45vh] mt-auto border-t-4 border-white">
       <div className="absolute inset-0 z-0">
         <Image
           src="/img/footer.jpg"
