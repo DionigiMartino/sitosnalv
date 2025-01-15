@@ -18,7 +18,7 @@ const HomePage = () => {
       <Header />
 
       {/* Hero Section */}
-      <div className="relative min-h-[80vh] flex items-center">
+      <div className="relative md:min-h-[80vh] min-h-[40vh] flex items-center">
         <div className="absolute inset-0 z-0">
           <Image
             src="/img/introNew.jpg"
