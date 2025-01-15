@@ -798,39 +798,7 @@ const TerritorioPage = () => {
               </div>
 
               <div className="space-y-4">
-                <p className="font-medium">
-                  Trova la sede sindacale più vicina casa tua, in base al CAP:
-                </p>
-                <div className="flex gap-4 max-w-md">
-                  <Input
-                    type="text"
-                    placeholder="Inserisci il CAP"
-                    value={searchTerm}
-                    onChange={(e) =>
-                      setSearchTerm(
-                        e.target.value.replace(/\D/g, "").slice(0, 5)
-                      )
-                    }
-                    maxLength={5}
-                    className="flex-1"
-                  />
-                  <Button
-                    variant="default"
-                    className="bg-red-500 hover:bg-red-600 text-white"
-                    onClick={handleSearch}
-                  >
-                    Cerca
-                  </Button>
-                  {searchResults.length > 0 && (
-                    <Button
-                      variant="outline"
-                      onClick={handleReset}
-                      className="border-red-500 text-red-500 hover:bg-red-50"
-                    >
-                      Reset
-                    </Button>
-                  )}
-                </div>
+                
 
                 {searchResults.length > 0 && (
                   <div className="mt-4 p-4 bg-gray-50 rounded-lg">
