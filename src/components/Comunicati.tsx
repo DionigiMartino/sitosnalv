@@ -89,39 +89,42 @@ const ComunicatiStampa = ({ categories, currentLink }: Props) => {
   return (
     <div className="relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 my-8 sm:my-16">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
           <AnimatePresence mode="wait">
             {visibleComunicati.map((comunicato, index) => (
               <motion.div
                 key={comunicato.id}
-                className="bg-white rounded-lg shadow-sm overflow-hidden"
+                className="w-full bg-white rounded-lg shadow-sm overflow-hidden"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
                 transition={{ duration: 0.3, delay: index * 0.1 }}
               >
-                <Link href={`/comunicato/${comunicato.linkNews}`}>
-                  <div className="relative h-40 sm:h-48 md:h-64 border-b-[6px] border-blue-600">
+                <Link
+                  href={`/comunicato/${comunicato.linkNews}`}
+                  className="block w-full"
+                >
+                  <div className="relative h-48 sm:h-48 md:h-64 border-b-[6px] border-blue-600 w-full">
                     <Image
                       src={comunicato.coverImage || "/img/logo.jpg"}
                       alt={comunicato.title}
                       fill
-                      className={
+                      className={`w-full ${
                         comunicato.coverImage
                           ? "object-cover"
                           : "object-contain"
-                      }
+                      }`}
                     />
-                    <div className="absolute bottom-0 left-4 bg-blue-600 text-white px-4 font-bold py-2 text-xs sm:text-sm">
+                    <div className="absolute bottom-0 left-4 bg-blue-600 text-white px-4 font-bold py-2 text-sm">
                       {formatDate(comunicato.createdAt)}
                     </div>
                   </div>
-                  <div className="p-4 sm:p-6">
-                    <p className="text-gray-800 mb-4 sm:mb-6 line-clamp-3">
+                  <div className="p-6">
+                    <p className="text-gray-800 mb-6 line-clamp-3 text-base sm:text-lg">
                       {comunicato.title}
                     </p>
-                    <div className="w-full uppercase py-2 text-center border border-snalv-200 text-snalv-600 rounded-md hover:bg-snalv-50 transition-colors">
-                      leggi di più
+                    <div className="w-full uppercase py-4 text-center border border-snalv-200 text-snalv-600 rounded-md hover:bg-snalv-50 transition-colors font-bold">
+                      LEGGI DI PIÙ
                     </div>
                   </div>
                 </Link>
@@ -136,12 +139,14 @@ const ComunicatiStampa = ({ categories, currentLink }: Props) => {
           <button
             onClick={prevSlide}
             className="w-10 h-10 flex items-center justify-center bg-white rounded-full shadow-md hover:bg-snalv-50 text-snalv-500"
+            aria-label="Precedente"
           >
             <ChevronLeft className="w-6 h-6" />
           </button>
           <button
             onClick={nextSlide}
             className="w-10 h-10 flex items-center justify-center bg-white rounded-full shadow-md hover:bg-snalv-50 text-snalv-500"
+            aria-label="Successivo"
           >
             <ChevronRight className="w-6 h-6" />
           </button>

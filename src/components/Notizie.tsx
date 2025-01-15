@@ -30,7 +30,7 @@ const RecentNews = () => {
             createdAt: doc.data().createdAt?.toDate(),
           }))
           // @ts-ignore
-          .filter((item) => item.categories?.includes("In Evidenza")); // Filtra solo le notizie in evidenza
+          .filter((item) => item.categories?.includes("In Evidenza"));
 
         setNews(newsData);
       } catch (error) {
@@ -83,7 +83,7 @@ const RecentNews = () => {
           NOTIZIE RECENTI
         </h2>
 
-        <div>
+        <div className="w-full">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
             <AnimatePresence mode="wait">
               {news.slice(currentIndex, currentIndex + 3).map((item, index) => (
@@ -93,28 +93,30 @@ const RecentNews = () => {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -20 }}
                   transition={{ duration: 0.3, delay: index * 0.1 }}
+                  className="w-full"
                 >
-                  <Card className="overflow-hidden bg-white shadow-md">
+                  <Card className="overflow-hidden bg-white shadow-md w-full">
                     <CardContent className="p-0">
-                      <div className="relative h-40 sm:h-48 lg:h-56 border-b-[6px] border-blue-600">
+                      <div className="relative h-48 sm:h-48 lg:h-56 border-b-[6px] border-blue-600">
                         <Image
-                          src={item.coverImage || "/img/notizia1.jpg"} // Usa l'immagine di default se non c'è copertina
+                          src={item.coverImage || "/img/notizia1.jpg"}
                           alt={item.title}
                           fill
                           className="object-cover"
                         />
-                        <div className="absolute bottom-0 left-4 bg-blue-600 text-white px-4 font-bold py-2 text-xs sm:text-sm">
+                        <div className="absolute bottom-0 left-4 bg-blue-600 text-white px-4 font-bold py-2 text-sm">
                           {formatDate(item.createdAt)}
                         </div>
                       </div>
-                      <div className="p-4 sm:p-6">
-                        <p className="text-gray-800 mb-4 sm:mb-6 line-clamp-3">
+                      <div className="p-6">
+                        <p className="text-gray-800 mb-6 line-clamp-3 text-base sm:text-lg">
                           {item.title}
                         </p>
-                        <Link href={`/notizia/${item.linkNews}`}
-                          className="w-full  hover:bg-gray-400 font-bold uppercase bg-blue-600 p-4 rounded-md text-white"
+                        <Link
+                          href={`/notizia/${item.linkNews}`}
+                          className="block w-full text-center hover:bg-blue-700 font-bold uppercase bg-blue-600 p-4 rounded-md text-white transition-colors"
                         >
-                          leggi di più
+                          LEGGI DI PIÙ
                         </Link>
                       </div>
                     </CardContent>
@@ -126,7 +128,7 @@ const RecentNews = () => {
         </div>
 
         {/* Navigation Dots */}
-        <div className="flex justify-center gap-2 mt-6 sm:mt-8">
+        <div className="flex justify-center gap-2 mt-8">
           {Array.from({ length: totalSlides }).map((_, i) => (
             <button
               key={i}
@@ -144,15 +146,17 @@ const RecentNews = () => {
           <div className="absolute left-2 right-2 top-1/2 -translate-y-1/2 flex justify-between z-10">
             <button
               onClick={prevSlide}
-              className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-white shadow-lg flex items-center justify-center hover:bg-gray-50 transition-colors"
+              className="w-10 h-10 rounded-full bg-white shadow-lg flex items-center justify-center hover:bg-gray-50 transition-colors"
+              aria-label="Previous slide"
             >
-              <ChevronLeft className="w-4 h-4 sm:w-6 sm:h-6" />
+              <ChevronLeft className="w-6 h-6" />
             </button>
             <button
               onClick={nextSlide}
-              className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-white shadow-lg flex items-center justify-center hover:bg-gray-50 transition-colors"
+              className="w-10 h-10 rounded-full bg-white shadow-lg flex items-center justify-center hover:bg-gray-50 transition-colors"
+              aria-label="Next slide"
             >
-              <ChevronRight className="w-4 h-4 sm:w-6 sm:h-6" />
+              <ChevronRight className="w-6 h-6" />
             </button>
           </div>
         )}
