@@ -85,7 +85,7 @@ export default function StrutturaPage() {
                 <Button
                   variant="ghost"
                   className="w-full justify-start text-left hover:font-bold uppercase text-gray-700"
-                  onClick={() => router.push("/tutele")}
+                  onClick={() => router.push("/servizi")}
                 >
                   Tutele e servizi
                 </Button>

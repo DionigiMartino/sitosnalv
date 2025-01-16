@@ -143,8 +143,19 @@ const ComunicatiPage = () => {
   };
 
   const filterPosts = () => {
-    let filtered = [...posts];
+    const now = new Date(); // Data e ora attuale
 
+    // Prima filtriamo per data e ora
+    let filtered = posts.filter((post) => {
+      if (!post.createdAt) return true; // Se non c'è data, lo mostriamo
+
+      const postDateTime = new Date(post.createdAt);
+
+      // Confrontiamo timestamp completi (data + ora)
+      return postDateTime.getTime() <= now.getTime();
+    });
+
+    // Poi applichiamo gli altri filtri
     if (searchTerm) {
       filtered = filtered.filter(
         (item) =>
