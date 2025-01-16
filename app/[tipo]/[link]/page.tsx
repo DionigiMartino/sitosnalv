@@ -35,9 +35,41 @@ interface PageParams {
 const ContentRenderer: React.FC<{ content: string }> = ({ content }) => {
   if (!content) return null;
 
+  const getYouTubeVideoId = (url: string) => {
+    let videoId = "";
+    const patterns = [
+      /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([^&\s]+)/,
+      /youtube\.com\/watch\?.*v=([^&\s]+)/,
+    ];
+
+    for (let pattern of patterns) {
+      const match = url.match(pattern);
+      if (match && match[1]) {
+        videoId = match[1];
+        break;
+      }
+    }
+
+    return videoId;
+  };
+
   const processContent = (text: string) => {
-    // Processa i link
+    if (!text) return "";
+
+    // Processa i video di YouTube
     let processedContent = text.replace(
+      /{youtube:(https?:\/\/[^\s}]+)}/g,
+      (match, url) => {
+        const videoId = getYouTubeVideoId(url);
+        if (videoId) {
+          return `<div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;"><iframe style="position:absolute;top:0;left:0;width:100%;height:100%" src="https://www.youtube.com/embed/${videoId}" title="YouTube video" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>`;
+        }
+        return match;
+      }
+    );
+
+    // Processa i link
+    processedContent = processedContent.replace(
       /\[([^\]]+)\]\(([^)]+)\)/g,
       '<a href="$2" class="text-red-600 hover:underline" target="_blank" rel="noopener noreferrer">$1</a>'
     );
@@ -55,18 +87,18 @@ const ContentRenderer: React.FC<{ content: string }> = ({ content }) => {
     processedContent = processedContent.replace(/__(.*?)__/g, "<u>$1</u>");
 
     // Processa gli accapo mantenendo gli spazi
-    processedContent = processedContent.replace(/\n/g, '<br />');
-    
+    processedContent = processedContent.replace(/\n/g, "<br />");
+
     return processedContent;
   };
 
-  const htmlContent = processContent(content);
-
   return (
     <div
-      className="prose max-w-none whitespace-pre-wrap"
-      style={{ whiteSpace: 'pre-wrap' }}
-      dangerouslySetInnerHTML={{ __html: htmlContent }}
+      className="prose prose-lg max-w-none"
+      // Rimuoviamo whitespace-pre-wrap poiché gestiamo già gli accapo con i <br />
+      dangerouslySetInnerHTML={{
+        __html: processContent(content),
+      }}
     />
   );
 };

@@ -29,6 +29,7 @@ import {
   PlusCircle,
   Eye,
   Edit,
+  Youtube,
   Trash2,
 } from "lucide-react";
 import {
@@ -57,6 +58,8 @@ const News = () => {
   // Stati per la lista
   const [news, setNews] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isYoutubeDialogOpen, setIsYoutubeDialogOpen] = useState(false);
+  const [youtubeUrl, setYoutubeUrl] = useState("");
 
   // Stati per il form
   const [showForm, setShowForm] = useState(false);
@@ -109,6 +112,36 @@ const News = () => {
       resetForm();
     }
   }, [selectedNews]);
+
+  const getYouTubeVideoId = (url) => {
+    const regExp =
+      /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+    const match = url.match(regExp);
+    return match && match[2].length === 11 ? match[2] : null;
+  };
+
+  const insertYoutubeVideo = () => {
+    if (!youtubeUrl) return;
+
+    const videoId = getYouTubeVideoId(youtubeUrl);
+    if (!videoId) {
+      alert("URL di YouTube non valido");
+      return;
+    }
+
+    const textarea = document.querySelector("textarea");
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+
+    const youtubeMarkdown = `{youtube:${youtubeUrl}}`;
+    const newContent =
+      content.substring(0, start) + youtubeMarkdown + content.substring(end);
+    setContent(newContent);
+
+    setYoutubeUrl("");
+    setIsYoutubeDialogOpen(false);
+  };
+
 
   const resetForm = () => {
     setTitle("");
@@ -599,6 +632,41 @@ const News = () => {
                       >
                         <Underline className="h-4 w-4" />
                       </Button>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="icon"
+                        onClick={() => setIsYoutubeDialogOpen(true)}
+                      >
+                        <Youtube className="h-4 w-4" />
+                      </Button>
+                      <Dialog
+                        open={isYoutubeDialogOpen}
+                        onOpenChange={setIsYoutubeDialogOpen}
+                      >
+                        <DialogContent>
+                          <DialogHeader>
+                            <DialogTitle>Inserisci Video YouTube</DialogTitle>
+                          </DialogHeader>
+                          <div className="space-y-4 py-4">
+                            <div className="space-y-2">
+                              <Label>URL del video</Label>
+                              <Input
+                                value={youtubeUrl}
+                                onChange={(e) => setYoutubeUrl(e.target.value)}
+                                placeholder="es: https://www.youtube.com/watch?v=..."
+                              />
+                            </div>
+                            <Button
+                              type="button"
+                              onClick={insertYoutubeVideo}
+                              className="w-full"
+                            >
+                              Inserisci Video
+                            </Button>
+                          </div>
+                        </DialogContent>
+                      </Dialog>
                       <Dialog
                         open={isLinkDialogOpen}
                         onOpenChange={setIsLinkDialogOpen}

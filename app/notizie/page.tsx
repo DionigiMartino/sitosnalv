@@ -35,28 +35,27 @@ const ComunicatiPage = () => {
     { id: "Territorio", label: "Territorio" },
   ];
 
+  // Modifica la funzione processContent per gestire i video di YouTube
   const processContent = (text) => {
     if (!text) return "";
 
-    // Processa i link
+    // Per l'anteprima, sostituisci il video con un testo
     let processedContent = text.replace(
+      /{youtube:(https?:\/\/(www\.)?youtube\.com\/watch\?v=[\w-]+|https?:\/\/youtu\.be\/[\w-]+)}/g,
+      '<div class="text-gray-500 italic">[Contiene video YouTube]</div>'
+    );
+
+    // Processa il resto del contenuto come prima...
+    processedContent = processedContent.replace(
       /\[([^\]]+)\]\(([^)]+)\)/g,
       '<a href="$2" class="text-red-600 hover:underline" target="_blank" rel="noopener noreferrer">$1</a>'
     );
-
-    // Processa bold
     processedContent = processedContent.replace(
       /\*\*(.*?)\*\*/g,
       "<strong>$1</strong>"
     );
-
-    // Processa italic
     processedContent = processedContent.replace(/\*(.*?)\*/g, "<em>$1</em>");
-
-    // Processa underline
     processedContent = processedContent.replace(/__(.*?)__/g, "<u>$1</u>");
-
-    // Processa gli accapo mantenendo gli spazi
     processedContent = processedContent.replace(/\n/g, "<br />");
 
     return processedContent;
@@ -173,8 +172,9 @@ const ComunicatiPage = () => {
     if (filteredPosts.length === 0) {
       return (
         <div className="text-center py-8">
-          {activeSection === "comunicati" ? "Nessun comunicato" : "Nessuna notizia"}{" "}
-          
+          {activeSection === "comunicati"
+            ? "Nessun comunicato"
+            : "Nessuna notizia"}{" "}
         </div>
       );
     }
