@@ -14,6 +14,8 @@ import HeroSection from "@/src/components/Hero";
 import dynamic from "next/dynamic";
 import { getDocs, query, collection, orderBy, where } from "firebase/firestore";
 import { db } from "@/src/lib/firebase";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { MapPin } from "lucide-react";
 
 const MapComponent = dynamic(() => import("@/src/components/Map"), {
   ssr: false,
@@ -407,6 +409,20 @@ const SegreterieSindacali = () => {
                     <p>✉️ {sede.email}</p>
                     {sede.pec && <p>📧 PEC: {sede.pec}</p>}
                     <p>👤 Responsabile: {sede.responsabile}</p>
+                    {sede.coordinate && (
+                      <button
+                        onClick={() =>
+                          window.open(
+                            `https://www.google.com/maps?q=${sede.coordinate.lat},${sede.coordinate.lng}`,
+                            "_blank"
+                          )
+                        }
+                        className="mt-3 w-full px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 flex items-center justify-center gap-2 text-sm transition-colors"
+                      >
+                        <MapPin className="h-4 w-4" />
+                        Apri in Google Maps
+                      </button>
+                    )}
                   </div>
                 </div>
               ))}
@@ -594,6 +610,20 @@ const CentriSnalv = () => {
                         </div>
                       </div>
                     )}
+                    {centro.coordinate && (
+                      <button
+                        onClick={() =>
+                          window.open(
+                            `https://www.google.com/maps?q=${centro.coordinate.lat},${centro.coordinate.lng}`,
+                            "_blank"
+                          )
+                        }
+                        className="mt-3 w-full px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 flex items-center justify-center gap-2 text-sm transition-colors"
+                      >
+                        <MapPin className="h-4 w-4" />
+                        Apri in Google Maps
+                      </button>
+                    )}
                   </div>
                 </div>
               ))}
@@ -651,6 +681,7 @@ const TerritorioPage = () => {
             ? [parseFloat(data.coordinate.lat), parseFloat(data.coordinate.lng)]
             : [41.9028, 12.4964], // coordinate di default se mancanti
           type: data.tipo,
+          citta: data.citta,
           regione: data.regione,
           provincia: data.provincia,
           responsabile: data.responsabile,
@@ -731,27 +762,26 @@ const TerritorioPage = () => {
   }, []);
 
   const handleSearch = () => {
-    if (searchTerm.length !== 5) {
-      alert("Inserisci un CAP valido (5 cifre)");
+    if (!searchTerm.trim()) {
+      setSearchResults([]);
       return;
     }
 
-    let results = sediList.filter((sede) => sede.cap === searchTerm);
+    const searchTermLower = searchTerm.toLowerCase().trim();
 
-    if (results.length === 0) {
-      const sortedSedi = [...sediList].sort((a, b) => {
-        const distanceA = Math.abs(parseInt(a.cap) - parseInt(searchTerm));
-        const distanceB = Math.abs(parseInt(b.cap) - parseInt(searchTerm));
-        return distanceA - distanceB;
-      });
-
-      results = [sortedSedi[0]];
-      alert(
-        `Nessuna sede trovata per il CAP ${searchTerm}. Mostriamo la sede più vicina.`
-      );
-    }
+    let results = sediList.filter(
+      (sede) =>
+        // Aggiungiamo controlli di nullità per ogni campo
+        sede?.citta?.toLowerCase()?.includes(searchTermLower) ||
+        false ||
+        sede?.regione?.toLowerCase()?.includes(searchTermLower) ||
+        false ||
+        sede?.provincia?.toLowerCase()?.includes(searchTermLower) ||
+        false
+    );
 
     setSearchResults(results);
+
     if (results.length > 0) {
       setMapCenter(results[0].position);
       setMapZoom(12);
@@ -763,6 +793,13 @@ const TerritorioPage = () => {
     setSearchResults([]);
     setMapCenter([41.9028, 12.4964]);
     setMapZoom(6);
+  };
+
+  const openInGoogleMaps = (position: number[]) => {
+    window.open(
+      `https://www.google.com/maps?q=${position[0]},${position[1]}`,
+      "_blank"
+    );
   };
 
   const renderContent = () => {
@@ -798,34 +835,81 @@ const TerritorioPage = () => {
               </div>
 
               <div className="space-y-4">
-                
+                <p className="font-medium">
+                  Trova la sede sindacale più vicina casa tua:
+                </p>
+                <div className="flex gap-4 max-w-md">
+                  <Input
+                    type="text"
+                    placeholder="Cerca per città, provincia o regione"
+                    value={searchTerm}
+                    onChange={(e) => {
+                      setSearchTerm(e.target.value);
+                      // Ricerca automatica mentre l'utente scrive
+                      if (e.target.value.length >= 2) {
+                        handleSearch();
+                      } else {
+                        setSearchResults([]);
+                      }
+                    }}
+                    className="flex-1"
+                  />
+                  {searchResults.length > 0 && (
+                    <Button
+                      variant="outline"
+                      onClick={handleReset}
+                      className="border-red-500 text-red-500 hover:bg-red-50"
+                    >
+                      Reset
+                    </Button>
+                  )}
+                </div>
 
                 {searchResults.length > 0 && (
                   <div className="mt-4 p-4 bg-gray-50 rounded-lg">
-                    <h3 className="font-bold mb-2">Sedi trovate:</h3>
-                    <ul className="space-y-2">
-                      {searchResults.map((sede: any, index: any) => (
+                    <h3 className="font-bold mb-2">
+                      Sedi trovate: {searchResults.length}
+                    </h3>
+                    <ul className="space-y-4">
+                      {searchResults.map((sede: any, index: number) => (
                         <li
                           key={index}
-                          className="flex justify-between items-center p-2 hover:bg-gray-100 rounded"
+                          className="flex flex-col sm:flex-row sm:justify-between gap-4 p-4 hover:bg-gray-100 rounded-lg border border-gray-200"
                         >
-                          <div>
-                            <p className="font-medium">{sede.name}</p>
-                            <p className="text-sm text-gray-600">
-                              {sede.address} - CAP: {sede.cap}
-                            </p>
-                            <p className="text-sm text-gray-500">{sede.type}</p>
+                          <div className="space-y-2">
+                            <div>
+                              <p className="font-medium text-lg">{sede.name}</p>
+                              <p className="text-gray-600">
+                                {sede.responsabile}
+                              </p>
+                            </div>
+                            <div>
+                              <p className="text-sm text-gray-800">
+                                {sede.address} {sede.cap && `- ${sede.cap}`}
+                              </p>
+                              <p className="text-sm text-gray-600">
+                                {sede.citta} ({sede.provincia}), {sede.regione}
+                              </p>
+                            </div>
+                            <div className="text-sm space-y-1">
+                              {sede.telefono && <p>Tel: {sede.telefono}</p>}
+                              {sede.cellulare && <p>Cell: {sede.cellulare}</p>}
+                              {sede.email && <p>Email: {sede.email}</p>}
+                              {sede.pec && <p>PEC: {sede.pec}</p>}
+                            </div>
                           </div>
-                          <Button
-                            variant="link"
-                            className="text-red-500"
-                            onClick={() => {
-                              setMapCenter(sede.position);
-                              setMapZoom(15);
-                            }}
-                          >
-                            Visualizza sulla mappa →
-                          </Button>
+                          <div className="flex flex-col gap-2">
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => openInGoogleMaps(sede.position)}
+                              className="flex items-center gap-2 text-blue-600 hover:text-blue-700"
+                            >
+                              <MapPin className="h-4 w-4" />
+                              Apri in Google Maps
+                            </Button>
+                            
+                          </div>
                         </li>
                       ))}
                     </ul>
