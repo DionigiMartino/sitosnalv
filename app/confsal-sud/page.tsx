@@ -56,7 +56,7 @@ export default function ConfsalSudPage() {
                   className="w-full justify-start text-left hover:font-bold uppercase text-gray-700"
                   onClick={() => router.push("/comparti")}
                 >
-                  Comparti specifici
+                  Comparti e CCNL
                 </Button>
               </div>
             </div>

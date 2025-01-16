@@ -11,8 +11,8 @@ import HeroSection from "@/src/components/Hero";
 
 const technicalOffices = [
   {
-    title: "Relazioni istituzionali",
-    email: "pasquale.pellegrino@snalv.it",
+    title: "Ufficio vertenze e conteggi",
+    emails: ["info@snalv.it", "conteggi@snalv.it", "conciliazioni@snalv.it"],
     image: "/img/profilepic.jpg",
   },
   {
@@ -21,8 +21,8 @@ const technicalOffices = [
     image: "/img/profilepic.jpg",
   },
   {
-    title: "Ufficio vertenze e conteggi",
-    emails: ["info@snalv.it", "conteggi@snalv.it", "conciliazioni@snalv.it"],
+    title: "Relazioni istituzionali",
+    email: "pasquale.pellegrino@snalv.it",
     image: "/img/profilepic.jpg",
   },
   {
@@ -31,22 +31,22 @@ const technicalOffices = [
     image: "/img/profilepic.jpg",
   },
   {
-    title: "Amministrazione sedi",
+    title: "Amministrazione e contabilità sede nazionale",
     email: "deleghe@snalv.it",
     image: "/img/profilepic.jpg",
   },
   {
-    title: "Amministrazione e contabilità",
+    title: "Amministrazione e contabilità sedi territoriali",
     email: "info@snalv.it",
     image: "/img/profilepic.jpg",
   },
   {
     title: "Addetto stampa nazionale",
-    email: "francesca.dibiagio@snalv.it",
+    email: "francesca.dibiagio@@gmail.com",
     image: "/img/profilepic.jpg",
   },
   {
-    title: "Ufficio comunicazione",
+    title: "Social & comunicazione",
     image: "/img/profilepic.jpg",
   },
 ];
@@ -117,6 +117,10 @@ export default function StrutturaPage() {
               <h2 className="text-[#1a365d] text-2xl font-bold mb-8">
                 GLI UFFICI TECNICI DI SUPPORTO
               </h2>
+              <p>
+                Gli uffici tecnici di supporto, collocati presso la sede della
+                Segreteria Nazionale, sono così suddivisi:
+              </p>
               <div className="space-y-8">
                 {technicalOffices.map((office, index) => (
                   <div key={index} className="flex gap-6 items-start">

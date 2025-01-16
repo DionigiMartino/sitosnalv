@@ -27,9 +27,9 @@ const Header = () => {
       dropdown: true,
       items: [
         { label: "Chi siamo", href: "/chi-siamo#chi-siamo" },
-        { label: "La struttura nazionale", href: "/chi-siamo#struttura" },
-        { label: "Tutele e servizi", href: "/chi-siamo#tutele" },
-        { label: "Comparti specifici", href: "/chi-siamo#comparti" },
+        { label: "La struttura nazionale", href: "/struttura" },
+        { label: "Tutele e servizi", href: "/servizi" },
+        { label: "Comparti specifici", href: "/comparti" },
       ],
     },
     {
@@ -61,7 +61,7 @@ const Header = () => {
             className="flex items-center gap-2 text-sm hover:text-blue-200 transition-colors"
           >
             <UserCircle2 size={24} />
-            <span className="hidden sm:inline">Area Riservata</span>
+            <span className="hidden sm:inline">E-Learning</span>
           </Link>
         </div>
       </div>

@@ -50,13 +50,12 @@ export default function TutelePage() {
             <h4 className="font-bold mb-2">
               • Conteggi differenze retributive
             </h4>
-            <Button
-              variant="link"
-              onClick={() => setShowConteggiForm(true)}
+            <Link
+              href="/modulo-conteggi"
               className="text-red-500 hover:text-red-600 py-2"
             >
               → clicca qui per richiedere un preventivo!
-            </Button>
+            </Link>
             <p>
               Il servizio consente il calcolo analitico delle differenze
               retributive maturate dai lavoratori, con riferimento a qualsiasi
@@ -396,132 +395,6 @@ export default function TutelePage() {
     // ... altri accordion items ...
   ];
 
-  const ConteggiForm = () => (
-    <form className="space-y-6 bg-gray-50 p-6 sm:p-8 rounded-lg">
-      <h2 className="text-xl sm:text-2xl font-bold text-[#1a365d] mb-6 sm:mb-8">
-        MODULO CONTEGGI
-      </h2>
-
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-8">
-        <div className="space-y-4">
-          <div>
-            <label className="text-blue-600 block text-sm font-bold mb-1">
-              Ragione sociale/Datore di lavoro
-            </label>
-            <Input className="w-full bg-white" />
-          </div>
-
-          <div>
-            <label className="text-blue-600 block text-sm font-bold mb-1">
-              Cellulare
-            </label>
-            <Input className="w-full bg-white" />
-          </div>
-
-          <div>
-            <label className="text-blue-600 block text-sm font-bold mb-1">
-              Data inizio rapporto lavoro
-            </label>
-            <Input type="date" className="w-full bg-white" />
-          </div>
-
-          <div>
-            <label className="text-blue-600 block text-sm font-bold mb-1">
-              CCNL applicato
-              <span className="text-sm text-gray-500 block">
-                (specificare settore, qualifica e livello)
-              </span>
-            </label>
-            <Input className="w-full bg-white" />
-          </div>
-
-          <div>
-            <label className="text-blue-600 block text-sm font-bold mb-1">
-              Tipologia di contratto
-              <span className="text-sm text-gray-500 block">
-                (specificare se part-time o full time)
-              </span>
-            </label>
-            <Input className="w-full bg-white" />
-          </div>
-
-          <div>
-            <label className="text-blue-600 block text-sm font-bold mb-1">
-              Eventuali straordinari
-            </label>
-            <Input className="w-full bg-white" />
-          </div>
-        </div>
-
-        <div className="space-y-4">
-          <div>
-            <label className="text-blue-600 block text-sm font-bold mb-1">
-              Lavoratore
-            </label>
-            <Input className="w-full bg-white" />
-          </div>
-
-          <div>
-            <label className="text-blue-600 block text-sm font-bold mb-1">
-              Email
-            </label>
-            <Input type="email" className="w-full bg-white" />
-          </div>
-
-          <div>
-            <label className="text-blue-600 block text-sm font-bold mb-1">
-              Data risoluzione rapporto lavoro
-            </label>
-            <Input type="date" className="w-full bg-white" />
-          </div>
-
-          <div>
-            <label className="text-blue-600 block text-sm font-bold mb-1">
-              Retribuzione corrisposta
-            </label>
-            <Input className="w-full bg-white" />
-          </div>
-
-          <div>
-            <label className="text-blue-600 block text-sm font-bold mb-1">
-              Orario di lavoro
-            </label>
-            <Input className="w-full bg-white" />
-          </div>
-
-          <div>
-            <label className="text-blue-600 block text-sm font-bold mb-1">
-              N° ore settimanali
-            </label>
-            <Input className="w-full bg-white" />
-          </div>
-        </div>
-      </div>
-
-      <div className="mt-6 sm:mt-8">
-        <p className="text-sm text-gray-600 mb-4">
-          Si prega di allegare copia del contratto e delle buste paga in
-          possesso
-        </p>
-        <div className="flex flex-col sm:flex-row gap-4 items-center">
-          <input
-            type="file"
-            multiple
-            className="border-dashed border-red-500 border-2 rounded-lg p-4 text-center text-sm text-gray-500 hover:border-red-600 hover:text-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
-            id="fileUpload"
-          />
-          <span className="text-sm text-gray-500">
-            È possibile allegare più file
-          </span>
-        </div>
-      </div>
-
-      <Button className="bg-red-500 hover:bg-red-600 text-white mt-6 sm:mt-8">
-        INVIA RICHIESTA
-      </Button>
-    </form>
-  );
-
   return (
     <>
       <Header />
@@ -564,7 +437,7 @@ export default function TutelePage() {
                   className="w-full justify-start text-left hover:font-bold uppercase text-gray-700"
                   onClick={() => router.push("/comparti")}
                 >
-                  Comparti specifici
+                  Comparti e CCNL
                 </Button>
               </div>
             </div>
@@ -583,31 +456,27 @@ export default function TutelePage() {
                 e agevolazioni grazie ai partner in convenzione.
               </p>
 
-              {showConteggiForm ? (
-                <ConteggiForm />
-              ) : (
-                <>
-                  <Accordion type="single" collapsible className="mb-12">
-                    {servicesAccordionItems.map((item) => (
-                      <AccordionItem value={item.value} key={item.value}>
-                        <AccordionTrigger className="text-[#1a365d] hover:text-[#1a365d]">
-                          {item.title}
-                        </AccordionTrigger>
-                        <AccordionContent className="text-gray-700">
-                          {item.content}
-                        </AccordionContent>
-                      </AccordionItem>
-                    ))}
-                  </Accordion>
+              <div>
+                <Accordion type="single" collapsible className="mb-12">
+                  {servicesAccordionItems.map((item) => (
+                    <AccordionItem value={item.value} key={item.value}>
+                      <AccordionTrigger className="text-[#1a365d] hover:text-[#1a365d]">
+                        {item.title}
+                      </AccordionTrigger>
+                      <AccordionContent className="text-gray-700">
+                        {item.content}
+                      </AccordionContent>
+                    </AccordionItem>
+                  ))}
+                </Accordion>
 
-                  <div className="mt-12">
-                    <h2 className="text-[#1a365d] text-2xl font-bold">
-                      SERVIZI, CONVENZIONI ED AGEVOLAZIONI
-                    </h2>
-                    <CategoryNews categories={["Servizi"]} />
-                  </div>
-                </>
-              )}
+                <div className="mt-12">
+                  <h2 className="text-[#1a365d] text-2xl font-bold">
+                    SERVIZI, CONVENZIONI ED AGEVOLAZIONI
+                  </h2>
+                  <CategoryNews categories={["Servizi"]} />
+                </div>
+              </div>
             </div>
           </div>
         </div>

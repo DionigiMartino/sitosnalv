@@ -193,6 +193,7 @@ const ConteggiPage = () => {
                         value={formData.straordinari}
                         onChange={handleInputChange}
                         className="w-full bg-white"
+                        required
                       />
                     </div>
                   </div>

@@ -55,7 +55,7 @@ export default function CompartiPage() {
                   variant="ghost"
                   className="w-full justify-start text-left hover:font-bold uppercase text-red-500 font-bold"
                 >
-                  Comparti specifici
+                  Comparti e CCNL
                 </Button>
               </div>
             </div>
@@ -65,7 +65,7 @@ export default function CompartiPage() {
           <div className="lg:col-span-3">
             <div className="space-y-8">
               <h1 className="text-[#1a365d] text-4xl font-bold mb-6">
-                COMPARTI SPECIFICI
+                COMPARTI e CCNL
               </h1>
               <p className="text-gray-700 mb-8">
                 Al fine di garantire ai lavoratori un supporto specifico e

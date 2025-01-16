@@ -27,13 +27,6 @@ export default function ChiSiamoPage() {
                 Dott.ssa Maria Mamone
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div className="bg-gray-100 p-6">
-                  <p>
-                    Lorem ipsum dolor sit amet, consectetuer adipiscing elit,
-                    sed diam nonummy nibh euismod tincidunt ut laoreet dolore
-                    magna aliquam erat volutpat.
-                  </p>
-                </div>
                 <div>
                   <Image
                     src="/img/mamone.jpg"
@@ -53,13 +46,6 @@ export default function ChiSiamoPage() {
                 Cosimo Nesci - consigliere CNEL
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div className="bg-gray-100 p-6">
-                  <p>
-                    Lorem ipsum dolor sit amet, consectetuer adipiscing elit,
-                    sed diam nonummy nibh euismod tincidunt ut laoreet dolore
-                    magna aliquam erat volutpat.
-                  </p>
-                </div>
                 <div>
                   <Image
                     src="/img/nesci.jpg"
@@ -159,16 +145,17 @@ export default function ChiSiamoPage() {
                 <p className="text-justify">
                   Il nostro Sindacato tutela i lavoratori dipendenti del settore
                   privato ed i dipendenti pubblici degli &quot;Enti
-                  Locali&quot;, corsi convenzionati ed i pensionati.
+                  Locali&quot;, disoccupati ed i pensionati.
                 </p>
                 <p className="text-justify">
                   Siamo diffusi su tutto il territorio nazionale con oltre{" "}
-                  <strong>220</strong> sedi sindacali aperte al pubblico
-                  (consulta qui l&apos;elenco completo)
+                  <strong>240</strong> sedi sindacali aperte al pubblico (
+                  <Link href="/sedi">consulta qui l&apos;elenco</Link>
+                  ).
                 </p>
                 <p className="text-justify">
                   Al 31/12/2024 lo Snalv Confsal ha superato il numero di{" "}
-                  <strong>50.000</strong> iscritti al Sindacato, con oltre n.{" "}
+                  <strong>21.000</strong> iscritti al Sindacato, con oltre n.{" "}
                   <strong>150</strong> rappresentanze sindacali aziendali nel
                   settore privato (da RSA e RSU) e n. 51 membri RSU nel settore
                   pubblico.
@@ -241,7 +228,7 @@ export default function ChiSiamoPage() {
                   className="w-full justify-start text-left hover:font-bold uppercase text-gray-700"
                   onClick={() => router.push("/comparti")}
                 >
-                  Comparti specifici
+                  Comparti e CCNL
                 </Button>
               </div>
             </div>
@@ -279,15 +266,15 @@ export default function ChiSiamoPage() {
                 >
                   Il Consiglio Nazionale
                 </Button>
-                <Link href="/territorio#cerca-sede" className="">
+                <Link href="/segreterie-sindacali" className="">
                   <Button
                     variant="ghost"
                     className="w-full my-2 justify-between bg-gray-100 hover:bg-gray-200 py-6 text-left text-wrap hover:font-bold"
                   >
-                    Le Segreterie Nazionali
+                    Le Segreterie Sindacali
                   </Button>
                 </Link>
-                <Link href="/territorio#cerca-sede">
+                <Link href="/centri-snalv">
                   <Button
                     variant="ghost"
                     className="w-full justify-between bg-gray-100 hover:bg-gray-200 py-6 text-left text-wrap hover:font-bold"
