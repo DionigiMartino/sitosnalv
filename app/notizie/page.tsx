@@ -35,6 +35,33 @@ const ComunicatiPage = () => {
     { id: "Territorio", label: "Territorio" },
   ];
 
+  const processContent = (text) => {
+    if (!text) return "";
+
+    // Processa i link
+    let processedContent = text.replace(
+      /\[([^\]]+)\]\(([^)]+)\)/g,
+      '<a href="$2" class="text-red-600 hover:underline" target="_blank" rel="noopener noreferrer">$1</a>'
+    );
+
+    // Processa bold
+    processedContent = processedContent.replace(
+      /\*\*(.*?)\*\*/g,
+      "<strong>$1</strong>"
+    );
+
+    // Processa italic
+    processedContent = processedContent.replace(/\*(.*?)\*/g, "<em>$1</em>");
+
+    // Processa underline
+    processedContent = processedContent.replace(/__(.*?)__/g, "<u>$1</u>");
+
+    // Processa gli accapo mantenendo gli spazi
+    processedContent = processedContent.replace(/\n/g, "<br />");
+
+    return processedContent;
+  };
+
   useEffect(() => {
     fetchPosts();
   }, [activeSection]); // Rifetch quando cambia la sezione
@@ -169,7 +196,9 @@ const ComunicatiPage = () => {
                     src={item.coverImage || "/img/logo.jpg"}
                     alt={item.title}
                     fill
-                    className={`${item.coverImage ? "object-cover" : "object-contain"}`}
+                    className={`${
+                      item.coverImage ? "object-cover" : "object-contain"
+                    }`}
                   />
                   <div className="absolute bottom-0 left-4 bg-blue-600 text-white font-bold px-3 py-3 text-sm">
                     {formatDate(item.createdAt)}
@@ -187,9 +216,13 @@ const ComunicatiPage = () => {
                   <h3 className="text-sm font-medium mb-6 text-gray-400">
                     {item.categories.join(", ")}
                   </h3>
-                  <p className="text-gray-600 mb-6 line-clamp-3">
-                    {item.content}
-                  </p>
+                  <div
+                    className="text-gray-600 mb-6 line-clamp-3 prose max-w-none whitespace-pre-wrap"
+                    style={{ whiteSpace: "pre-wrap" }}
+                    dangerouslySetInnerHTML={{
+                      __html: processContent(item.content),
+                    }}
+                  />
                   <Link
                     href={
                       item.linkNews ? `/${item.tipo}/${item.linkNews}` : "#"
