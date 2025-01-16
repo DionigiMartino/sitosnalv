@@ -30,7 +30,7 @@ import {
   Eye,
   Edit,
   Trash2,
-  Youtube
+  Youtube,
 } from "lucide-react";
 import {
   getStorage,
@@ -80,6 +80,7 @@ const News = () => {
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [linkNews, setLinkNews] = useState("");
   const [isDuplicateLink, setIsDuplicateLink] = useState(false);
+  const [createdAt, setCreatedAt] = useState("");
 
   // Modifica l'useEffect esistente per impostare lo stato di duplicazione
   useEffect(() => {
@@ -106,9 +107,16 @@ const News = () => {
       setTitle(selectedNews.title || "");
       setContent(selectedNews.content || "");
       setLinkNews(selectedNews.linkNews || "");
-      setSelectedCategories(selectedNews.categories || []); // Aggiorna per usare l'array
+      setSelectedCategories(selectedNews.categories || []);
       setImages(selectedNews.images || []);
       setCoverImage(selectedNews.coverImage || "");
+      // Aggiungiamo la gestione della data
+      if (selectedNews.createdAt) {
+        const date = new Date(selectedNews.createdAt);
+        // Formattiamo la data nel formato richiesto dall'input datetime-local
+        const formattedDate = date.toISOString().slice(0, 16);
+        setCreatedAt(formattedDate);
+      }
     } else {
       resetForm();
     }
@@ -118,11 +126,12 @@ const News = () => {
     setTitle("");
     setContent("");
     setLinkNews("");
-    setSelectedCategories([]); // Reset categorie multiple
+    setSelectedCategories([]);
     setImages([]);
     setLinkUrl("");
     setLinkText("");
     setCoverImage("");
+    setCreatedAt(""); // Reset della data
   };
 
   const getYouTubeVideoId = (url) => {
@@ -276,11 +285,13 @@ const News = () => {
       title,
       content,
       linkNews,
-      categories: selectedCategories, // Usa l'array di categorie
+      categories: selectedCategories,
       images,
       tipo: "comunicato",
       coverImage,
       updatedAt: serverTimestamp(),
+      // Aggiungiamo la gestione della data
+      createdAt: createdAt ? new Date(createdAt) : new Date(),
     };
 
     try {
@@ -288,8 +299,6 @@ const News = () => {
         const docRef = doc(db, "comunicati", selectedNews.id);
         await updateDoc(docRef, data);
       } else {
-        // @ts-ignore
-        data.createdAt = serverTimestamp();
         await addDoc(collection(db, "comunicati"), data);
       }
 
@@ -299,8 +308,8 @@ const News = () => {
       setSelectedNews(null);
       alert(
         selectedNews?.id
-          ? "Comunicato aggiornata con successo!"
-          : "Comunicato creata con successo!"
+          ? "Comunicato aggiornato con successo!"
+          : "Comunicato creato con successo!"
       );
     } catch (error) {
       console.error("Error saving document:", error);
@@ -515,6 +524,18 @@ const News = () => {
                     id="title"
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
+                    required
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="createdAt">Data e Ora</Label>
+                  <Input
+                    id="createdAt"
+                    type="datetime-local"
+                    value={createdAt}
+                    onChange={(e) => setCreatedAt(e.target.value)}
+                    className="w-full"
                     required
                   />
                 </div>

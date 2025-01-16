@@ -80,6 +80,7 @@ const News = () => {
   const [coverImage, setCoverImage] = useState("");
   const [selectedCategories, setSelectedCategories] = useState([]); // invece di category
   const [isDuplicateLink, setIsDuplicateLink] = useState(false);
+  const [createdAt, setCreatedAt] = useState("");
 
   useEffect(() => {
     const linkExists = news.some((item) => item.linkNews === linkNews);
@@ -103,11 +104,18 @@ const News = () => {
   useEffect(() => {
     if (selectedNews) {
       setTitle(selectedNews.title || "");
-      setLinkNews(selectedNews.linkNews || "");
       setContent(selectedNews.content || "");
-      setSelectedCategories(selectedNews.categories || []); // Aggiorna per usare l'array
+      setLinkNews(selectedNews.linkNews || "");
+      setSelectedCategories(selectedNews.categories || []);
       setImages(selectedNews.images || []);
       setCoverImage(selectedNews.coverImage || "");
+      // Aggiungiamo la gestione della data
+      if (selectedNews.createdAt) {
+        const date = new Date(selectedNews.createdAt);
+        // Formattiamo la data nel formato richiesto dall'input datetime-local
+        const formattedDate = date.toISOString().slice(0, 16);
+        setCreatedAt(formattedDate);
+      }
     } else {
       resetForm();
     }
@@ -142,16 +150,16 @@ const News = () => {
     setIsYoutubeDialogOpen(false);
   };
 
-
   const resetForm = () => {
     setTitle("");
     setContent("");
     setLinkNews("");
-    setSelectedCategories([]); // Reset categorie multiple
+    setSelectedCategories([]);
     setImages([]);
     setLinkUrl("");
     setLinkText("");
     setCoverImage("");
+    setCreatedAt(""); // Reset della data
   };
 
   const fetchNews = async () => {
@@ -268,11 +276,13 @@ const News = () => {
       title,
       content,
       linkNews,
-      tipo: "notizia",
-      categories: selectedCategories, // Usa l'array di categorie
+      categories: selectedCategories,
       images,
+      tipo: "comunicato",
       coverImage,
       updatedAt: serverTimestamp(),
+      // Aggiungiamo la gestione della data
+      createdAt: createdAt ? new Date(createdAt) : new Date(),
     };
 
     try {
@@ -507,6 +517,18 @@ const News = () => {
                     id="title"
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
+                    required
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="createdAt">Data e Ora</Label>
+                  <Input
+                    id="createdAt"
+                    type="datetime-local"
+                    value={createdAt}
+                    onChange={(e) => setCreatedAt(e.target.value)}
+                    className="w-full"
                     required
                   />
                 </div>
