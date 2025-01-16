@@ -63,7 +63,7 @@ const ComunicatiPage = () => {
 
   useEffect(() => {
     fetchPosts();
-  }, [activeSection]); // Rifetch quando cambia la sezione
+  }, [activeSection, searchTerm]); // Rifetch quando cambia la sezione
 
   useEffect(() => {
     const hash = window.location.hash.slice(1);
@@ -82,22 +82,58 @@ const ComunicatiPage = () => {
   const fetchPosts = async () => {
     setIsLoading(true);
     try {
-      const collectionName =
-        activeSection === "comunicati" ? "comunicati" : "notizie";
+      // Se c'è un termine di ricerca, fetchiamo da entrambe le collezioni
+      if (searchTerm) {
+        const comunicatiQuery = query(
+          collection(db, "comunicati"),
+          orderBy("createdAt", "desc")
+        );
+        const notizieQuery = query(
+          collection(db, "notizie"),
+          orderBy("createdAt", "desc")
+        );
 
-      const postsQuery = query(
-        collection(db, collectionName),
-        orderBy("createdAt", "desc")
-      );
+        const [comunicatiSnapshot, notizieSnapshot] = await Promise.all([
+          getDocs(comunicatiQuery),
+          getDocs(notizieQuery),
+        ]);
 
-      const querySnapshot = await getDocs(postsQuery);
-      const postsData = querySnapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-        createdAt: doc.data().createdAt?.toDate(),
-      }));
+        const comunicatiData = comunicatiSnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+          createdAt: doc.data().createdAt?.toDate(),
+          tipo: "comunicato",
+        }));
 
-      setPosts(postsData);
+        const notizieData = notizieSnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+          createdAt: doc.data().createdAt?.toDate(),
+          tipo: "notizia",
+        }));
+
+        setPosts([...comunicatiData, ...notizieData]);
+      } else {
+        // Se non c'è termine di ricerca, manteniamo il comportamento originale
+        const collectionName =
+          activeSection === "comunicati" ? "comunicati" : "notizie";
+        const tipo = activeSection === "comunicati" ? "comunicato" : "notizia";
+
+        const postsQuery = query(
+          collection(db, collectionName),
+          orderBy("createdAt", "desc")
+        );
+
+        const querySnapshot = await getDocs(postsQuery);
+        const postsData = querySnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+          createdAt: doc.data().createdAt?.toDate(),
+          tipo,
+        }));
+
+        setPosts(postsData);
+      }
     } catch (error) {
       console.error("Error fetching posts:", error);
     } finally {
