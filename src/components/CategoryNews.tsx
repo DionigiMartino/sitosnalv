@@ -12,9 +12,10 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 interface Props {
   categories: string[];
   currentLink?: string;
+  variant?: string;
 }
 
-const NewsComponent = ({ categories, currentLink }: Props) => {
+const NewsComponent = ({ categories, currentLink, variant = 'default' }: Props) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [news, setNews] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -84,6 +85,41 @@ const NewsComponent = ({ categories, currentLink }: Props) => {
   }
 
   const visibleNews = news.slice(currentIndex, currentIndex + 6);
+
+  if (variant === "sidebar") {
+    return (
+      <div className="space-y-4">
+        {news.slice(0, 3).map((item) => (
+          <Link
+            key={item.id}
+            href={`/${item.tipo}/${item.linkNews}`}
+            className="group block"
+          >
+            <div className="flex gap-4 items-start">
+              <div className="relative w-24 h-24 flex-shrink-0">
+                <Image
+                  src={item.coverImage || "/img/logo.jpg"}
+                  alt={item.title}
+                  fill
+                  className={`rounded-lg ${
+                    item.coverImage ? "object-cover" : "object-contain"
+                  }`}
+                />
+              </div>
+              <div className="flex-1">
+                <p className="text-sm text-gray-400 mb-1">
+                  {formatDate(item.createdAt)}
+                </p>
+                <h3 className="text-sm font-medium line-clamp-2 group-hover:text-blue-600 transition-colors">
+                  {item.title}
+                </h3>
+              </div>
+            </div>
+          </Link>
+        ))}
+      </div>
+    );
+  }
 
   return (
     <div className="relative">

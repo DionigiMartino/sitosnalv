@@ -770,7 +770,7 @@ const News = () => {
                   </div>
                 </div>
 
-                <Button type="submit" disabled={isLoading || isDuplicateLink}>
+                <Button type="submit" disabled={isLoading}>
                   {isLoading
                     ? "Salvataggio..."
                     : selectedNews

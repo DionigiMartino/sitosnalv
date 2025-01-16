@@ -9,6 +9,7 @@ import { notFound } from "next/navigation";
 import ComunicatiPage from "@/src/components/Comunicati";
 import NewsComponent from "@/src/components/CategoryNews";
 import React from "react";
+import Link from "next/link";
 
 // Interfacce
 interface Post {
@@ -177,81 +178,116 @@ export default async function PostPage({ params }: any) {
     <>
       <Header />
       <main className="max-w-7xl mx-auto px-4 py-12">
-        <article className="prose lg:prose-xl mx-auto">
-          {post.coverImage && (
-            <div className="relative aspect-video w-full mb-8 rounded-lg overflow-hidden">
-              <Image
-                src={post.coverImage}
-                alt={post.title}
-                fill
-                className="object-cover"
-                priority
-              />
-            </div>
-          )}
-
-          <div className="flex flex-wrap gap-4 text-sm text-gray-500 mb-6">
-            <div>{formatDate(post.createdAt)}</div>
-            <div>·</div>
-            <div>
-              {post.type === "notizie" ? "Notizia" : "Comunicato Stampa"}
-            </div>
-            {post.categories && post.categories.length > 0 && (
-              <>
-                <div>·</div>
-                <div>{post.categories.join(", ")}</div>
-              </>
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
+          {/* Contenuto Principale */}
+          <article className="lg:col-span-8 space-y-8">
+            {/* Cover Image */}
+            {post.coverImage && (
+              <div className="relative aspect-square w-[500px] rounded-lg overflow-hidden">
+                <Image
+                  src={post.coverImage}
+                  alt={post.title}
+                  fill
+                  className="object-cover"
+                  priority
+                />
+              </div>
             )}
-          </div>
 
-          <h1 className="text-4xl font-bold mb-8 text-[#1a365d]">
-            {post.title}
-          </h1>
-
-          <ContentRenderer content={post.content} />
-
-          {post.images && post.images.length > 0 && (
-            <div className="mt-12">
-              <h2 className="text-2xl font-bold mb-6 text-[#1a365d]">
-                Galleria Immagini
-              </h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {post.images.map((image, index) => (
-                  <div
-                    key={index}
-                    className="relative aspect-video rounded-lg overflow-hidden"
+            {/* Meta info e Titolo */}
+            <div className="space-y-4">
+              <div className="flex flex-wrap gap-2">
+                <span className="bg-red-600 text-white px-3 py-1 rounded-full text-sm">
+                  {post.type === "notizie" ? "Notizia" : "Comunicato Stampa"}
+                </span>
+                {post.categories?.map((cat, idx) => (
+                  <span
+                    key={idx}
+                    className="bg-blue-600 text-white px-3 py-1 rounded-full text-sm"
                   >
-                    <Image
-                      src={image}
-                      alt={`Immagine ${index + 1} - ${post.title}`}
-                      fill
-                      className="object-cover hover:scale-105 transition-transform duration-300"
-                    />
-                  </div>
+                    {cat}
+                  </span>
+                ))}
+              </div>
+              <time className="text-gray-500 text-sm block">
+                {formatDate(post.createdAt)}
+              </time>
+              <h1 className="text-4xl font-bold text-[#1a365d]">
+                {post.title}
+              </h1>
+            </div>
+
+            {/* Contenuto */}
+            <div className="bg-white rounded-lg shadow-sm p-8">
+              <ContentRenderer content={post.content} />
+            </div>
+
+            {/* Galleria Immagini */}
+            {post.images && post.images.length > 0 && (
+              <div className="bg-white rounded-lg shadow-sm p-8">
+                <h2 className="text-2xl font-bold mb-6 text-[#1a365d]">
+                  Galleria Immagini
+                </h2>
+                <div className="grid grid-cols-2 gap-4">
+                  {post.images.map((image, index) => (
+                    <div
+                      key={index}
+                      className="group relative aspect-square rounded-lg overflow-hidden cursor-pointer"
+                    >
+                      <Image
+                        src={image}
+                        alt={`Immagine ${index + 1} - ${post.title}`}
+                        fill
+                        className="object-cover transition-transform duration-300 group-hover:scale-110"
+                      />
+                      <div className="absolute inset-0 bg-black opacity-0 group-hover:opacity-30 transition-opacity duration-300" />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Tag e Categorie */}
+            <div className="border-t pt-8">
+              <div className="flex flex-wrap gap-2">
+                {post.categories?.map((cat, idx) => (
+                  <span
+                    key={idx}
+                    className="bg-gray-100 px-4 py-2 rounded-full text-sm hover:bg-gray-200 cursor-pointer"
+                  >
+                    {cat}
+                  </span>
                 ))}
               </div>
             </div>
-          )}
-        </article>
+          </article>
 
-        <div className="mt-16 pt-8 border-t border-gray-200">
-          <h2 className="text-3xl font-bold mb-8 text-[#1a365d] text-center">
-            {post.type === "comunicati"
-              ? "Comunicati Correlati"
-              : "Notizie Correlate"}
-          </h2>
-
-          {post.type === "comunicati" ? (
-            <ComunicatiPage
-              categories={post.categories || []}
-              currentLink={post.linkNews}
-            />
-          ) : (
-            <NewsComponent
-              categories={post.categories || []}
-              currentLink={post.linkNews}
-            />
-          )}
+          {/* Sidebar */}
+          <aside className="lg:col-span-4 space-y-8">
+            {/* Box Correlati */}
+            <div className="bg-white rounded-lg shadow-sm p-6">
+              <h2 className="text-xl font-bold mb-6 text-[#1a365d] pb-4 border-b">
+                {post.type === "comunicati"
+                  ? "Comunicati Correlati"
+                  : "Notizie Correlate"}
+              </h2>
+              <div className="space-y-6">
+                {post.type === "comunicati" ? (
+                  <ComunicatiPage
+                    categories={post.categories || []}
+                    currentLink={post.linkNews}
+                    variant="sidebar"
+                  />
+                ) : (
+                  <NewsComponent
+                    categories={post.categories || []}
+                    currentLink={post.linkNews}
+                    variant="sidebar"
+                  />
+                )}
+              </div>
+            </div>
+          </aside>
         </div>
       </main>
       <Footer />

@@ -12,9 +12,14 @@ import { db } from "@/src/lib/firebase";
 interface Props {
   categories: string[];
   currentLink?: string;
+  variant?: string;
 }
 
-const ComunicatiStampa = ({ categories, currentLink }: Props) => {
+const ComunicatiStampa = ({
+  categories,
+  currentLink,
+  variant = "default",
+}: Props) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [comunicati, setComunicati] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -85,6 +90,41 @@ const ComunicatiStampa = ({ categories, currentLink }: Props) => {
 
   // Slice per mostrare 6 elementi alla volta
   const visibleComunicati = comunicati.slice(currentIndex, currentIndex + 6);
+
+  if (variant === "sidebar") {
+    return (
+      <div className="space-y-4">
+        {comunicati.slice(0, 3).map((comunicato) => (
+          <Link
+            key={comunicato.id}
+            href={`/comunicato/${comunicato.linkNews}`}
+            className="group block"
+          >
+            <div className="flex gap-4 items-start">
+              <div className="relative w-24 h-24 flex-shrink-0">
+                <Image
+                  src={comunicato.coverImage || "/img/logo.jpg"}
+                  alt={comunicato.title}
+                  fill
+                  className={`rounded-lg ${
+                    comunicato.coverImage ? "object-cover" : "object-contain"
+                  }`}
+                />
+              </div>
+              <div className="flex-1">
+                <p className="text-sm text-gray-400 mb-1">
+                  {formatDate(comunicato.createdAt)}
+                </p>
+                <h3 className="text-sm font-medium line-clamp-2 group-hover:text-blue-600 transition-colors">
+                  {comunicato.title}
+                </h3>
+              </div>
+            </div>
+          </Link>
+        ))}
+      </div>
+    );
+  }
 
   return (
     <div className="relative">
