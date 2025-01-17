@@ -155,7 +155,7 @@ const ContattiPage = () => {
               <p className="text-center md:text-lg text-blue-600">
                 Nel frattempo, registrati alla nostra{" "}
                 <span className="font-bold">Newsletter</span> per ricevere
-                all&apos;istante ogni nuova notizia e aggiornamenti dal mondo
+                mensilmente notizie e aggiornamenti dal mondo
                 del lavoro!
               </p>
               <div className="flex gap-4">

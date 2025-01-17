@@ -211,6 +211,7 @@ export default function CentriSnalv() {
                     isRegioneOpen ? "bg-blue-600 text-white" : "bg-white"
                   }`}
                 >
+                  <span>Elenco Centri Snalv (In Aggiornamento)</span>
                   <span>+ Scegli la regione</span>
                   <span>{selectedRegione}</span>
                 </button>

@@ -411,9 +411,9 @@ const TerritorioPage = () => {
                   Lo Snalv Confsal è presente in:
                 </h2>
                 <ul className="list-disc pl-5 space-y-2 ">
-                  <li className="text-blue-600">20 Regioni</li>
-                  <li className="text-blue-600">90 Province</li>
-                  <li className="text-blue-600">100 Comuni Italiani</li>
+                  <li className="text-blue-600">18 Regioni</li>
+                  <li className="text-blue-600">63 Province</li>
+                  <li className="text-blue-600">200 Comuni Italiani</li>
                 </ul>
               </div>
 
@@ -422,9 +422,9 @@ const TerritorioPage = () => {
                   Le strutture si dividono in:
                 </h2>
                 <ul className="list-disc pl-5 space-y-2">
-                  <li className="text-blue-600">20 Segreterie regionali</li>
-                  <li className="text-blue-600">90 Segreterie provinciali</li>
-                  <li className="text-blue-600">20 Centri Snalv</li>
+                  <li className="text-blue-600">18 Segreterie regionali</li>
+                  <li className="text-blue-600">58 Segreterie provinciali</li>
+                  <li className="text-blue-600">190 Centri Snalv</li>
                 </ul>
               </div>
 
@@ -527,14 +527,14 @@ const TerritorioPage = () => {
                   className="text-blue-600 hover:text-blue-800"
                   href="/segreterie-sindacali"
                 >
-                  Elenco completo Segreterie Sindacali
+                  Elenco completo Segreterie Sindacali (Elenco in Aggiornamento)
                 </Link>
                 <div className="h-2" />
                 <Link
                   className="text-blue-600 hover:text-blue-800"
                   href="/centri-snalv"
                 >
-                  Elenco completo Centri Snalv
+                  Elenco completo Centri Snalv (Elenco in Aggiornamento)
                 </Link>
               </div>
             </div>

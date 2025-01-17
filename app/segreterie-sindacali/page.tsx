@@ -203,6 +203,7 @@ export default function TerritorioPage() {
                     isRegioneOpen ? "bg-blue-600 text-white" : "bg-white"
                   }`}
                 >
+                  <span>Elenco Segreterie Sindacali (In Aggiornamento)</span>
                   <span>+ Scegli la regione</span>
                   <span>{selectedRegione}</span>
                 </button>
