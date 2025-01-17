@@ -37,7 +37,7 @@ const Header = () => {
       dropdown: true,
       items: [
         { label: "Cerca una sede", href: "/territorio#cerca-sede" },
-        { label: "Collabora con noi", href: "/territorio#collabora" },
+        { label: "Collabora con noi", href: "/collabora" },
       ],
     },
     { label: "NEWS", href: "/notizie#notizie" },
@@ -57,7 +57,7 @@ const Header = () => {
           </Link>
           <div className="w-px h-4 bg-blue-700" /> {/* Separatore verticale */}
           <Link
-            href="/area-riservata"
+            href="/e-learning"
             className="flex items-center gap-2 text-sm hover:text-blue-200 transition-colors"
           >
             <UserCircle2 size={24} />
