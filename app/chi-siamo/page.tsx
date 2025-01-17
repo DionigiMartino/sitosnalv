@@ -25,6 +25,35 @@ export default function ChiSiamoPage() {
     { name: "PASQUALE PELLEGRINO", image: "/img/team/pasquale.jpg" },
   ];
 
+  const allMembers = [
+    "MARIA MAMONE",
+    "COSIMO NESCI",
+    "GIULIA PUDDU",
+    "GIUSEPPINA ADAMO",
+    "BELINDA PESCOSOLIDO",
+    "DANIELE PACE",
+    "PASQUALE PELLEGRINO",
+    "ISABELLA MAMONE",
+    "VINCENZO PALDINO",
+    "VALERIA SMURRA",
+    "CLAUDIO ZUCCHELLI",
+    "FRANCESCO FLORIO",
+    "STANISLAO AULETTA",
+    "FARA MANZI",
+    "ANTONIO LENTO",
+    "PEPPINO RUBERTO",
+    "ANTONIO SANTONOCITO",
+    "DANIELA MAZZOLA",
+    "MARTINA DONINI",
+    "FABIO LAROCCA",
+    "DANIELA MARIA SERVETTI",
+  ];
+
+  const getMemberImage = (name) => {
+    const foundMember = teamMembers.find((member) => member.name === name);
+    return foundMember ? foundMember.image : null;
+  };
+
   const leaders = [
     {
       title: "Il Segretario Generale",
@@ -144,35 +173,40 @@ export default function ChiSiamoPage() {
               I componenti del Consiglio Nazionale, eletti durante l&apos;ultimo
               Congresso Nazionale SNALV/Confsal
             </p>
-            <ul className="space-y-2 md:columns-3">
-              {[
-                "MARIA MAMONE",
-                "COSIMO NESCI",
-                "GIULIA PUDDU",
-                "GIUSEPPINA ADAMO",
-                "BELINDA PESCOSOLIDO",
-                "DANIELE PACE",
-                "PASQUALE PELLEGRINO",
-                "ISABELLA MAMONE",
-                "VINCENZO PALDINO",
-                "VALERIA SMURRA",
-                "CLAUDIO ZUCCHELLI",
-                "FRANCESCO FLORIO",
-                "STANISLAO AULETTA",
-                "FARA MANZI",
-                "ANTONIO LENTO",
-                "PEPPINO RUBERTO",
-                "ANTONIO SANTONOCITO",
-                "DANIELA MAZZOLA",
-                "MARTINA DONINI",
-                "FABIO LAROCCA",
-                "DANIELA MARIA SERVETTI",
-              ].map((name) => (
-                <li key={name} className="text-[#1a365d]">
-                  {name}
-                </li>
-              ))}
-            </ul>
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-6">
+              {allMembers.map((name) => {
+                const imageSrc = getMemberImage(name);
+                return (
+                  <div
+                    key={name}
+                    className="bg-white shadow-md rounded-lg overflow-hidden transform transition-all duration-300 hover:scale-105"
+                  >
+                    {imageSrc ? (
+                      <img
+                        src={imageSrc}
+                        alt={name}
+                        className="w-full h-64 object-cover object-top"
+                      />
+                    ) : (
+                      <div className="w-full h-64 bg-[#1a365d] bg-opacity-10 flex items-center justify-center">
+                        <span className="text-[#1a365d] font-bold text-center px-4">
+                          {name}
+                        </span>
+                      </div>
+                    )}
+                    <div
+                      className={`p-4 ${
+                        imageSrc
+                          ? "bg-[#1a365d] text-white"
+                          : "bg-white text-[#1a365d]"
+                      } text-center`}
+                    >
+                      <h3 className="font-bold">{name}</h3>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
           </div>
         );
 
