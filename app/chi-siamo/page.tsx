@@ -14,6 +14,16 @@ export default function ChiSiamoPage() {
   const [activeSection, setActiveSection] = useState("chi-siamo");
   const router = useRouter();
 
+  const teamMembers = [
+    { name: "MARIA MAMONE", image: "/img/team/mamone.jpg" },
+    { name: "COSIMO NESCI", image: "/img/team/nesci.jpg" },
+    { name: "GIULIA PUDDU", image: "/img/team/puddu.jpg" },
+    { name: "GIUSEPPINA ADAMO", image: "/img/team/giusy.jpg" },
+    { name: "BELINDA PESCOSOLIDO", image: "/img/team/belinda.jpg" },
+    { name: "DANIELE PACE", image: "/img/team/daniele.jpg" },
+    { name: "PASQUALE PELLEGRINO", image: "/img/team/pasquale.jpg" },
+  ];
+
   const renderOrganigrammaContent = () => {
     switch (activeSection) {
       case "segretario":
@@ -29,10 +39,11 @@ export default function ChiSiamoPage() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div>
                   <Image
-                    src="/img/mamone.jpg"
+                    src="/img/team/mamone.jpg"
                     alt="Maria Mamone"
                     width={300}
                     height={300}
+                    className="rounded-md"
                   />
                 </div>
               </div>
@@ -48,10 +59,11 @@ export default function ChiSiamoPage() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div>
                   <Image
-                    src="/img/nesci.jpg"
+                    src="/img/team/nesci.jpg"
                     alt="Cosimo Nesci"
                     width={300}
                     height={300}
+                    className="rounded-md"
                   />
                 </div>
               </div>
@@ -69,21 +81,23 @@ export default function ChiSiamoPage() {
               I componenti della Segreteria Nazionale, eletti durante
               l&apos;ultimo Congresso Nazionale SNALV/Confsal
             </p>
-            <ul className="space-y-2 md:columns-2">
-              {[
-                "MARIA MAMONE",
-                "COSIMO NESCI",
-                "GIULIA PUDDU",
-                "GIUSEPPINA ADAMO",
-                "BELINDA PESCOSOLIDO",
-                "DANIELE PACE",
-                "PASQUALE PELLEGRINO",
-              ].map((name) => (
-                <li key={name} className="text-[#1a365d]">
-                  {name}
-                </li>
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-6">
+              {teamMembers.map((member) => (
+                <div
+                  key={member.name}
+                  className="bg-white shadow-md rounded-lg overflow-hidden transform transition-all duration-300 hover:scale-105"
+                >
+                  <img
+                    src={member.image}
+                    alt={member.name}
+                    className="w-full h-64 object-cover object-top"
+                  />
+                  <div className="p-4 bg-[#1a365d] text-white text-center">
+                    <h3 className="font-bold">{member.name}</h3>
+                  </div>
+                </div>
               ))}
-            </ul>
+            </div>
           </div>
         );
 
