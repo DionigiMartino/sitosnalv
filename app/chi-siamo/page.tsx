@@ -8,6 +8,7 @@ import Header from "@/src/components/Header";
 import Footer from "@/src/components/Footer";
 import { useState } from "react";
 import HeroSection from "@/src/components/Hero";
+import { ArrowRightIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 export default function ChiSiamoPage() {
@@ -24,50 +25,82 @@ export default function ChiSiamoPage() {
     { name: "PASQUALE PELLEGRINO", image: "/img/team/pasquale.jpg" },
   ];
 
+  const leaders = [
+    {
+      title: "Il Segretario Generale",
+      name: "Dott.ssa Maria Mamone",
+      imageSrc: "/img/team/mamone.jpg",
+      alt: "Maria Mamone",
+      additionalInfo: null,
+    },
+    {
+      title: "Il Vice-Segretario Nazionale",
+      name: "Cosimo Nesci",
+      subtitle: "Consigliere CNEL",
+      imageSrc: "/img/team/nesci.jpg",
+      alt: "Cosimo Nesci",
+      additionalInfo:
+        "Consigliere presso il Consiglio Nazionale dell'Economia e del Lavoro",
+    },
+  ];
+
   const renderOrganigrammaContent = () => {
     switch (activeSection) {
       case "segretario":
         return (
-          <div className="space-y-12">
-            <section>
-              <h1 className="text-[#1a365d] text-4xl font-bold mb-8 md:text-5xl">
-                Il Segretario Generale
-              </h1>
-              <h2 className="text-[#1a365d] text-2xl font-bold mb-4 md:text-3xl">
-                Dott.ssa Maria Mamone
-              </h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div>
-                  <Image
-                    src="/img/team/mamone.jpg"
-                    alt="Maria Mamone"
-                    width={300}
-                    height={300}
-                    className="rounded-md"
-                  />
-                </div>
-              </div>
-            </section>
+          <div className="space-y-12 max-w-6xl mx-auto px-4">
+            {leaders.map((leader, index) => (
+              <section
+                key={leader.name}
+                className="bg-white shadow-lg rounded-xl overflow-hidden"
+              >
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                  {/* Image Column */}
+                  <div
+                    className={`
+              relative group overflow-hidden
+              ${index % 2 === 1 ? "md:order-last" : ""}
+            `}
+                  >
+                    <img
+                      src={leader.imageSrc}
+                      alt={leader.alt}
+                      className="w-full h-96 object-cover object-top transition-transform duration-300 group-hover:scale-105"
+                    />
+                    <div className="absolute inset-0 bg-[#1a365d] opacity-0 group-hover:opacity-20 transition-opacity duration-300"></div>
+                  </div>
 
-            <section>
-              <h2 className="text-[#1a365d] text-4xl font-bold mb-8 md:text-5xl">
-                Il Vice-Segretario Nazionale
-              </h2>
-              <h3 className="text-[#1a365d] text-2xl font-bold mb-4 md:text-3xl">
-                Cosimo Nesci - consigliere CNEL
-              </h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div>
-                  <Image
-                    src="/img/team/nesci.jpg"
-                    alt="Cosimo Nesci"
-                    width={300}
-                    height={300}
-                    className="rounded-md"
-                  />
+                  {/* Text Column */}
+                  <div className="p-8 space-y-6">
+                    <h2 className="text-[#1a365d] text-3xl font-bold md:text-4xl">
+                      {leader.title}
+                    </h2>
+                    <div className="space-y-4">
+                      <h3 className="text-[#1a365d] text-2xl font-semibold">
+                        {leader.name}
+                      </h3>
+                      {leader.subtitle && (
+                        <h4 className="text-xl text-gray-700">
+                          {leader.subtitle}
+                        </h4>
+                      )}
+                    </div>
+
+                    {leader.additionalInfo && (
+                      <div className="bg-[#1a365d] bg-opacity-10 p-4 rounded-lg border-l-4 border-[#1a365d]">
+                        <p className="text-[#1a365d] text-base italic">
+                          <ArrowRightIcon
+                            className="inline-block mr-2 text-[#1a365d]"
+                            size={20}
+                          />
+                          {leader.additionalInfo}
+                        </p>
+                      </div>
+                    )}
+                  </div>
                 </div>
-              </div>
-            </section>
+              </section>
+            ))}
           </div>
         );
 
