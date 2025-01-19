@@ -168,17 +168,20 @@ export default function SocioSanitarioPage() {
                       ASSICURAZIONE GRATUITA PER GLI ISCRITTI
                     </h3>
                     <p>
-                      I lavoratori delle strutture
-                      socio-sanitarie-assistenziali-educative possono avere
-                      l&apos;assicurazione per colpa grave totalmente gratuita
-                      se sei iscritto al sindacato
+                      I lavoratori delle strutture private o accreditate possono
+                      avere l&apos;Assicurazione per colpa grave totalmente
+                      gratuita.
                     </p>
-                    <Link
-                      className="text-snalv-500"
-                      href="https://www.gbsapri.it/convenzioni/colpa-grave-snalv-confsal"
-                    >
-                      Scopri di più
-                    </Link>
+                    <p>
+                      Se sei iscritto al Sindacato, richiedi{" "}
+                      <Link
+                        className="text-snalv-500"
+                        href="https://www.gbsapri.it/convenzioni/colpa-grave-snalv-confsal"
+                      >
+                        qui
+                      </Link>{" "}
+                      il tuo certitficato.
+                    </p>
                   </div>
                 </div>
               </div>
