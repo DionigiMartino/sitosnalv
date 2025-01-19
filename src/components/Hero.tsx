@@ -15,6 +15,12 @@ const HeroSection = ({ section }: any) => {
           title: "La Struttura Nazionale",
           subtitle: "La nostra organizzazione sul territorio",
         };
+      case "evento":
+        return {
+          bg: "/img/evento20febbraio.jpg",
+          title: "",
+          subtitle: "",
+        };
       case "tutele":
         return {
           bg: "/img/tutele.jpg",
@@ -63,7 +69,7 @@ const HeroSection = ({ section }: any) => {
           title: "Collabora con noi",
           subtitle: "Scopri la nostra storia e i nostri valori",
         };
-        case "contatti":
+      case "contatti":
         return {
           bg: "/img/contatti.jpg",
           title: "Contatti",

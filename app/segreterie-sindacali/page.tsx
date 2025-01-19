@@ -197,13 +197,14 @@ export default function TerritorioPage() {
 
             <div className="space-y-4">
               <div>
+                <span>Elenco Segreterie Sindacali (In Aggiornamento)</span>
+
                 <button
                   onClick={() => setIsRegioneOpen(!isRegioneOpen)}
                   className={`w-full flex justify-between items-center p-3 border rounded-lg text-[#1a365d] hover:bg-blue-600 hover:text-white ${
                     isRegioneOpen ? "bg-blue-600 text-white" : "bg-white"
                   }`}
                 >
-                  <span>Elenco Segreterie Sindacali (In Aggiornamento)</span>
                   <span>+ Scegli la regione</span>
                   <span>{selectedRegione}</span>
                 </button>
@@ -271,7 +272,10 @@ export default function TerritorioPage() {
                       className="bg-white p-4 rounded-lg shadow-sm"
                     >
                       <h3 className="font-bold text-lg mb-2">
-                        {sede.tipo} {sede.citta}
+                        {sede.tipo.includes("Ufficio Regionale")
+                          ? "Segreteria Regionale"
+                          : "Segreteria Provinciale"}{" "}
+                        {sede.citta}
                       </h3>
                       <div className="space-y-1 text-gray-600">
                         <p>📍 {sede.indirizzo}</p>

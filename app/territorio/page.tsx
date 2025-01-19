@@ -365,7 +365,6 @@ const TerritorioPage = () => {
 
     let results = sediList.filter(
       (sede) =>
-        // Aggiungiamo controlli di nullità per ogni campo
         sede?.citta?.toLowerCase()?.includes(searchTermLower) ||
         false ||
         sede?.regione?.toLowerCase()?.includes(searchTermLower) ||
@@ -387,6 +386,16 @@ const TerritorioPage = () => {
     setSearchResults([]);
     setMapCenter([41.9028, 12.4964]);
     setMapZoom(6);
+  };
+
+  const transformName = (name) => {
+    if (name.includes("Ufficio Provinciale")) {
+      return name.replace("Ufficio Provinciale", "Segreteria Provinciale");
+    }
+    if (name.includes("Ufficio Regionale")) {
+      return name.replace("Ufficio Regionale", "Segreteria Regionale");
+    }
+    return name;
   };
 
   const openInGoogleMaps = (position: number[]) => {
@@ -430,7 +439,8 @@ const TerritorioPage = () => {
 
               <div className="space-y-4">
                 <p className="font-medium">
-                  Trova la sede sindacale più vicina casa tua:
+                  Trova la sede sindacale più vicina casa tua (in
+                  aggiornamento):
                 </p>
                 <div className="flex gap-4 max-w-md">
                   <Input
@@ -465,46 +475,63 @@ const TerritorioPage = () => {
                       Sedi trovate: {searchResults.length}
                     </h3>
                     <ul className="space-y-4">
-                      {searchResults.map((sede: any, index: number) => (
-                        <li
-                          key={index}
-                          className="flex flex-col sm:flex-row sm:justify-between gap-4 p-4 hover:bg-gray-100 rounded-lg border border-gray-200"
-                        >
-                          <div className="space-y-2">
-                            <div>
-                              <p className="font-medium text-lg">{sede.name}</p>
-                              <p className="text-gray-600">
-                                {sede.responsabile}
-                              </p>
+                      {[...searchResults]
+                        .sort((a, b) => {
+                          const aIsCentro =
+                            a.name?.toLowerCase()?.includes("centro snalv") ||
+                            false;
+                          const bIsCentro =
+                            b.name?.toLowerCase()?.includes("centro snalv") ||
+                            false;
+                          if (aIsCentro && !bIsCentro) return 1; // Se a è un Centro e b no, a va dopo
+                          if (!aIsCentro && bIsCentro) return -1; // Se b è un Centro e a no, a va prima
+                          return 0;
+                        })
+                        .map((sede, index) => (
+                          <li
+                            key={index}
+                            className="flex flex-col sm:flex-row sm:justify-between gap-4 p-4 hover:bg-gray-100 rounded-lg border border-gray-200"
+                          >
+                            <div className="space-y-2">
+                              <div>
+                                <p className="font-medium text-lg">
+                                  {transformName(sede.name)}
+                                </p>
+                                <p className="text-gray-600">
+                                  {sede.responsabile}
+                                </p>
+                              </div>
+                              <div>
+                                <p className="text-sm text-gray-800">
+                                  {sede.address} {sede.cap && `- ${sede.cap}`}
+                                </p>
+                                <p className="text-sm text-gray-600">
+                                  {sede.citta} ({sede.provincia}),{" "}
+                                  {sede.regione}
+                                </p>
+                              </div>
+                              <div className="text-sm space-y-1">
+                                {sede.telefono && <p>Tel: {sede.telefono}</p>}
+                                {sede.cellulare && (
+                                  <p>Cell: {sede.cellulare}</p>
+                                )}
+                                {sede.email && <p>Email: {sede.email}</p>}
+                                {sede.pec && <p>PEC: {sede.pec}</p>}
+                              </div>
                             </div>
-                            <div>
-                              <p className="text-sm text-gray-800">
-                                {sede.address} {sede.cap && `- ${sede.cap}`}
-                              </p>
-                              <p className="text-sm text-gray-600">
-                                {sede.citta} ({sede.provincia}), {sede.regione}
-                              </p>
+                            <div className="flex flex-col gap-2">
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => openInGoogleMaps(sede.position)}
+                                className="flex items-center gap-2 text-blue-600 hover:text-blue-700"
+                              >
+                                <MapPin className="h-4 w-4" />
+                                Apri in Google Maps
+                              </Button>
                             </div>
-                            <div className="text-sm space-y-1">
-                              {sede.telefono && <p>Tel: {sede.telefono}</p>}
-                              {sede.cellulare && <p>Cell: {sede.cellulare}</p>}
-                              {sede.email && <p>Email: {sede.email}</p>}
-                              {sede.pec && <p>PEC: {sede.pec}</p>}
-                            </div>
-                          </div>
-                          <div className="flex flex-col gap-2">
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              onClick={() => openInGoogleMaps(sede.position)}
-                              className="flex items-center gap-2 text-blue-600 hover:text-blue-700"
-                            >
-                              <MapPin className="h-4 w-4" />
-                              Apri in Google Maps
-                            </Button>
-                          </div>
-                        </li>
-                      ))}
+                          </li>
+                        ))}
                     </ul>
                   </div>
                 )}
@@ -561,34 +588,63 @@ const TerritorioPage = () => {
         <div className="lg:grid lg:grid-cols-4 gap-8">
           <div>
             <div className="bg-gray-100 p-4 rounded-lg">
-              {[
-                { id: "cerca-sede", label: "Cerca una sede" },
-                { id: "collabora", label: "Collabora con noi" },
-              ].map((item, index) => (
-                <div
-                  key={item.id}
-                  className={`py-2 ${
-                    index === 0
-                      ? "border-b-2 border-red-500"
-                      : "border-b-2 border-red-500"
+              {/* Cerca una sede - Button */}
+              <div className="py-2 border-b-2 border-red-500">
+                <Button
+                  variant="ghost"
+                  className={`w-full hover:font-bold justify-start text-left uppercase ${
+                    activeSection === "cerca-sede"
+                      ? "text-red-500 font-bold"
+                      : "text-gray-700"
+                  }`}
+                  onClick={() => {
+                    setActiveSection("cerca-sede");
+                    window.history.pushState(null, "", "#cerca-sede");
+                  }}
+                >
+                  Cerca una sede
+                </Button>
+              </div>
+
+              <div className="py-2 border-b-2 border-red-500">
+                <Link
+                  href="/segreterie-sindacali"
+                  className={`block text-sm w-full px-4 py-2 text-left uppercase hover:font-bold ${
+                    activeSection === "collabora"
+                      ? "text-red-500 font-bold"
+                      : "text-gray-700"
                   }`}
                 >
-                  <Button
-                    variant="ghost"
-                    className={`w-full hover:font-bold justify-start text-left uppercase ${
-                      activeSection === item.id
-                        ? "text-red-500 font-bold"
-                        : "text-gray-700"
-                    }`}
-                    onClick={() => {
-                      setActiveSection(item.id);
-                      window.history.pushState(null, "", `#${item.id}`);
-                    }}
-                  >
-                    {item.label}
-                  </Button>
-                </div>
-              ))}
+                  Le Segreterie Sindacali
+                </Link>
+              </div>
+
+              <div className="py-2 border-b-2 border-red-500">
+                <Link
+                  href="/centri-snalv"
+                  className={`block text-sm w-full px-4 py-2 text-left uppercase hover:font-bold ${
+                    activeSection === "collabora"
+                      ? "text-red-500 font-bold"
+                      : "text-gray-700"
+                  }`}
+                >
+                  I Centri Snalv
+                </Link>
+              </div>
+
+              {/* Collabora con noi - Link */}
+              <div className="py-2 border-b-2 border-red-500">
+                <Link
+                  href="/collabora"
+                  className={`block text-sm w-full px-4 py-2 text-left uppercase hover:font-bold ${
+                    activeSection === "collabora"
+                      ? "text-red-500 font-bold"
+                      : "text-gray-700"
+                  }`}
+                >
+                  Collabora con noi
+                </Link>
+              </div>
             </div>
           </div>
 

@@ -96,15 +96,22 @@ export default function SocioSanitarioPage() {
 
                   <p className="text-gray-700 mb-6">
                     Nello specifico, la nostra mission si compone di tre punti
-                    qualificanti: • Equiparazione degli stipendi e delle
-                    condizioni di lavoro dei dipendenti delle strutture
-                    accreditate a quelle dei colleghi del pubblico impiego; •
-                    Garanzia di un numero minimo di personale adeguato al numero
-                    degli utenti assistiti; • Programmazione efficace del
-                    fabbisogno di personale, in relazione alla crescita
-                    esponenziale della popolazione anziana in Italia. Su questi
-                    presupposti, i lavoratori iscritti al Sindacato hanno
-                    approvato una piattaforma programmatica che prova a
+                    qualificanti: <br />
+                    <br />
+                    • Equiparazione degli stipendi e delle condizioni di lavoro
+                    dei dipendenti delle strutture accreditate a quelle dei
+                    colleghi del pubblico impiego;
+                    <br />
+                    <br />• Garanzia di un numero minimo di personale adeguato
+                    al numero degli utenti assistiti;
+                    <br />
+                    <br />• Programmazione efficace del fabbisogno di personale,
+                    in relazione alla crescita esponenziale della popolazione
+                    anziana in Italia.
+                    <br />
+                    <br />
+                    Su questi presupposti, i lavoratori iscritti al Sindacato
+                    hanno approvato una piattaforma programmatica che prova a
                     sviscerare le comuni problematiche del personale, indagando
                     sulle cause che determinano inefficienze organizzative e
                     discriminazioni contrattuali. Il documento tenta di fornire,
@@ -124,7 +131,7 @@ export default function SocioSanitarioPage() {
                     <h2 className="text-[#1a365d] text-2xl font-bold md:text-3xl">
                       CONTATTACI
                     </h2>
-                    <p>Email: sociosanitario@snalv.it</p>
+                    <p>Email: socioassistenziale@snalv.it</p>
                     <p>Telefono: 06.70492451</p>
                   </div>
                 </div>
@@ -143,7 +150,7 @@ export default function SocioSanitarioPage() {
                     </div>
                   </div>
 
-                  <div className="bg-blue-900 text-white p-4 rounded">
+                  <div className="bg-blue-900 text-white p-4 rounded flex flex-col gap-2">
                     <h3 className="font-bold mb-2 border-l-2 border-red-500 pl-3">
                       EVENTO 20 FEBBRAIO 2024 - ROMA
                     </h3>
@@ -151,9 +158,12 @@ export default function SocioSanitarioPage() {
                       SETTORE SOCIO SANITARIO, valorizzare il LAVORO per
                       garantire la QUALITÀ dei servizi
                     </p>
+                    <Link className="my-2 text-snalv-500" href="/eventi">
+                      Scopri di più
+                    </Link>
                   </div>
 
-                  <div className="bg-blue-900 text-white p-4 rounded">
+                  <div className="bg-blue-900 text-white p-4 rounded flex flex-col gap-2">
                     <h3 className="font-bold mb-2 border-l-2 border-red-500 pl-3">
                       ASSICURAZIONE GRATUITA PER GLI ISCRITTI
                     </h3>
@@ -163,6 +173,12 @@ export default function SocioSanitarioPage() {
                       l&apos;assicurazione per colpa grave totalmente gratuita
                       se sei iscritto al sindacato
                     </p>
+                    <Link
+                      className="text-snalv-500"
+                      href="https://www.gbsapri.it/convenzioni/colpa-grave-snalv-confsal"
+                    >
+                      Scopri di più
+                    </Link>
                   </div>
                 </div>
               </div>

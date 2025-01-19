@@ -204,6 +204,8 @@ export default function CentriSnalv() {
             </div>
 
             <div className="space-y-4">
+              <span>Elenco Centri Snalv (In Aggiornamento)</span>
+
               <div>
                 <button
                   onClick={() => setIsRegioneOpen(!isRegioneOpen)}
@@ -211,7 +213,6 @@ export default function CentriSnalv() {
                     isRegioneOpen ? "bg-blue-600 text-white" : "bg-white"
                   }`}
                 >
-                  <span>Elenco Centri Snalv (In Aggiornamento)</span>
                   <span>+ Scegli la regione</span>
                   <span>{selectedRegione}</span>
                 </button>
