@@ -30,7 +30,7 @@ const HeroSection = ({ section }: any) => {
       case "comparti":
         return {
           bg: "/img/comparti.jpg",
-          title: "Comparti Specifici",
+          title: "Comparti e CCNL",
           subtitle: "Supporto specializzato per ogni settore",
         };
       case "notizie":

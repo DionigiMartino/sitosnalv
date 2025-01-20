@@ -29,7 +29,7 @@ const Header = () => {
         { label: "Chi siamo", href: "/chi-siamo#chi-siamo" },
         { label: "La struttura nazionale", href: "/struttura" },
         { label: "Tutele e servizi", href: "/servizi" },
-        { label: "Comparti specifici", href: "/comparti" },
+        { label: "Comparti e CCNL", href: "/comparti" },
       ],
     },
     {
