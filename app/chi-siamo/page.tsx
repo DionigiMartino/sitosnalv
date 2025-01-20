@@ -16,13 +16,13 @@ export default function ChiSiamoPage() {
   const router = useRouter();
 
   const teamMembers = [
-    { name: "MARIA MAMONE", image: "/img/team/mamone.jpg" },
-    { name: "COSIMO NESCI", image: "/img/team/nesci.jpg" },
-    { name: "GIULIA PUDDU", image: "/img/team/puddu.jpg" },
-    { name: "GIUSEPPINA ADAMO", image: "/img/team/giusy.jpg" },
-    { name: "BELINDA PESCOSOLIDO", image: "/img/team/belinda.jpg" },
-    { name: "DANIELE PACE", image: "/img/team/daniele.jpg" },
-    { name: "PASQUALE PELLEGRINO", image: "/img/team/pasquale.jpg" },
+    { name: "MARIA MAMONE", image: "/img/team/Mamone.jpg" },
+    { name: "COSIMO NESCI", image: "/img/team/Nesci.jpg" },
+    { name: "GIULIA PUDDU", image: "/img/team/Puddu.jpg" },
+    { name: "GIUSEPPINA ADAMO", image: "/img/team/Giusy.jpg" },
+    { name: "BELINDA PESCOSOLIDO", image: "/img/team/Belinda.jpg" },
+    { name: "DANIELE PACE", image: "/img/team/Daniele.jpg" },
+    { name: "PASQUALE PELLEGRINO", image: "/img/team/Pasquale.jpg" },
   ];
 
   const allMembers = [

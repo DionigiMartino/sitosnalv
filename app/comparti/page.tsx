@@ -201,6 +201,118 @@ export default function CompartiPage() {
                   </div>
                 </div>
               </div>
+
+              {/* CCNL Section */}
+              <div className="mt-12">
+                <h2 className="text-2xl font-bold text-[#1a365d] mb-6">
+                  I CONTRATTI COLLETTIVI NAZIONALI DI LAVORO SOTTOSCRITTI DALLO
+                  SNALV
+                </h2>
+
+                {/* CCNL Anaste */}
+                <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-shadow mb-6">
+                  <div className="flex-1">
+                    <h3 className="text-xl font-bold text-[#1a365d] mb-3">
+                      CCNL Anaste{" "}
+                    </h3>
+                    <p className="text-gray-600 mb-4">
+                      Il Contratto Collettivo Anaste si applica ai dipendenti di
+                      imprese e Enti operanti nel campo socio-sanitario-
+                      assistenziale-educativo. E' stato siglato dallo Snalv
+                      Confsal il 3 luglio 2017 e rinnovato in data 27 dicembre
+                      2022.
+                    </p>
+                    <div className="space-y-2">
+                      <Link
+                        href="/docs/ccnl_anaste.pdf"
+                        className="block text-red-500 hover:text-red-600"
+                      >
+                        - CCNL Anaste 2022
+                      </Link>
+                      <Link
+                        href="/docs/ccnl_anaste_verbale.pdf"
+                        className="block text-red-500 hover:text-red-600"
+                      >
+                        - Verbale integrativo del 28.04.2023
+                      </Link>
+                    </div>
+                  </div>
+                </div>
+
+                {/* CCNL Organizzazioni Sindacali */}
+                <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-shadow mb-6">
+                  <div className="flex-1">
+                    <h3 className="text-xl font-bold text-[#1a365d] mb-3">
+                      CCNL Organizzazioni Sindacali{" "}
+                    </h3>
+                    <p className="text-gray-600 mb-4">
+                      In data 1° dicembre 2010, lo Snalv Confsal ha sottoscritto
+                      il CCNL per i lavoratori dipendenti delle Organizzazioni
+                      Sindacali Nazionali e Territoriali, di rappresentanza e di
+                      categoria delle Associazioni anche di settore, e degli
+                      Enti loro partecipati, promossi e collegati con le
+                      associazioni datoriali UNSIC e ASNALI. Il Contratto
+                      Collettivo è stato rinnovato, da ultimo, in data 19
+                      gennaio 2023.
+                    </p>
+                    <div className="space-y-2">
+                      <Link
+                        href="/docs/ccnl_oss.pdf"
+                        className="block text-red-500 hover:text-red-600"
+                      >
+                        CCNL OO.SS. 2023-2025
+                      </Link>
+                    </div>
+                  </div>
+                </div>
+
+                {/* CCNL Intersettoriale */}
+                <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-shadow mb-6">
+                  <div className="flex-1">
+                    <h3 className="text-xl font-bold text-[#1a365d] mb-3">
+                      CCNL Intersettoriale Confsal-Cifa{" "}
+                    </h3>
+                    <p className="text-gray-600 mb-4">
+                      Il CCNL Intersettoriale è rivolto ai lavorati dei seguenti
+                      settori: Commercio, Terziario, Servizi, Pubblici Esercizi
+                      e Turismo. E' stato siglato il 24 luglio 2013 e rinnovato,
+                      da ultimo, in data 20 luglio 2020
+                    </p>
+                    <div className="space-y-2">
+                      <Link
+                        href="/docs/ccnl_inter_settoriale.pdf"
+                        className="block text-red-500 hover:text-red-600"
+                      >
+                        CCNL Intersettoriale.pdf
+                      </Link>
+                    </div>
+                  </div>
+                </div>
+
+                {/* CCNL Lavoro domestico */}
+                <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-shadow mb-6">
+                  <div className="flex-1">
+                    <h3 className="text-xl font-bold text-[#1a365d] mb-3">
+                      CCNL Lavoro domestico{" "}
+                    </h3>
+                    <p className="text-gray-600 mb-4">
+                      In data 25 Maggio 2021 è stato siglato il Contratto
+                      Collettivo per il lavoro domestico, che si applica ai
+                      diversi profili professionali afferenti agli assistenti
+                      familiari, addetti al funzionamento della vita familiare e
+                      delle convivenze familiarmente strutturate.
+                    </p>
+                    <div className="space-y-2">
+                      <Link
+                        href="/docs/ccnl_lavoro_domestico.pdf"
+                        className="block text-red-500 hover:text-red-600"
+                      >
+                        CCNL Lavoro domestico
+                      </Link>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>

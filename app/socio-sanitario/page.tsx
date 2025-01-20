@@ -142,11 +142,11 @@ export default function SocioSanitarioPage() {
                       IL CCNL ANASTE 2022
                     </h3>
                     <div className="space-y-2">
-                      <Button variant="link">Il Testo integrale</Button>
-                      <Button variant="link">
+                      <Link href="/docs/ccnl_anaste.pdf">Il Testo integrale</Link>
+                      <Link href="/docs/ccnl_anaste_verbale.pdf">
                         Verbale integrativo 28.04.2023
-                      </Button>
-                      <Button variant="link">Scheda di approfondimento</Button>
+                      </Link>
+                      <Link href="/">Scheda di approfondimento</Link>
                     </div>
                   </div>
 

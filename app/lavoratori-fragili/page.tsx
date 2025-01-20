@@ -144,6 +144,42 @@ export default function LavoratoriFragiliPage() {
                     <p>Telefono: 06.70492451</p>
                   </div>
                 </div>
+
+                {/* Sidebar */}
+                <div className="md:col-span-1">
+                  <div className="bg-white p-6 rounded-lg shadow">
+                    {/* Title with red bar */}
+                    <div className="flex gap-4 mb-8">
+                      <div className="w-1 bg-red-600 flex-shrink-0"></div>
+                      <h2 className="text-xl font-bold text-[#1a365d]">
+                        INIZIATIVE E DOCUMENTI
+                      </h2>
+                    </div>
+
+                    {/* Links with dotted separators */}
+                    <nav className="space-y-8">
+                      {/* Convegno */}
+                      <div className="relative flex flex-col gap-3">
+                        <Link
+                          href="/"
+                          className="text-gray-900 hover:text-snalv-500"
+                        >
+                          Il Convegno del 26.07.2022!
+                        </Link>
+                        <div className=" h-px border-b border-dashed border-gray-300" />
+
+                        <Link
+                          href="/documents/piattaforma-fragili.pdf"
+                          className="block text-gray-900 hover:text-snalv-500"
+                          target="_blank"
+                        >
+                          Scarica la nostra piattaforma programmatica
+                        </Link>
+                        <div className=" h-px border-b border-dashed border-gray-300" />
+                      </div>
+                    </nav>
+                  </div>
+                </div>
               </div>
 
               <div className="mt-12">
