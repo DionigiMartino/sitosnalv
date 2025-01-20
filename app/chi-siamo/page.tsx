@@ -321,7 +321,8 @@ export default function ChiSiamoPage() {
         <div className="grid gap-8 lg:grid-cols-4">
           {/* Menu Items */}
           <div className="">
-            <div className="lg:sticky lg:top-4 lg:h-fit">
+            {/* First Sticky Section */}
+            <div className="">
               <div className="bg-white p-4 rounded-xl shadow-lg border border-gray-100">
                 <nav className="space-y-2">
                   {[
@@ -374,12 +375,13 @@ export default function ChiSiamoPage() {
               </div>
             </div>
 
-            {/* Organigramma Section */}
+            {/* Organigramma Section - Normal scroll */}
             <div className="mt-8">
+              {" "}
+              {/* Removed sticky positioning */}
               <h2 className="text-[#1a365d] text-xl font-bold mb-4">
                 ORGANIGRAMMA
               </h2>
-
               <div className="space-y-2">
                 <Button
                   variant="ghost"
