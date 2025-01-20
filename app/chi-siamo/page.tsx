@@ -29,7 +29,7 @@ export default function ChiSiamoPage() {
     { name: "MARIA MAMONE", image: "/img/team/Mamone.jpg" },
     { name: "COSIMO NESCI", image: "/img/team/Nesci.jpg" },
     { name: "GIULIA PUDDU", image: "/img/team/Puddu.jpg" },
-    { name: "GIUSEPPINA ADAMO", image: "/img/team/Giusy.jpg" },
+    { name: "GIUSEPPINA ADAMO", image: "/img/team/giusy.jpg" },
     { name: "BELINDA PESCOSOLIDO", image: "/img/team/Belinda.jpg" },
     { name: "DANIELE PACE", image: "/img/team/Daniele.jpg" },
     { name: "PASQUALE PELLEGRINO", image: "/img/team/Pasquale.jpg" },
@@ -68,7 +68,7 @@ export default function ChiSiamoPage() {
     {
       title: "Il Segretario Generale",
       name: "Dott.ssa Maria Mamone",
-      imageSrc: "/img/team/mamone.jpg",
+      imageSrc: "/img/team/Mamone.jpg",
       alt: "Maria Mamone",
       additionalInfo: null,
     },
@@ -76,7 +76,7 @@ export default function ChiSiamoPage() {
       title: "Il Vice-Segretario Nazionale",
       name: "Cosimo Nesci",
       subtitle: "Consigliere CNEL",
-      imageSrc: "/img/team/nesci.jpg",
+      imageSrc: "/img/team/Nesci.jpg",
       alt: "Cosimo Nesci",
       additionalInfo:
         "Consigliere presso il Consiglio Nazionale dell'Economia e del Lavoro",
