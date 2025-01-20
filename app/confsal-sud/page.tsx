@@ -38,14 +38,14 @@ export default function ConfsalSudPage() {
                   },
                   {
                     title: "Tutele e servizi",
-                    route: "/tutele",
+                    route: "/servizi",
                     icon: Shield,
-                    active: true,
                   },
                   {
                     title: "Comparti e CCNL",
                     route: "/comparti",
                     icon: Briefcase,
+                    active: true,
                   },
                 ].map((item) => (
                   <Button

@@ -9,6 +9,13 @@ import Footer from "@/src/components/Footer";
 import CategoryNews from "@/src/components/CategoryNews";
 import HeroSection from "@/src/components/Hero";
 import { useRouter } from "next/navigation";
+import {
+  Building2,
+  Briefcase,
+  Shield,
+  Users,
+  ChevronRight,
+} from "lucide-react";
 
 export default function SocioSanitarioPage() {
   const router = useRouter();
@@ -21,44 +28,55 @@ export default function SocioSanitarioPage() {
       <main className="max-w-full md:max-w-7xl px-4 mx-auto py-8 sm:py-12">
         <div className="grid gap-8 lg:grid-cols-4">
           {/* Menu Items */}
-          <div className="">
-            <div className="bg-gray-100 p-4 rounded-lg">
-              <div className="py-4 border-b-2 border-red-500">
-                <Button
-                  variant="ghost"
-                  className="w-full justify-start text-left hover:font-bold uppercase text-gray-700"
-                  onClick={() => router.push("/chi-siamo")}
-                >
-                  Chi siamo
-                </Button>
-              </div>
-              <div className="py-4 border-b-2 border-red-500">
-                <Button
-                  variant="ghost"
-                  className="w-full justify-start text-left hover:font-bold uppercase text-gray-700"
-                  onClick={() => router.push("/struttura")}
-                >
-                  La struttura nazionale
-                </Button>
-              </div>
-              <div className="py-4 border-b-2 border-red-500">
-                <Button
-                  variant="ghost"
-                  className="w-full justify-start text-left hover:font-bold uppercase text-gray-700"
-                  onClick={() => router.push("/servizi")}
-                >
-                  Tutele e servizi
-                </Button>
-              </div>
-              <div className="py-4 border-b-2 border-red-500">
-                <Button
-                  variant="ghost"
-                  className="w-full justify-start text-left hover:font-bold uppercase text-gray-700"
-                  onClick={() => router.push("/comparti")}
-                >
-                  Comparti e CCNL
-                </Button>
-              </div>
+          <div className="lg:sticky lg:top-4 lg:h-fit">
+            <div className="bg-white p-4 rounded-xl shadow-lg border border-gray-100">
+              <nav className="space-y-2">
+                {[
+                  {
+                    title: "Chi siamo",
+                    route: "/chi-siamo",
+                    icon: Users,
+                  },
+                  {
+                    title: "La struttura nazionale",
+                    route: "/struttura",
+                    icon: Building2,
+                  },
+                  {
+                    title: "Tutele e servizi",
+                    route: "/servizi",
+                    icon: Shield,
+                  },
+                  {
+                    title: "Comparti e CCNL",
+                    route: "/comparti",
+                    icon: Briefcase,
+                    active: true,
+
+                  },
+                ].map((item) => (
+                  <Button
+                    key={item.title}
+                    variant={item.active ? "default" : "ghost"}
+                    className={`w-full justify-between text-left group transition-all ${
+                      item.active
+                        ? "bg-red-500 text-white hover:bg-red-600"
+                        : "hover:bg-gray-100"
+                    }`}
+                    onClick={() => !item.active && router.push(item.route)}
+                  >
+                    <span className="flex items-center gap-2">
+                      <item.icon className="w-4 h-4" />
+                      <span className="font-medium">{item.title}</span>
+                    </span>
+                    <ChevronRight
+                      className={`w-4 h-4 transition-transform ${
+                        item.active ? "rotate-90" : "group-hover:translate-x-1"
+                      }`}
+                    />
+                  </Button>
+                ))}
+              </nav>
             </div>
           </div>
 

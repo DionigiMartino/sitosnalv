@@ -330,6 +330,7 @@ export default function ChiSiamoPage() {
                       title: "Chi siamo",
                       route: "/chi-siamo",
                       icon: Users,
+                      active: true,
                     },
                     {
                       title: "La struttura nazionale",
@@ -338,9 +339,8 @@ export default function ChiSiamoPage() {
                     },
                     {
                       title: "Tutele e servizi",
-                      route: "/tutele",
+                      route: "/servizi",
                       icon: Shield,
-                      active: true,
                     },
                     {
                       title: "Comparti e CCNL",

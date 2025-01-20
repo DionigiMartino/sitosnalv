@@ -6,7 +6,13 @@ import Link from "next/link";
 import Header from "@/src/components/Header";
 import Footer from "@/src/components/Footer";
 import { useRouter } from "next/navigation";
-import { Building2, Briefcase, Shield, Users, ChevronRight } from "lucide-react";
+import {
+  Building2,
+  Briefcase,
+  Shield,
+  Users,
+  ChevronRight,
+} from "lucide-react";
 
 export default function Convegno() {
   const router = useRouter();
@@ -34,14 +40,14 @@ export default function Convegno() {
                   },
                   {
                     title: "Tutele e servizi",
-                    route: "/tutele",
+                    route: "/servizi",
                     icon: Shield,
-                    active: true,
                   },
                   {
                     title: "Comparti e CCNL",
                     route: "/comparti",
                     icon: Briefcase,
+                    active: true,
                   },
                 ].map((item) => (
                   <Button

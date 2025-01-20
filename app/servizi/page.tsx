@@ -711,7 +711,7 @@ export default function TutelePage() {
                   },
                   {
                     title: "Tutele e servizi",
-                    route: "/tutele",
+                    route: "/servizi",
                     icon: Shield,
                     active: true,
                   },
