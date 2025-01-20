@@ -133,7 +133,6 @@ export default function CompartiPage() {
               {/* Lista dei comparti */}
               <div className="grid grid-cols-1 md:grid-cols-1 gap-6">
                 {settori.map((settore, index) => {
-                  const IconComponent = settore.icon;
                   return (
                     <div
                       key={index}
@@ -147,11 +146,7 @@ export default function CompartiPage() {
                       {/* Overlay scuro con gradiente */}
                       <div className="absolute inset-0 bg-gradient-to-t from-black/90 to-black/40 group-hover:from-black/95 group-hover:to-black/50 transition-all duration-300" />
 
-                      {/* Icona fluttuante */}
-                      <div className="absolute top-6 right-6 w-16 h-16 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center group-hover:scale-110 transition-transform">
-                        <IconComponent className="w-8 h-8 text-white" />
-                      </div>
-
+        
                       {/* Contenuto */}
                       <div className="relative h-full p-6 flex flex-col justify-end">
                         <h2 className="text-xl font-bold text-white mb-3">

@@ -486,7 +486,7 @@ export default function TutelePage() {
 
           <div className="bg-white p-6 rounded-xl shadow-sm border border-purple-100 hover:shadow-md transition-shadow">
             <ul className="space-y-4">
-              <li className="flex items-start gap-3">
+              <li className="flex items-center gap-3">
                 <div className="p-2 bg-purple-50 rounded-lg mt-1">
                   <Briefcase className="w-5 h-5 text-purple-500" />
                 </div>
@@ -496,7 +496,7 @@ export default function TutelePage() {
                   anche europeo
                 </p>
               </li>
-              <li className="flex items-start gap-3">
+              <li className="flex items-center gap-3">
                 <div className="p-2 bg-purple-50 rounded-lg mt-1">
                   <FileText className="w-5 h-5 text-purple-500" />
                 </div>
@@ -504,7 +504,7 @@ export default function TutelePage() {
                   nel reperire tutte le informazioni sui progetti finanziati
                 </p>
               </li>
-              <li className="flex items-start gap-3">
+              <li className="flex items-center gap-3">
                 <div className="p-2 bg-purple-50 rounded-lg mt-1">
                   <Users className="w-5 h-5 text-purple-500" />
                 </div>
@@ -513,7 +513,7 @@ export default function TutelePage() {
                   lavorativo ed il background professionale
                 </p>
               </li>
-              <li className="flex items-start gap-3">
+              <li className="flex items-center gap-3">
                 <div className="p-2 bg-purple-50 rounded-lg mt-1">
                   <Compass className="w-5 h-5 text-purple-500" />
                 </div>
