@@ -10,6 +10,19 @@ const nextConfig = {
       },
     ],
   },
+  async headers() {
+    return [
+      {
+        source: "/docs/:path*",
+        headers: [
+          {
+            key: "Content-Type",
+            value: "application/pdf",
+          },
+        ],
+      },
+    ];
+  },
 };
 
 module.exports = nextConfig;

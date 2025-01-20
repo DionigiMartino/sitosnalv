@@ -39,18 +39,6 @@ export default function EventoPage() {
             </p>
 
             {/* Download Section */}
-            <div className="bg-red-50 p-6 rounded-lg mb-8">
-              <h2 className="text-xl font-bold text-red-700 mb-4">
-                CONSULTA E SCARICA LA PIATTAFORMA SNALV CONFSAL
-              </h2>
-              <Link
-                href="/documents/piattaforma.pdf"
-                className="inline-block bg-red-600 text-white px-6 py-2 rounded hover:bg-red-700"
-                target="_blank"
-              >
-                Scarica PDF
-              </Link>
-            </div>
 
             {/* Event Image */}
             <div className="relative w-full mb-8">

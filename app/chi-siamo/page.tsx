@@ -79,7 +79,7 @@ export default function ChiSiamoPage() {
       imageSrc: "/img/team/Nesci.jpg",
       alt: "Cosimo Nesci",
       additionalInfo:
-        "Consigliere presso il Consiglio Nazionale dell'Economia e del Lavoro",
+        null,
     },
   ];
 

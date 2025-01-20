@@ -52,7 +52,6 @@ export default function SocioSanitarioPage() {
                     route: "/comparti",
                     icon: Briefcase,
                     active: true,
-
                   },
                 ].map((item) => (
                   <Button
@@ -190,7 +189,10 @@ export default function SocioSanitarioPage() {
                       SETTORE SOCIO SANITARIO, valorizzare il LAVORO per
                       garantire la QUALITÀ dei servizi
                     </p>
-                    <Link className="my-2 text-snalv-500" href="/eventi">
+                    <Link
+                      className="my-2 text-snalv-500"
+                      href="/evento-20-febbraio"
+                    >
                       Scopri di più
                     </Link>
                   </div>

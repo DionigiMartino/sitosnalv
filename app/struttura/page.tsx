@@ -43,12 +43,12 @@ const technicalOffices = [
   },
   {
     title: "Amministrazione e contabilità sede nazionale",
-    email: "deleghe@snalv.it",
+    email: "info@snalv.it",
     images: ["/img/team/Daniele.jpg"],
   },
   {
     title: "Amministrazione e contabilità sedi territoriali",
-    email: "info@snalv.it",
+    email: "deleghe@snalv.it",
     images: ["/img/team/giusy.jpg", "/img/team/Giada.jpg"],
   },
   {

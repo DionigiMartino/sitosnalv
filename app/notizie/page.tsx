@@ -379,8 +379,20 @@ const ComunicatiPage = () => {
 
           {/* Main Content */}
           <div className="col-span-3">
-            <ScrollArea className="h-[calc(100vh-200px)]">
-              <PostsSection />
+            <ScrollArea className="h-[calc(100vh-200px)] overflow-auto">
+              <div className="w-full pr-4">
+                {" "}
+                {/* Add padding-right to prevent content from being hidden by scrollbar */}
+                <PostsSection />
+              </div>
+              <div className="absolute right-0 top-0 h-full w-2 bg-gray-200 rounded">
+                <div className="relative h-full">
+                  <div
+                    className="absolute right-0 top-0 w-2 rounded bg-gray-400 hover:bg-gray-500 transition-colors"
+                    style={{ height: "30%" }}
+                  />
+                </div>
+              </div>
             </ScrollArea>
           </div>
         </div>

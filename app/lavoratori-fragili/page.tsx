@@ -180,7 +180,7 @@ export default function LavoratoriFragiliPage() {
                         <div className=" h-px border-b border-dashed border-gray-300" />
 
                         <Link
-                          href="/docs/piattaforma.pdf"
+                          href="/docs/piattaforma_fragili.pdf"
                           className="block text-gray-900 hover:text-snalv-500"
                           target="_blank"
                         >

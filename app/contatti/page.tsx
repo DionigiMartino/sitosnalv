@@ -37,22 +37,17 @@ const ContactSection = () => {
     {
       title: "Ufficio Vertenze e Conteggi",
       details: [
+    
         {
-          label: "Telefono",
-          value: "06.70492451",
-          link: "tel:0670492451",
-          type: "phone",
-        },
-        {
-          label: "Mobile",
+          label: "Mobile & Whatsapp",
           value: "345.0511636",
           link: "tel:3450511636",
           type: "phone",
         },
         {
           label: "Email",
-          value: "vertenze@snalv.it",
-          link: "mailto:vertenze@snalv.it",
+          value: "info@snalv.it, conteggi@snalv.it, conciliazioni@snalv.it",
+          link: "mailto:info@snalv.it",
           type: "email",
         },
       ],
