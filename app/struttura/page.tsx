@@ -59,6 +59,7 @@ const technicalOffices = [
   {
     title: "Social & comunicazione",
     images: ["/img/aicon.png"],
+    email: "info@aicon.it",
     type: "icon",
   },
 ];
