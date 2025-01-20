@@ -13,41 +13,46 @@ const technicalOffices = [
   {
     title: "Ufficio vertenze e conteggi",
     emails: ["info@snalv.it", "conteggi@snalv.it", "conciliazioni@snalv.it"],
-    image: "/img/profilepic.jpg",
+    images: [
+      "/img/team/Belinda.jpg",
+      "/img/team/Gaia.jpg",
+      "/img/team/Giorgio.jpg",
+    ],
   },
   {
     title: "Relazioni industriali",
     email: "giulia.puddu@snalv.it",
-    image: "/img/profilepic.jpg",
+    images: ["/img/team/Puddu.jpg"],
   },
   {
     title: "Relazioni istituzionali",
     email: "pasquale.pellegrino@snalv.it",
-    image: "/img/profilepic.jpg",
+    images: ["/img/team/Pasquale.jpg"],
   },
   {
     title: "Organizzazione del territorio",
     email: "organizzazione@snalv.it",
-    image: "/img/profilepic.jpg",
+    images: ["/img/team/Puddu.jpg", "/img/team/Pasquale.jpg"],
   },
   {
     title: "Amministrazione e contabilità sede nazionale",
     email: "deleghe@snalv.it",
-    image: "/img/profilepic.jpg",
+    images: ["/img/team/Giusy.jpg", "/img/team/Giada.jpg"],
   },
   {
     title: "Amministrazione e contabilità sedi territoriali",
     email: "info@snalv.it",
-    image: "/img/profilepic.jpg",
+    images: ["/img/team/Daniele.jpg"],
   },
   {
     title: "Addetto stampa nazionale",
-    email: "francesca.dibiagio@@gmail.com",
-    image: "/img/profilepic.jpg",
+    email: "francesca.dibiagio@gmail.com",
+    images: ["/img/team/Francesca.jpg"],
   },
   {
     title: "Social & comunicazione",
-    image: "/img/profilepic.jpg",
+    images: ["/img/aicon.png"],
+    type: "icon",
   },
 ];
 
@@ -117,23 +122,18 @@ export default function StrutturaPage() {
               <h2 className="text-[#1a365d] text-2xl font-bold mb-8">
                 GLI UFFICI TECNICI DI SUPPORTO
               </h2>
-              <p>
+              <p className="mb-8">
                 Gli uffici tecnici di supporto, collocati presso la sede della
                 Segreteria Nazionale, sono così suddivisi:
               </p>
-              <div className="space-y-8">
+              <div className="space-y-12">
                 {technicalOffices.map((office, index) => (
-                  <div key={index} className="flex gap-6 items-start">
-                    <div className="w-28 h-28 md:w-32 md:h-32 relative flex-shrink-0">
-                      <Image
-                        src={office.image}
-                        alt={office.title}
-                        fill
-                        className="object-cover rounded-lg"
-                      />
-                    </div>
-                    <div>
-                      <div className="flex items-center gap-1">
+                  <div
+                    key={index}
+                    className="border-b border-gray-200 pb-8 last:border-b-0"
+                  >
+                    <div className="mb-4">
+                      <div className="flex items-center gap-1 mb-2">
                         <Image
                           src="/icon/struttura.jpg"
                           alt=""
@@ -153,6 +153,25 @@ export default function StrutturaPage() {
                             {email}
                           </p>
                         ))}
+                    </div>
+                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                      {office.images.map((image, imageIndex) => (
+                        <div
+                          key={imageIndex}
+                          className="relative aspect-square"
+                        >
+                          <Image
+                            src={image}
+                            alt={`${office.title} - Immagine ${imageIndex + 1}`}
+                            fill
+                            className={` rounded-lg ${
+                              office?.type === "icon"
+                                ? "object-contain"
+                                : "object-cover"
+                            }`}
+                          />
+                        </div>
+                      ))}
                     </div>
                   </div>
                 ))}

@@ -98,6 +98,14 @@ export default function ConfsalSudPage() {
                     promozione e nello sviluppo del territorio.
                   </p>
 
+                  <p className="text-gray-600 text-base mb-6">
+                    In quest&apos;ottica, il Dipartimento intende mettere in
+                    rete rappresentanti delle Istituzioni, imprese, lavoratori,
+                    giovani e disoccupati, Università e ricerca, parti sociali
+                    impegnate a vario titolo nella promozione e nello sviluppo
+                    del territorio.
+                  </p>
+
                   <Image
                     src="/img/confsal.jpeg"
                     alt="Confsal Sud"
@@ -105,45 +113,92 @@ export default function ConfsalSudPage() {
                     className="rounded-md"
                     height={500}
                   />
-
-                  <div className="bg-gray-100 p-6 rounded-lg mt-8">
-                    <h2 className="text-xl font-bold mb-4 md:text-2xl text-blue-600">
-                      MISSIONE MEDITERRANEO
-                    </h2>
-                    <div className="space-y-4">
-                      <p>
-                        <span className="font-bold">Prossimi eventi:</span>
-                      </p>
-                      <ul className="list-disc pl-5 space-y-2">
-                        <li>Seminario Regione Calabria - Marzo 2024</li>
-                        <li>Seminario Regione Sicilia - Aprile 2024</li>
-                        <li>Seminario Regione Puglia - Maggio 2024</li>
-                      </ul>
-                    </div>
-                  </div>
                 </div>
 
-                <div className="space-y-4">
-                  <div className="bg-blue-900 text-white p-4 rounded">
-                    <h3 className="font-bold mb-2 border-l-2 border-red-500 pl-3">
+                {/* Sidebar */}
+                <div className="md:col-span-1 space-y-6">
+                  {/* Missione Mediterraneo Section */}
+                  <div className="bg-white p-6 rounded-lg shadow">
+                    {/* Title with red bar */}
+                    <div className="flex gap-4 mb-8">
+                      <div className="w-1 bg-red-600 flex-shrink-0"></div>
+                      <h2 className="text-xl font-bold text-[#1a365d]">
+                        MISSIONE MEDITERRANEO
+                      </h2>
+                    </div>
+
+                    {/* Prossimi eventi */}
+                    <div className="relative pb-6">
+                      <h3 className="font-bold text-[#1a365d] mb-4">
+                        Prossimi eventi:
+                      </h3>
+                      <div className="space-y-4">
+                        <div className="text-gray-900">
+                          Seminario Regione Calabria - Marzo 2024
+                        </div>
+                        <div className="border-b border-dashed border-gray-300"></div>
+                        <div className="text-gray-900">
+                          Seminario Regione Sicilia - Aprile 2024
+                        </div>
+                        <div className="border-b border-dashed border-gray-300"></div>
+                        <div className="text-gray-900">
+                          Seminario Regione Puglia - Maggio 2024
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Iniziative in corso */}
+                  <div className="bg-blue-900 text-white p-6 rounded-lg">
+                    <h3 className="font-bold mb-4 border-l-2 border-red-500 pl-3">
                       INIZIATIVE IN CORSO
                     </h3>
-                    <ul className="space-y-2">
-                      <li>Progetto "Giovani al Sud"</li>
-                      <li>Piano per l'occupazione femminile</li>
-                      <li>Digitalizzazione PMI meridionali</li>
+                    <ul className="space-y-4">
+                      <li className="pb-4 border-b border-blue-800">
+                        Progetto "Giovani al Sud"
+                      </li>
+                      <li className="pb-4 border-b border-blue-800">
+                        Piano per l'occupazione femminile
+                      </li>
+                      <li className="pb-4 border-b border-blue-800">
+                        Digitalizzazione PMI meridionali
+                      </li>
                       <li>Sviluppo infrastrutture</li>
                     </ul>
                   </div>
 
-                  <div className="bg-gray-100 p-4 rounded">
-                    <h3 className="font-bold mb-2 border-l-2 border-red-500 pl-3">
-                      DOCUMENTI E MATERIALI
-                    </h3>
-                    <div className="space-y-2">
-                      <Button variant="link">Report annuale 2023</Button>
-                      <Button variant="link">Piano strategico 2024-2026</Button>
-                      <Button variant="link">Analisi dati occupazionali</Button>
+                  {/* Documenti e materiali */}
+                  <div className="bg-white p-6 rounded-lg shadow">
+                    <div className="flex gap-4 mb-6">
+                      <div className="w-1 bg-red-600 flex-shrink-0"></div>
+                      <h3 className="text-xl font-bold text-[#1a365d]">
+                        DOCUMENTI E MATERIALI
+                      </h3>
+                    </div>
+                    <div className="space-y-4">
+                      <Link
+                        href="/documents/report-2023.pdf"
+                        className="block text-gray-900 hover:text-red-600"
+                        target="_blank"
+                      >
+                        Report annuale 2023
+                      </Link>
+                      <div className="border-b border-dashed border-gray-300"></div>
+                      <Link
+                        href="/documents/piano-2024-2026.pdf"
+                        className="block text-gray-900 hover:text-red-600"
+                        target="_blank"
+                      >
+                        Piano strategico 2024-2026
+                      </Link>
+                      <div className="border-b border-dashed border-gray-300"></div>
+                      <Link
+                        href="/documents/analisi-occupazionale.pdf"
+                        className="block text-gray-900 hover:text-red-600"
+                        target="_blank"
+                      >
+                        Analisi dati occupazionali
+                      </Link>
                     </div>
                   </div>
                 </div>
