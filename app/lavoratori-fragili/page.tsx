@@ -151,7 +151,7 @@ export default function LavoratoriFragiliPage() {
                     <h2 className="text-[#1a365d] text-2xl font-bold md:text-3xl">
                       CONTATTACI
                     </h2>
-                    <p>Email: sociosanitario@snalv.it</p>
+                    <p>Email: fragili@snalv.it</p>
                     <p>Telefono: 06.70492451</p>
                   </div>
                 </div>
