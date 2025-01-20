@@ -177,7 +177,6 @@ export default function SocioSanitarioPage() {
                       <Link href="/docs/ccnl_anaste_verbale.pdf">
                         Verbale integrativo 28.04.2023
                       </Link>
-                      <Link href="/">Scheda di approfondimento</Link>
                     </div>
                   </div>
 

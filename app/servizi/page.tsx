@@ -88,7 +88,7 @@ export default function TutelePage() {
                   Il servizio consente il calcolo analitico delle differenze
                   retributive maturate dai lavoratori, con riferimento a
                   qualsiasi elemento retributivo previsto dal Contratto
-                  Collettivo applicato. L'Ufficio Vertenze elabora Documento
+                  Collettivo applicato. L'Ufficio Vertenze elabora un Documento
                   tecnico avente valore probatorio anche in sede giudiziale.
                 </p>
                 <Link

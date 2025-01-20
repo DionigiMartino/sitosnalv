@@ -43,7 +43,7 @@ export default function CompartiPage() {
     {
       title: "ENTI LOCALI",
       description:
-        "Lo Snalv è presente con i propri Rappresentanti nei vari comparti dell'intera Amministrazione anche a livello regionale. Scopri di più sull'organizzazione del nostro comparto!",
+        "Lo Snalv è presente con i propri Rappresentanti nei vari Comparti della Pubblica Amministrazione.",
       image: "/img/enti_banner.png",
       route: "/enti-locali",
       icon: Home,
@@ -146,7 +146,6 @@ export default function CompartiPage() {
                       {/* Overlay scuro con gradiente */}
                       <div className="absolute inset-0 bg-gradient-to-t from-black/90 to-black/40 group-hover:from-black/95 group-hover:to-black/50 transition-all duration-300" />
 
-        
                       {/* Contenuto */}
                       <div className="relative h-full p-6 flex flex-col justify-end">
                         <h2 className="text-xl font-bold text-white mb-3">

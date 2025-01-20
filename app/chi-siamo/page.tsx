@@ -236,7 +236,7 @@ export default function ChiSiamoPage() {
                 <p className="text-justify">
                   Il nostro Sindacato tutela i lavoratori dipendenti del settore
                   privato ed i dipendenti pubblici degli &quot;Enti
-                  Locali&quot;, disoccupati ed i pensionati.
+                  Locali&quot;, i disoccupati ed i pensionati.
                 </p>
                 <p className="text-justify">
                   Siamo diffusi su tutto il territorio nazionale con oltre{" "}

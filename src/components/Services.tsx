@@ -49,7 +49,7 @@ const ServiceSlider = () => {
     },
     {
       title: "COMPARTO ENTI LOCALI",
-      description: "Servizi per gli enti locali",
+      description: "Assistenza per i dipendenti pubblici",
       image: "/icon/enti.jpg",
       href: "/chi-siamo#comparti",
       buttonText: "Scopri di più",
