@@ -57,11 +57,11 @@ export default function TutelePage() {
                 <FileText className="w-6 h-6 text-blue-500" />
               </div>
               <div>
-                <h4 className="font-bold text-lg text-gray-900 mb-2">
+                <h4 className="font-bold text-lg text-blue-600 mb-2">
                   • Consulenza ed eventuale avvio vertenza per:
                 </h4>
                 <p className="text-gray-600">
-                  controllo buste paga, regolarità contratto di assunzione;
+                  Controllo buste paga, regolarità contratto di assunzione;
                   applicazione CCNL; livello di inquadramento; livello di
                   retribuzione; turni lavorativi; lavoro nero o irregolare;
                   cambiamento di mansioni; trasferimenti, trasferte e indennità
@@ -81,7 +81,7 @@ export default function TutelePage() {
                 <BarChart className="w-6 h-6 text-blue-500" />
               </div>
               <div>
-                <h4 className="font-bold text-lg text-gray-900 mb-2">
+                <h4 className="font-bold text-lg text-blue-600 mb-2">
                   • Conteggi differenze retributive
                 </h4>
                 <p className="text-gray-600 mb-4">
@@ -107,7 +107,7 @@ export default function TutelePage() {
                 <FileText className="w-6 h-6 text-blue-500" />
               </div>
               <div>
-                <h4 className="font-bold text-lg text-gray-900 mb-2">
+                <h4 className="font-bold text-lg text-blue-600 mb-2">
                   • Dimissioni telematiche:
                 </h4>
                 <p className="text-gray-600">
@@ -129,7 +129,7 @@ export default function TutelePage() {
                 <Scale className="w-6 h-6 text-blue-500" />
               </div>
               <div>
-                <h4 className="font-bold text-lg text-gray-900 mb-2">
+                <h4 className="font-bold text-lg text-blue-600 mb-2">
                   • Conciliazioni sindacali:
                 </h4>
                 <p className="text-gray-600">
@@ -148,7 +148,7 @@ export default function TutelePage() {
                 <Users className="w-6 h-6 text-blue-500" />
               </div>
               <div>
-                <h4 className="font-bold text-lg text-gray-900 mb-2">
+                <h4 className="font-bold text-lg text-blue-600 mb-2">
                   • Tutela collettiva dei lavoratori:
                 </h4>
                 <p className="text-gray-600">
@@ -173,7 +173,7 @@ export default function TutelePage() {
                 <Scale className="w-6 h-6 text-blue-500" />
               </div>
               <div>
-                <h4 className="font-bold text-lg text-gray-900 mb-2">
+                <h4 className="font-bold text-lg text-blue-600 mb-2">
                   • Assistenza legale:
                 </h4>
                 <p className="text-gray-600">
@@ -194,12 +194,12 @@ export default function TutelePage() {
                 <HandHeart className="w-6 h-6 text-blue-500" />
               </div>
               <div>
-                <h4 className="font-bold text-lg text-gray-900 mb-2">
+                <h4 className="font-bold text-lg text-blue-600 mb-2">
                   • Tutela dei disoccupati ed invio domande di prestazioni di
                   sostegno al reddito:
                 </h4>
                 <p className="text-gray-600">
-                  i lavoratori in disoccupazione o in cassa integrazione possono
+                  I lavoratori in disoccupazione o in cassa integrazione possono
                   contare sull'aiuto di esperti in tema di ammortizzatori
                   sociali. Oltre all'invio delle domande di disoccupazione
                   (NASPI e DIS-COLL), il Sindacato garantisce assistenza
@@ -217,7 +217,7 @@ export default function TutelePage() {
                 <Users className="w-6 h-6 text-blue-500" />
               </div>
               <div>
-                <h4 className="font-bold text-lg text-gray-900 mb-2">
+                <h4 className="font-bold text-lg text-blue-600 mb-2">
                   • Tutela dei pensionati:
                 </h4>
                 <p className="text-gray-600">
@@ -251,7 +251,7 @@ export default function TutelePage() {
                   <CircleDollarSign className="w-6 h-6 text-green-500" />
                 </div>
                 <div>
-                  <h4 className="font-bold text-lg text-gray-900 mb-2">
+                  <h4 className="font-bold text-lg text-blue-600 mb-2">
                     • PRESTAZIONI DI SOSTEGNO AL REDDITO
                   </h4>
                   <p className="text-gray-600">
@@ -269,7 +269,7 @@ export default function TutelePage() {
                   <Heart className="w-6 h-6 text-green-500" />
                 </div>
                 <div>
-                  <h4 className="font-bold text-lg text-gray-900 mb-2">
+                  <h4 className="font-bold text-lg text-blue-600 mb-2">
                     • PENSIONE E PREVIDENZA
                   </h4>
                   <p className="text-gray-600">
@@ -289,7 +289,7 @@ export default function TutelePage() {
                   <HandHeart className="w-6 h-6 text-green-500" />
                 </div>
                 <div>
-                  <h4 className="font-bold text-lg text-gray-900 mb-2">
+                  <h4 className="font-bold text-lg text-blue-600 mb-2">
                     • INVALIDITÀ E DISABILITÀ
                   </h4>
                   <p className="text-gray-600">
@@ -308,7 +308,7 @@ export default function TutelePage() {
                   <Users className="w-6 h-6 text-green-500" />
                 </div>
                 <div>
-                  <h4 className="font-bold text-lg text-gray-900 mb-2">
+                  <h4 className="font-bold text-lg text-blue-600 mb-2">
                     • MATERNITÀ/PATERNITÀ
                   </h4>
                   <p className="text-gray-600">
@@ -330,7 +330,7 @@ export default function TutelePage() {
                 <CircleDollarSign className="w-6 h-6 text-green-500" />
               </div>
               <div>
-                <h4 className="font-bold text-lg text-gray-900 mb-2">
+                <h4 className="font-bold text-lg text-blue-600 mb-2">
                   • Altri servizi:
                 </h4>
                 <ul className="space-y-2">
@@ -541,7 +541,7 @@ export default function TutelePage() {
                 <Users className="w-6 h-6 text-red-500" />
               </div>
               <div>
-                <h4 className="font-bold text-lg text-gray-900 mb-2">
+                <h4 className="font-bold text-lg text-blue-600 mb-2">
                   • Assistenza e tutela dei consumatori
                 </h4>
                 <p className="text-gray-600">
@@ -562,7 +562,7 @@ export default function TutelePage() {
                 <Building2 className="w-6 h-6 text-red-500" />
               </div>
               <div>
-                <h4 className="font-bold text-lg text-gray-900 mb-2">
+                <h4 className="font-bold text-lg text-blue-600 mb-2">
                   • Assistenza e tutela degli inquilini
                 </h4>
                 <p className="text-gray-600">
@@ -592,7 +592,7 @@ export default function TutelePage() {
                 <Shield className="w-6 h-6 text-orange-500" />
               </div>
               <div>
-                <h4 className="font-bold text-lg text-gray-900 mb-2">
+                <h4 className="font-bold text-lg text-blue-600 mb-2">
                   • Assicurazione gratuita per i dipendenti delle strutture
                   socio-sanitarie-assistenziali-educative
                 </h4>
@@ -790,7 +790,7 @@ export default function TutelePage() {
                                 className={`w-6 h-6 text-${item.color}-500`}
                               />
                             </div>
-                            <span className="text-lg font-semibold text-gray-900">
+                            <span className="text-lg font-semibold text-blue-600">
                               {item.title}
                             </span>
                           </div>
