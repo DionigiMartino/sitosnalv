@@ -8,7 +8,17 @@ import Header from "@/src/components/Header";
 import Footer from "@/src/components/Footer";
 import { useState } from "react";
 import HeroSection from "@/src/components/Hero";
-import { ArrowRightIcon } from "lucide-react";
+import {
+  ArrowRightIcon,
+  Building2,
+  Briefcase,
+  Shield,
+  Users,
+  ChevronRight,
+  UserCog,
+  UsersRound,
+  Store,
+} from "lucide-react";
 import { useRouter } from "next/navigation";
 
 export default function ChiSiamoPage() {
@@ -70,6 +80,41 @@ export default function ChiSiamoPage() {
       alt: "Cosimo Nesci",
       additionalInfo:
         "Consigliere presso il Consiglio Nazionale dell'Economia e del Lavoro",
+    },
+  ];
+
+  const menuItems = [
+    {
+      id: "segretario",
+      title: "Il Segretario Generale ed il Vice-Segretario Nazionale",
+      icon: UserCog,
+      isLink: false,
+    },
+    {
+      id: "segreteria",
+      title: "La Segreteria nazionale",
+      icon: UsersRound,
+      isLink: false,
+    },
+    {
+      id: "consiglio",
+      title: "Il Consiglio Nazionale",
+      icon: Users,
+      isLink: false,
+    },
+    {
+      id: "segreterie-sindacali",
+      title: "Le Segreterie Sindacali",
+      icon: Building2,
+      isLink: true,
+      href: "/segreterie-sindacali",
+    },
+    {
+      id: "centri-snalv",
+      title: "I Centri Snalv",
+      icon: Store,
+      isLink: true,
+      href: "/centri-snalv",
     },
   ];
 
@@ -276,41 +321,56 @@ export default function ChiSiamoPage() {
         <div className="grid gap-8 lg:grid-cols-4">
           {/* Menu Items */}
           <div className="">
-            <div className="bg-gray-100 p-4 rounded-lg">
-              <div className="py-4 border-b-2 border-red-500">
-                <Button
-                  variant="ghost"
-                  className="w-full justify-start text-left hover:font-bold uppercase text-red-500 font-bold"
-                >
-                  Chi siamo
-                </Button>
-              </div>
-              <div className="py-4 border-b-2 border-red-500">
-                <Button
-                  variant="ghost"
-                  className="w-full justify-start text-left hover:font-bold uppercase text-gray-700"
-                  onClick={() => router.push("/struttura")}
-                >
-                  La struttura nazionale
-                </Button>
-              </div>
-              <div className="py-4 border-b-2 border-red-500">
-                <Button
-                  variant="ghost"
-                  className="w-full justify-start text-left hover:font-bold uppercase text-gray-700"
-                  onClick={() => router.push("/servizi")}
-                >
-                  Tutele e servizi
-                </Button>
-              </div>
-              <div className="py-4 border-b-2 border-red-500">
-                <Button
-                  variant="ghost"
-                  className="w-full justify-start text-left hover:font-bold uppercase text-gray-700"
-                  onClick={() => router.push("/comparti")}
-                >
-                  Comparti e CCNL
-                </Button>
+            <div className="lg:sticky lg:top-4 lg:h-fit">
+              <div className="bg-white p-4 rounded-xl shadow-lg border border-gray-100">
+                <nav className="space-y-2">
+                  {[
+                    {
+                      title: "Chi siamo",
+                      route: "/chi-siamo",
+                      icon: Users,
+                    },
+                    {
+                      title: "La struttura nazionale",
+                      route: "/struttura",
+                      icon: Building2,
+                    },
+                    {
+                      title: "Tutele e servizi",
+                      route: "/tutele",
+                      icon: Shield,
+                      active: true,
+                    },
+                    {
+                      title: "Comparti e CCNL",
+                      route: "/comparti",
+                      icon: Briefcase,
+                    },
+                  ].map((item) => (
+                    <Button
+                      key={item.title}
+                      variant={item.active ? "default" : "ghost"}
+                      className={`w-full justify-between text-left group transition-all ${
+                        item.active
+                          ? "bg-red-500 text-white hover:bg-red-600"
+                          : "hover:bg-gray-100"
+                      }`}
+                      onClick={() => !item.active && router.push(item.route)}
+                    >
+                      <span className="flex items-center gap-2">
+                        <item.icon className="w-4 h-4" />
+                        <span className="font-medium">{item.title}</span>
+                      </span>
+                      <ChevronRight
+                        className={`w-4 h-4 transition-transform ${
+                          item.active
+                            ? "rotate-90"
+                            : "group-hover:translate-x-1"
+                        }`}
+                      />
+                    </Button>
+                  ))}
+                </nav>
               </div>
             </div>
 
@@ -319,48 +379,70 @@ export default function ChiSiamoPage() {
               <h2 className="text-[#1a365d] text-xl font-bold mb-4">
                 ORGANIGRAMMA
               </h2>
+
               <div className="space-y-2">
                 <Button
                   variant="ghost"
-                  className={`w-full justify-between bg-gray-100 hover:bg-gray-200 py-6 text-left text-wrap hover:font-bold ${
+                  className={`w-full bg-gray-100 hover:bg-gray-200 py-6 text-left text-wrap hover:font-bold ${
                     activeSection === "segretario" ? "bg-gray-200" : ""
                   }`}
                   onClick={() => setActiveSection("segretario")}
                 >
-                  Il Segretario Generale ed il Vice-Segretario Nazionale
+                  <div className="flex gap-3 items-center px-3">
+                    <UserCog className="w-5 h-5 text-gray-500 flex-shrink-0 mt-1" />
+                    <span>
+                      Il Segretario Generale ed il Vice-Segretario Nazionale
+                    </span>
+                  </div>
                 </Button>
+
                 <Button
                   variant="ghost"
-                  className={`w-full justify-between bg-gray-100 hover:bg-gray-200 py-6 text-left text-wrap hover:font-bold ${
+                  className={`w-full bg-gray-100 hover:bg-gray-200 py-6 text-left text-wrap hover:font-bold ${
                     activeSection === "segreteria" ? "bg-gray-200" : ""
                   }`}
                   onClick={() => setActiveSection("segreteria")}
                 >
-                  La Segreteria nazionale
+                  <div className="flex gap-3 items-start px-3">
+                    <UsersRound className="w-5 h-5 text-gray-500 flex-shrink-0 mt-1" />
+                    <span>La Segreteria nazionale</span>
+                  </div>
                 </Button>
+
                 <Button
                   variant="ghost"
-                  className={`w-full justify-between bg-gray-100 hover:bg-gray-200 py-6 text-left text-wrap hover:font-bold ${
+                  className={`w-full bg-gray-100 hover:bg-gray-200 py-6 text-left text-wrap hover:font-bold ${
                     activeSection === "consiglio" ? "bg-gray-200" : ""
                   }`}
                   onClick={() => setActiveSection("consiglio")}
                 >
-                  Il Consiglio Nazionale
+                  <div className="flex gap-3 items-start px-3">
+                    <Users className="w-5 h-5 text-gray-500 flex-shrink-0 mt-1" />
+                    <span>Il Consiglio Nazionale</span>
+                  </div>
                 </Button>
-                <Link href="/segreterie-sindacali" className="">
+
+                <Link href="/segreterie-sindacali" className="block w-full">
                   <Button
                     variant="ghost"
-                    className="w-full my-2 justify-between bg-gray-100 hover:bg-gray-200 py-6 text-left text-wrap hover:font-bold"
+                    className="w-full bg-gray-100 hover:bg-gray-200 py-6 text-left text-wrap hover:font-bold"
                   >
-                    Le Segreterie Sindacali
+                    <div className="flex gap-3 items-start px-3">
+                      <Building2 className="w-5 h-5 text-gray-500 flex-shrink-0 mt-1" />
+                      <span>Le Segreterie Sindacali</span>
+                    </div>
                   </Button>
                 </Link>
-                <Link href="/centri-snalv">
+
+                <Link href="/centri-snalv" className="block w-full">
                   <Button
                     variant="ghost"
-                    className="w-full justify-between bg-gray-100 hover:bg-gray-200 py-6 text-left text-wrap hover:font-bold"
+                    className="w-full bg-gray-100 hover:bg-gray-200 py-6 text-left text-wrap hover:font-bold"
                   >
-                    I Centri Snalv
+                    <div className="flex gap-3 items-start px-3">
+                      <Store className="w-5 h-5 text-gray-500 flex-shrink-0 mt-1" />
+                      <span>I Centri Snalv</span>
+                    </div>
                   </Button>
                 </Link>
               </div>
