@@ -5,7 +5,6 @@ import Image from "next/image";
 import Link from "next/link";
 import Header from "@/src/components/Header";
 import Footer from "@/src/components/Footer";
-import HeroSection from "@/src/components/Hero";
 import { useRouter } from "next/navigation";
 
 export default function MissioneMediterraneoPage() {
@@ -14,7 +13,6 @@ export default function MissioneMediterraneoPage() {
   return (
     <>
       <Header />
-      <HeroSection section="missione-mediterraneo" />
 
       <main className="max-w-full md:max-w-7xl px-4 mx-auto py-8 sm:py-12">
         <div className="grid gap-8 lg:grid-cols-4">

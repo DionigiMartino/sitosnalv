@@ -161,7 +161,7 @@ export default function LavoratoriFragiliPage() {
                       {/* Convegno */}
                       <div className="relative flex flex-col gap-3">
                         <Link
-                          href="/"
+                          href="/convegno-26-07-22"
                           className="text-gray-900 hover:text-snalv-500"
                         >
                           Il Convegno del 26.07.2022!
@@ -169,7 +169,7 @@ export default function LavoratoriFragiliPage() {
                         <div className=" h-px border-b border-dashed border-gray-300" />
 
                         <Link
-                          href="/documents/piattaforma-fragili.pdf"
+                          href="/docs/piattaforma.pdf"
                           className="block text-gray-900 hover:text-snalv-500"
                           target="_blank"
                         >
