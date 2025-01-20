@@ -44,7 +44,7 @@ const technicalOffices = [
   {
     title: "Amministrazione e contabilità sede nazionale",
     email: "deleghe@snalv.it",
-    images: ["/img/team/Giusy.jpg", "/img/team/Giada.jpg"],
+    images: ["/img/team/giusy.jpg", "/img/team/Giada.jpg"],
   },
   {
     title: "Amministrazione e contabilità sedi territoriali",
