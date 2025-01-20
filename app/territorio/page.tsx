@@ -438,7 +438,7 @@ const TerritorioPage = () => {
               </div>
 
               <div className="space-y-4">
-                <p className="font-medium">
+                <p className="font-medium text-gray-700">
                   Trova la sede sindacale più vicina casa tua (in
                   aggiornamento):
                 </p>
@@ -567,7 +567,7 @@ const TerritorioPage = () => {
             </div>
 
             <div className="mt-16">
-              <h2 className="text-xl font-bold mb-6">
+              <h2 className="text-xl font-bold mb-6 text-blue-600">
                 NOTIZIE E COMUNICATI STAMPA DEL TERRITORIO
               </h2>
               <NewsComponent categories={["Territorio"]} />
