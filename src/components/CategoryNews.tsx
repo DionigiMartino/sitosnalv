@@ -62,6 +62,7 @@ const NewsComponent = ({ categories, currentLink, variant = 'default' }: Props) 
       .toLocaleDateString("it-IT", {
         day: "numeric",
         month: "long",
+        year: "numeric", // Aggiunto questa riga per l'anno
       })
       .toUpperCase();
   };
