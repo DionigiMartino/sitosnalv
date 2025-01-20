@@ -83,41 +83,6 @@ export default function ChiSiamoPage() {
     },
   ];
 
-  const menuItems = [
-    {
-      id: "segretario",
-      title: "Il Segretario Generale ed il Vice-Segretario Nazionale",
-      icon: UserCog,
-      isLink: false,
-    },
-    {
-      id: "segreteria",
-      title: "La Segreteria nazionale",
-      icon: UsersRound,
-      isLink: false,
-    },
-    {
-      id: "consiglio",
-      title: "Il Consiglio Nazionale",
-      icon: Users,
-      isLink: false,
-    },
-    {
-      id: "segreterie-sindacali",
-      title: "Le Segreterie Sindacali",
-      icon: Building2,
-      isLink: true,
-      href: "/segreterie-sindacali",
-    },
-    {
-      id: "centri-snalv",
-      title: "I Centri Snalv",
-      icon: Store,
-      isLink: true,
-      href: "/centri-snalv",
-    },
-  ];
-
   const renderOrganigrammaContent = () => {
     switch (activeSection) {
       case "segretario":
@@ -281,7 +246,7 @@ export default function ChiSiamoPage() {
                 </p>
                 <p className="text-justify">
                   Al 31/12/2024 lo Snalv Confsal ha superato il numero di{" "}
-                  <strong>21.000</strong> iscritti al Sindacato, con oltre n.{" "}
+                  <strong>25.000</strong> iscritti al Sindacato, con oltre n.{" "}
                   <strong>150</strong> rappresentanze sindacali aziendali nel
                   settore privato (da RSA e RSU) e n. 51 membri RSU nel settore
                   pubblico.
