@@ -16,13 +16,15 @@ const nextConfig = {
         source: "/docs/:path*",
         headers: [
           {
-            key: "Content-Type",
-            value: "application/pdf",
+            key: "Cache-Control",
+            value: "public, max-age=0, must-revalidate",
           },
         ],
       },
     ];
   },
+  // Aggiungi questo
+  output: "standalone",
 };
 
 module.exports = nextConfig;
