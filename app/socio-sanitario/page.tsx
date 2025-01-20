@@ -119,6 +119,18 @@ export default function SocioSanitarioPage() {
                     nel breve e medio termine.
                   </p>
 
+                  <p className="text-gray-700 mb-6">
+                    La piattaforma{" "}
+                    <Link
+                      className="text-snalv-500"
+                      href="/docs/piattaforma.pdf"
+                    >
+                      (scaricabile QUI)
+                    </Link>{" "}
+                    è stata formalmente trasmessa a tutte le Istituzioni
+                    competenti in data 23 febbraio 2024.
+                  </p>
+
                   <Image
                     src="/img/sociosanitario.jpg"
                     alt="Socio-Sanitario"
@@ -141,8 +153,10 @@ export default function SocioSanitarioPage() {
                     <h3 className="font-bold mb-2 border-l-2 border-red-500 pl-3">
                       IL CCNL ANASTE 2022
                     </h3>
-                    <div className="space-y-2">
-                      <Link href="/docs/ccnl_anaste.pdf">Il Testo integrale</Link>
+                    <div className="space-y-2 flex flex-col gap-2">
+                      <Link href="/docs/ccnl_anaste.pdf">
+                        Il Testo integrale
+                      </Link>
                       <Link href="/docs/ccnl_anaste_verbale.pdf">
                         Verbale integrativo 28.04.2023
                       </Link>
