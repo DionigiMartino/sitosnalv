@@ -103,7 +103,7 @@ const RecentNews = () => {
                           src={item.coverImage || "/img/notizia1.jpg"}
                           alt={item.title}
                           fill
-                          className="object-cover"
+                          className="object-contain"
                         />
                         <div className="absolute bottom-0 left-4 bg-blue-600 text-white px-4 font-bold py-2 text-sm">
                           {formatDate(item.createdAt)}

@@ -194,44 +194,6 @@ const segreterieSedi: any = {
   },
 };
 
-const centriSedi: any = {
-  Lombardia: {
-    Milano: [
-      {
-        nome: "Centro SNALV Milano Centro",
-        indirizzo: "Corso Buenos Aires 56",
-        telefono: "02 1234567",
-        email: "milano.centro@snalv.it",
-        servizi: ["CAF", "Patronato", "Assistenza Legale"],
-      },
-    ],
-    Bergamo: [
-      {
-        nome: "Centro SNALV Bergamo",
-        indirizzo: "Via XX Settembre 32",
-        telefono: "035 1234567",
-        email: "bergamo@snalv.it",
-        servizi: ["CAF", "Patronato"],
-      },
-    ],
-  },
-  Piemonte: {
-    Torino: [
-      {
-        nome: "Centro SNALV Torino",
-        indirizzo: "Via Roma 123",
-        telefono: "011 1234567",
-        email: "torino@snalv.it",
-        servizi: [
-          "CAF",
-          "Patronato",
-          "Assistenza Legale",
-          "Consulenza Sindacale",
-        ],
-      },
-    ],
-  },
-};
 
 // Componente principale TerritorioPage
 const TerritorioPage = () => {
