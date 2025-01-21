@@ -23,8 +23,16 @@ const nextConfig = {
       },
     ];
   },
-  // Aggiungi questo
   output: "standalone",
+  // Aggiungiamo il rewrite per /iscrizione
+  async rewrites() {
+    return [
+      {
+        source: "/iscrizione",
+        destination: "https://188.34.156.42/iscrizione",
+      },
+    ];
+  },
 };
 
 module.exports = nextConfig;
