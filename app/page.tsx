@@ -30,7 +30,7 @@ const HomePage = () => {
         </div>
 
         <Link
-          href="/iscriviti"
+          href="/iscrizione"
           className="bg-white text-snalv-600 px-8 py-2 rounded-md uppercase font-bold text-lg hover:bg-blue-600 transition-colors absolute bottom-8 left-1/2 transform -translate-x-1/2"
         >
           Unisciti, partecipa, conta!
