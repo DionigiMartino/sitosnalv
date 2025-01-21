@@ -1,17 +1,14 @@
 "use client";
 
 import Image from "next/image";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
-import { collection, getDocs, query, orderBy } from "firebase/firestore";
+import { collection, getDocs, query, orderBy, limit } from "firebase/firestore";
 import { db } from "@/src/lib/firebase";
 import Link from "next/link";
 
 const RecentNews = () => {
-  const [currentIndex, setCurrentIndex] = useState(0);
   const [news, setNews] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -20,19 +17,17 @@ const RecentNews = () => {
       try {
         const newsQuery = query(
           collection(db, "notizie"),
-          orderBy("createdAt", "desc")
+          orderBy("createdAt", "desc"),
+          limit(3) // Limitiamo a 3 risultati
         );
         const querySnapshot = await getDocs(newsQuery);
-        const newsData = querySnapshot.docs
-          .map((doc) => ({
-            id: doc.id,
-            ...doc.data(),
-            createdAt: doc.data().createdAt?.toDate(),
-          }))
-          // @ts-ignore
-          .filter((item) => item.categories?.includes("In Evidenza"));
+        const newsData = querySnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+          createdAt: doc.data().createdAt?.toDate(),
+        }));
 
-        setNews(newsData);
+        setNews(newsData.slice(0, 3)); // Prendiamo solo i primi 3 anche dopo il filtro
       } catch (error) {
         console.error("Error fetching news:", error);
       } finally {
@@ -49,21 +44,10 @@ const RecentNews = () => {
       .toLocaleDateString("it-IT", {
         day: "numeric",
         month: "long",
-        year: "numeric"
+        year: "numeric",
       })
       .toUpperCase();
   };
-
-  const nextSlide = () => {
-    setCurrentIndex((prev) => (prev + 3) % news.length);
-  };
-
-  const prevSlide = () => {
-    setCurrentIndex((prev) => (prev - 3 + news.length) % news.length);
-  };
-
-  const totalSlides = Math.ceil(news.length / 3);
-  const currentSlide = Math.floor(currentIndex / 3);
 
   if (isLoading) {
     return <div className="py-16 text-center text-white">Caricamento...</div>;
@@ -79,88 +63,49 @@ const RecentNews = () => {
 
   return (
     <div className="py-16">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <h2 className="text-5xl font-bold text-white mb-12 text-center sm:text-3xl lg:text-4xl">
           NOTIZIE RECENTI
         </h2>
 
-        <div className="w-full">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
-            <AnimatePresence mode="wait">
-              {news.slice(currentIndex, currentIndex + 3).map((item, index) => (
-                <motion.div
-                  key={item.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -20 }}
-                  transition={{ duration: 0.3, delay: index * 0.1 }}
-                  className="w-full"
-                >
-                  <Card className="overflow-hidden bg-white shadow-md w-full">
-                    <CardContent className="p-0">
-                      <div className="relative h-48 sm:h-48 lg:h-56 border-b-[6px] border-blue-600">
-                        <Image
-                          src={item.coverImage || "/img/notizia1.jpg"}
-                          alt={item.title}
-                          fill
-                          className="object-contain"
-                        />
-                        <div className="absolute bottom-0 left-4 bg-blue-600 text-white px-4 font-bold py-2 text-sm">
-                          {formatDate(item.createdAt)}
-                        </div>
-                      </div>
-                      <div className="p-6">
-                        <p className="text-gray-800 mb-6 line-clamp-3 text-base sm:text-lg">
-                          {item.title}
-                        </p>
-                        <Link
-                          href={`/notizia/${item.linkNews}`}
-                          className="block w-full text-center hover:bg-blue-700 font-bold uppercase bg-blue-600 p-4 rounded-md text-white transition-colors"
-                        >
-                          LEGGI DI PIÙ
-                        </Link>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </motion.div>
-              ))}
-            </AnimatePresence>
-          </div>
-        </div>
-
-        {/* Navigation Dots */}
-        <div className="flex justify-center gap-2 mt-8">
-          {Array.from({ length: totalSlides }).map((_, i) => (
-            <button
-              key={i}
-              className={`w-3 h-3 rounded-full transition-colors duration-300 ${
-                i === currentSlide ? "bg-gray-500" : "bg-gray-300"
-              }`}
-              onClick={() => setCurrentIndex(i * 3)}
-              aria-label={`Go to slide ${i + 1}`}
-            />
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+          {news.map((item, index) => (
+            <motion.div
+              key={item.id}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3, delay: index * 0.1 }}
+              className="min-h-[460px]"
+            >
+              <Card className="overflow-hidden bg-white shadow-md h-full ">
+                <CardContent className="p-0 flex flex-col justify-between h-full">
+                  <div className="relative h-48 sm:h-48 lg:h-56 border-b-[6px] border-blue-600">
+                    <Image
+                      src={item.coverImage || "/img/notizia1.jpg"}
+                      alt={item.title}
+                      fill
+                      className="object-contain"
+                    />
+                    <div className="absolute bottom-0 left-4 bg-blue-600 text-white px-4 font-bold py-2 text-sm">
+                      {formatDate(item.createdAt)}
+                    </div>
+                  </div>
+                  <div className="p-6">
+                    <p className="text-gray-800 mb-6 line-clamp-3 text-base sm:text-lg">
+                      {item.title}
+                    </p>
+                    <Link
+                      href={`/notizia/${item.linkNews}`}
+                      className="block w-full text-center hover:bg-blue-700 font-bold uppercase bg-blue-600 p-4 rounded-md text-white transition-colors"
+                    >
+                      LEGGI DI PIÙ
+                    </Link>
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
           ))}
         </div>
-
-        {/* Arrow Navigation */}
-        {news.length > 3 && (
-          <div className="absolute left-2 right-2 top-1/2 -translate-y-1/2 flex justify-between z-10">
-            <button
-              onClick={prevSlide}
-              className="w-10 h-10 rounded-full bg-white shadow-lg flex items-center justify-center hover:bg-gray-50 transition-colors"
-              aria-label="Previous slide"
-            >
-              <ChevronLeft className="w-6 h-6" />
-            </button>
-            <button
-              onClick={nextSlide}
-              className="w-10 h-10 rounded-full bg-white shadow-lg flex items-center justify-center hover:bg-gray-50 transition-colors"
-              aria-label="Next slide"
-            >
-              <ChevronRight className="w-6 h-6" />
-            </button>
-          </div>
-        )}
       </div>
     </div>
   );

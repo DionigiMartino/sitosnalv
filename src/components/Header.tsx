@@ -49,7 +49,7 @@ const Header = () => {
       <div className="bg-blue-900 text-white">
         <div className="max-w-7xl mx-auto px-4 py-2 flex justify-end items-center space-x-4">
           <Link
-            href="/iscrizione"
+            href="/iscrizione/index.php"
             className="flex items-center gap-2 text-sm hover:text-blue-200 transition-colors"
           >
             <PenLine size={24} />
