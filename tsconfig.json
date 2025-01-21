@@ -17,8 +17,6 @@
     "noUnusedLocals": false,
     "noUnusedParameters": false,
     "allowUnusedLabels": true,
-    "suppressImplicitAnyIndexErrors": true, 
-    "ignoreDeprecations": "5.0",           
     "types": ["@firebase/app-types", "@firebase/firestore-types", "@firebase/storage-types"],
     "plugins": [
       {
@@ -30,12 +28,5 @@
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
-  "exclude": ["node_modules"],
-  "eslintConfig": {  
-    "rules": {
-      "@typescript-eslint/no-unused-vars": "off",
-      "@typescript-eslint/no-explicit-any": "off",
-      "react/no-unescaped-entities": "off"
-    }
-  }
+  "exclude": ["node_modules"]
 }
