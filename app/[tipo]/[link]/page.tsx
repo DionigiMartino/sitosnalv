@@ -161,7 +161,7 @@ async function getPost(tipo: string, link: string): Promise<Post | null> {
 // Metadata generator with complete social media support
 export async function generateMetadata({
   params,
-}: PageParams): Promise<Metadata> {
+}: any): Promise<Metadata> {
   const post = await getPost(params.tipo, params.link);
 
   if (!post) {
@@ -243,7 +243,7 @@ export async function generateMetadata({
 }
 
 // Main PostPage component
-export default async function PostPage({ params }: PageParams) {
+export default async function PostPage({ params }: any) {
   if (!params.link || !params.tipo) return notFound();
 
   const post = await getPost(params.tipo, params.link);
