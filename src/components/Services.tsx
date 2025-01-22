@@ -58,7 +58,7 @@ const ServiceSlider = () => {
       title: "VERSAMENTI DELEGHE",
       description: "Gestione versamenti e deleghe",
       image: "/icon/versamenti.jpg",
-      href: "/iscrizione/aziende",
+      href: "iscrizione.snalv.it/aziende",
       buttonText: "Gestisci",
     },
     {

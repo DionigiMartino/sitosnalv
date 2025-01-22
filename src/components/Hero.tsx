@@ -12,7 +12,7 @@ const HeroSection = ({ section }: any) => {
       case "struttura":
         return {
           bg: "/img/struttura.jpg",
-          title: "La Struttura nazionale",
+          title: "La struttura nazionale",
           subtitle: "La nostra organizzazione sul territorio",
         };
       case "evento":

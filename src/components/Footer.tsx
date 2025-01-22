@@ -144,7 +144,7 @@ const Footer = () => {
                 />
               </Link>
               <Link
-                href="www.linkedin.com/in/snalv"
+                href="https://www.linkedin.com/in/snalv"
                 className="h-[45px] w-[45px] relative"
               >
                 <Image
