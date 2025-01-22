@@ -3,31 +3,29 @@
 import React from "react";
 
 const SocialShare = ({ title, url, image }) => {
-  // Assicuriamoci che l'URL sia completo
+  // Costruiamo l'URL completo in modo sicuro
   const getFullUrl = (path) => {
-    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || window.location.origin;
-    return path.startsWith("http") ? path : `${baseUrl}${path}`;
+    const baseUrl = "https://www.snalv.it";
+    // Rimuoviamo eventuali slash doppi e assicuriamoci che il path sia pulito
+    const cleanPath = path.replace(/^\/+|\/+$/g, "").replace(/\/+/g, "/");
+    return `${baseUrl}/${cleanPath}`;
   };
 
   // Prepara gli URL completi
   const fullUrl = getFullUrl(url);
-  const fullImageUrl = image ? getFullUrl(image) : "";
 
-  // Share URLs per ogni piattaforma
   const shareUrls = {
-    facebook: `https://www.facebook.com/dialog/share?app_id=${
-      process.env.NEXT_PUBLIC_FACEBOOK_APP_ID || ""
-    }&display=popup&href=${encodeURIComponent(
-      fullUrl
-    )}&quote=${encodeURIComponent(title)}&hashtag=%23SNALV`,
-    twitter: `https://twitter.com/intent/tweet?url=${encodeURIComponent(
-      fullUrl
-    )}&text=${encodeURIComponent(title)}`,
-    linkedin: `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(
+    facebook: `https://www.facebook.com/sharer.php?u=${encodeURIComponent(
       fullUrl
     )}`,
-    whatsapp: `https://wa.me/?text=${encodeURIComponent(
-      `${title}\n${fullUrl}`
+    twitter: `https://twitter.com/intent/tweet?text=${encodeURIComponent(
+      title
+    )}&url=${encodeURIComponent(fullUrl)}`,
+    linkedin: `https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(
+      fullUrl
+    )}&title=${encodeURIComponent(title)}`,
+    whatsapp: `https://api.whatsapp.com/send?text=${encodeURIComponent(
+      `${title} ${fullUrl}`
     )}`,
   };
 
@@ -40,6 +38,14 @@ const SocialShare = ({ title, url, image }) => {
     const top = (window.innerHeight - height) / 2;
 
     const shareUrl = shareUrls[platform];
+
+    // Debug
+    console.log("Sharing:", {
+      platform,
+      url: fullUrl,
+      shareUrl,
+    });
+
     window.open(
       shareUrl,
       "share-dialog",

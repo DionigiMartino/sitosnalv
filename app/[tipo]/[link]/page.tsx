@@ -296,7 +296,7 @@ export default async function PostPage({ params }: any) {
 
             <SocialShare
               title={post.title}
-              url={`${process.env.NEXT_PUBLIC_SITE_URL}/${post.type}/${post.linkNews}`}
+              url={`/${post.type === "comunicati" ? "comunicato" : post.type}/${post.linkNews}`}
               image={post.coverImage}
             />
 
