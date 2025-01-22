@@ -49,9 +49,12 @@ const Footer = () => {
           </div>
 
           <div className="flex items-center justify-center">
-            <Button className="bg-gray-200 hover:bg-gray-300 text-gray-800 px-8 py-2 rounded-md text-lg">
+            <Link
+              href="/iscrizione"
+              className="bg-gray-200 hover:bg-gray-300 text-gray-800 px-8 py-2 rounded-md text-lg"
+            >
               ISCRIVITI
-            </Button>
+            </Link>
           </div>
 
           <div className="space-y-4">
@@ -107,7 +110,10 @@ const Footer = () => {
               </div>
             </div>
             <div className="flex space-x-4 mt-4">
-              <Link href="#" className="h-[45px] w-[45px] relative">
+              <Link
+                href="https://www.facebook.com/share/1VA65cDesy/?mibextid=wwXIfr"
+                className="h-[45px] w-[45px] relative"
+              >
                 <Image
                   src="/icon/facebook.jpg"
                   alt="Facebook"
@@ -115,7 +121,10 @@ const Footer = () => {
                   className="object-contain p-1 hover:opacity-70 transition-opacity"
                 />
               </Link>
-              <Link href="#" className="h-[45px] w-[45px] relative">
+              <Link
+                href="https://www.instagram.com/snalvconfsal?igsh=MWN5enRkY25hNTdlYQ%3D%3D&utm_source=qr"
+                className="h-[45px] w-[45px] relative"
+              >
                 <Image
                   src="/icon/instagram.jpg"
                   alt="Instagram"
@@ -123,7 +132,10 @@ const Footer = () => {
                   className="object-contain p-1 hover:opacity-70 transition-opacity"
                 />
               </Link>
-              <Link href="#" className="h-[45px] w-[45px] relative">
+              <Link
+                href="https://x.com/SnalvConfsal"
+                className="h-[45px] w-[45px] relative"
+              >
                 <Image
                   src="/icon/x.jpg"
                   alt="X"
@@ -131,7 +143,10 @@ const Footer = () => {
                   className="object-contain p-1 hover:opacity-70 transition-opacity"
                 />
               </Link>
-              <Link href="#" className="h-[45px] w-[45px] relative">
+              <Link
+                href="www.linkedin.com/in/snalv"
+                className="h-[45px] w-[45px] relative"
+              >
                 <Image
                   src="/icon/linkedin.jpg"
                   alt="LinkedIn"
@@ -139,7 +154,10 @@ const Footer = () => {
                   className="object-contain p-1 hover:opacity-70 transition-opacity"
                 />
               </Link>
-              <Link href="#" className="h-[45px] w-[45px] relative">
+              <Link
+                href="https://www.youtube.com/@snalvconfsal"
+                className="h-[45px] w-[45px] relative"
+              >
                 <Image
                   src="/icon/youtube.jpg"
                   alt="YouTube"

@@ -315,7 +315,7 @@ export default function TutelePage() {
                     Inoltro richiesta di indennità di maternità e paternità
                     obbligatoria, anticipata e flessibile. Inoltro domanda di
                     indennità di congedo parentale. Richiesta bonus asilo nido,
-                    bonus mamme premio alla nascita, contributi per genitori
+                    bonus mamme, premio alla nascita, contributi per genitori
                     disoccupati o monoreddito con figli disabili. Assegno unico.
                     Permessi allattamento. Assegno per congedo matrimoniale
                   </p>
@@ -568,7 +568,7 @@ export default function TutelePage() {
                 <p className="text-gray-600">
                   SEIASS – Sindacato Europeo Inquilini e Assegnatari lavora
                   incessantemente per garantire che gli inquilini abbiano
-                  accesso a alloggi sicuri, dignitosi e a prezzi equi, fornendo
+                  accesso ad alloggi sicuri, dignitosi e a prezzi equi, fornendo
                   una consulenza completa per tutte le tipologie di locazioni,
                   nonché erogando servizi per gli utenti dell'edilizia pubblica.
                   Consulta il sito www.seiass.it

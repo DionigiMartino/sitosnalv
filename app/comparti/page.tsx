@@ -29,7 +29,7 @@ export default function CompartiPage() {
       description:
         "Lo Snalv è la federazione rappresentativa della CONFSAL del settore socio-sanitario-assistenziale-educativo. Scopri di più sulla nostra attività sindacale in merito!",
       image: "/img/sociosanitario_banner.jpg",
-      route: "/socio-sanitario",
+      route: "/sociosanitario",
       icon: Heart,
     },
     {
@@ -37,7 +37,7 @@ export default function CompartiPage() {
       description:
         "Lo Snalv tutela i dipendenti affetti da patologie gravi, croniche o invalidanti per la salvaguardia dei diritti e dei doveri afferenti al proprio rapporto lavorativo.",
       image: "/img/fragili_banner.jpg",
-      route: "/lavoratori-fragili",
+      route: "/fragili",
       icon: Users,
     },
     {
@@ -45,7 +45,7 @@ export default function CompartiPage() {
       description:
         "Lo Snalv è presente con i propri Rappresentanti nei vari Comparti della Pubblica Amministrazione.",
       image: "/img/enti_banner.png",
-      route: "/enti-locali",
+      route: "/entilocali",
       icon: Home,
     },
     {

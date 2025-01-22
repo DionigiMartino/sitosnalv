@@ -6,13 +6,13 @@ const HeroSection = ({ section }: any) => {
       case "chi-siamo":
         return {
           bg: "/img/chisiamo.jpg",
-          title: "Chi Siamo",
+          title: "Chi siamo",
           subtitle: "Scopri la nostra storia e i nostri valori",
         };
       case "struttura":
         return {
           bg: "/img/struttura.jpg",
-          title: "La Struttura Nazionale",
+          title: "La Struttura nazionale",
           subtitle: "La nostra organizzazione sul territorio",
         };
       case "evento":
@@ -24,7 +24,7 @@ const HeroSection = ({ section }: any) => {
       case "tutele":
         return {
           bg: "/img/tutele.jpg",
-          title: "Tutele e Servizi",
+          title: "Tutele e servizi",
           subtitle: "Un supporto completo per i nostri iscritti",
         };
       case "comparti":

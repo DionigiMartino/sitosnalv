@@ -57,7 +57,7 @@ const Header = () => {
           </Link>
           <div className="w-px h-4 bg-blue-700" /> {/* Separatore verticale */}
           <Link
-            href="/e-learning"
+            href="/elearning"
             className="flex items-center gap-2 text-sm hover:text-blue-200 transition-colors"
           >
             <UserCircle2 size={24} />

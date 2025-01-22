@@ -135,7 +135,7 @@ export default function StrutturaPage() {
               <p className="text-gray-700 mb-12">
                 Lo Snalv Confsal garantisce a tutti gli iscritti ed ai referenti
                 sindacali un supporto puntuale e competente su ogni questione
-                attinenti alla tutela individuale e collettiva dei lavoratori.
+                attinente alla tutela individuale e collettiva dei lavoratori.
               </p>
 
               <h2 className="text-[#1a365d] text-2xl font-bold mb-8">

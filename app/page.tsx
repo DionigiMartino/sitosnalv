@@ -18,7 +18,7 @@ const HomePage = () => {
       <Header />
 
       {/* Hero Section */}
-      <div className="relative md:min-h-[80vh] min-h-[40vh] flex items-center">
+      <div className="relative md:min-h-[80vh] min-h-[45vh] flex items-center">
         <div className="absolute inset-0 z-0">
           <Image
             src="/img/introNew.jpg"
@@ -31,7 +31,7 @@ const HomePage = () => {
 
         <Link
           href="/iscrizione"
-          className="bg-white text-snalv-600 px-8 py-2 rounded-md uppercase font-bold text-sm text-center md:text-lg hover:bg-blue-600 transition-colors absolute bottom-8 left-1/2 transform -translate-x-1/2"
+          className="bg-white text-snalv-600 px-8 py-2 rounded-md uppercase font-bold text-sm text-center md:text-lg hover:bg-blue-600 transition-colors absolute bottom-8 left-1/2 transform -translate-x-1/2 "
         >
           Unisciti, partecipa, conta!
         </Link>
@@ -44,7 +44,7 @@ const HomePage = () => {
       <div className="bg-gray-100 py-16 bg-[url('/img/sfondoNews.jpg')] bg-no-repeat bg-cover bg-center">
         <div className="max-w-7xl mx-auto px-4 flex flex-col items-center">
           <h2 className="text-5xl font-bold text-white mb-12 text-center">
-            COMUNICATI RECENTI
+            COMUNICATI STAMPA RECENTI
           </h2>
           <ComunicatiStampa categories={["In Evidenza"]} />
 
