@@ -44,7 +44,7 @@ const HomePage = () => {
       <div className="bg-gray-100 py-16 bg-[url('/img/sfondoNews.jpg')] bg-no-repeat bg-cover bg-center">
         <div className="max-w-7xl mx-auto px-4 flex flex-col items-center">
           <h2 className="text-5xl font-bold text-white mb-12 text-center">
-            IN EVIDENZA
+            COMUNICATI RECENTI
           </h2>
           <ComunicatiStampa categories={["In Evidenza"]} />
 

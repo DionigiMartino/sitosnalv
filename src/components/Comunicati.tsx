@@ -137,7 +137,7 @@ const ComunicatiStampa = ({
                   {comunicato.title}
                 </p>
                 <Link
-                  href={`/${comunicato.linkNews}`}
+                  href={`/comunicato/${comunicato.linkNews}`}
                   className="w-full flex justify-center items-center gap-2 uppercase py-4 text-center border border-snalv-200 text-snalv-600 rounded-md hover:bg-snalv-50 transition-colors font-bold"
                 >
                   LEGGI DI PIÙ
