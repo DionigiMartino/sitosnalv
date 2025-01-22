@@ -50,7 +50,7 @@ const Footer = () => {
 
           <div className="flex items-center justify-center">
             <Link
-              href="/iscrizione"
+              href="https://iscrizione.snalv.it"
               className="bg-gray-200 hover:bg-gray-300 text-gray-800 px-8 py-2 rounded-md text-lg"
             >
               ISCRIVITI
