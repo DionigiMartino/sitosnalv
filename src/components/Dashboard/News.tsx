@@ -93,7 +93,7 @@ const News = () => {
     "Enti Locali",
     "Dipartimento SUD",
     "Servizi",
-    "In Evidenza",
+    "Varie",
     "Territorio",
   ];
 

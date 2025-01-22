@@ -148,9 +148,7 @@ async function getPost(tipo: string, link: string): Promise<Post | null> {
 }
 
 // Metadata generator
-export async function generateMetadata({
-  params,
-}: any): Promise<Metadata> {
+export async function generateMetadata({ params }: any): Promise<Metadata> {
   const post = await getPost(params.tipo, params.link);
 
   if (!post) {
@@ -267,24 +265,14 @@ export default async function PostPage({ params }: any) {
             {/* Box Correlati */}
             <div className="bg-white rounded-lg shadow-sm p-6">
               <h2 className="text-xl font-bold mb-6 text-[#1a365d] pb-4 border-b">
-                {post.type === "comunicati"
-                  ? "Comunicati Correlati"
-                  : "Notizie Correlate"}
+                Notizie & Comunicati Correlati
               </h2>
               <div className="space-y-6">
-                {post.type === "comunicati" ? (
-                  <ComunicatiPage
-                    categories={post.categories || []}
-                    currentLink={post.linkNews}
-                    variant="sidebar"
-                  />
-                ) : (
-                  <NewsComponent
-                    categories={post.categories || []}
-                    currentLink={post.linkNews}
-                    variant="sidebar"
-                  />
-                )}
+                <NewsComponent
+                  categories={post.categories || []}
+                  currentLink={post.linkNews}
+                  variant="sidebar"
+                />
               </div>
             </div>
           </aside>
