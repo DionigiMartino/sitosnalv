@@ -34,15 +34,21 @@ const Footer = () => {
             />
             <nav className="space-y-2">
               <Link
-                href="/privacy-policy"
+                href="https://www.iubenda.com/privacy-policy/80668091"
                 className="block hover:text-gray-300"
               >
                 Privacy Policy
               </Link>
-              <Link href="/cookie-policy" className="block hover:text-gray-300">
+              <Link
+                href="https://www.iubenda.com/privacy-policy/80668091/cookie-policy"
+                className="block hover:text-gray-300"
+              >
                 Cookie Policy
               </Link>
-              <Link href="/termini" className="block hover:text-gray-300">
+              <Link
+                href="https://www.iubenda.com/termini-e-condizioni/80668091"
+                className="block hover:text-gray-300"
+              >
                 Termini e Condizioni
               </Link>
             </nav>

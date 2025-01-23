@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 import localFont from "next/font/local";
 import "./globals.css";
 
@@ -7,6 +8,7 @@ const geistSans = localFont({
   variable: "--font-geist-sans",
   weight: "100 900",
 });
+
 const geistMono = localFont({
   src: "./fonts/GeistMonoVF.woff",
   variable: "--font-geist-mono",
@@ -14,9 +16,7 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL(
-    process.env.NEXT_PUBLIC_SITE_URL || "https://snalv.it"
-  ),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://snalv.it"),
   title: {
     default: "SNALV Confsal",
     template: "%s | SNALV Confsal",
@@ -30,7 +30,7 @@ export const metadata: Metadata = {
     locale: "it_IT",
     images: [
       {
-        url: "/og-image.jpg", // Assicurati di avere un'immagine di default
+        url: "/og-image.jpg",
         width: 1200,
         height: 630,
         alt: "SNALV Confsal",
@@ -73,10 +73,50 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="it">
+      <head>
+        <link rel="icon" href="/favicon.ico" />
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         {children}
+
+        {/* Configurazione Iubenda */}
+        <Script id="iubenda-config" strategy="beforeInteractive">
+          {`
+            var _iub = _iub || [];
+            _iub.csConfiguration = {
+              consentOnContinuedBrowsing: false,
+              floatingPreferencesButtonDisplay: "bottom-right",
+              invalidateConsentWithoutLog: true,
+              perPurposeConsent: true,
+              siteId: 2660346,
+              whitelabel: false,
+              cookiePolicyId: 80668091,
+              lang: "it",
+              banner: {
+                acceptButtonDisplay: true,
+                closeButtonDisplay: false,
+                customizeButtonDisplay: true,
+                explicitWithdrawal: true,
+                listPurposes: true,
+                position: "bottom",
+                rejectButtonDisplay: true
+              }
+            };
+          `}
+        </Script>
+
+        {/* Script Iubenda */}
+        <Script
+          src="//cs.iubenda.com/sync/2660346.js"
+          strategy="afterInteractive"
+        />
+        <Script
+          src="//cdn.iubenda.com/cs/iubenda_cs.js"
+          strategy="afterInteractive"
+          async
+        />
       </body>
     </html>
   );
