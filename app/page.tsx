@@ -26,7 +26,7 @@ const HomePage = () => {
               src="/img/introNew.jpg"
               alt="Sezione Hero"
               fill
-              className="object-cover brightness-[0.8]" // Scurito leggermente lo sfondo
+              className="object-cover" // Scurito leggermente lo sfondo
               priority
             />
           </div>
