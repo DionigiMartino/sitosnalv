@@ -18,23 +18,48 @@ const HomePage = () => {
       <Header />
 
       {/* Hero Section */}
-      <div className="relative md:min-h-[80vh] min-h-[45vh] flex items-center">
-        <div className="absolute inset-0 z-0">
-          <Image
-            src="/img/introNew.jpg"
-            alt="Sezione Hero"
-            fill
-            className="object-cover brightness-100"
-            priority
-          />
-        </div>
+      <div className="relative w-full">
+        <div className="relative h-[45vh] md:h-[80vh] flex items-center">
+          {/* Immagine di sfondo */}
+          <div className="absolute inset-0 z-0">
+            <Image
+              src="/img/introNew.jpg"
+              alt="Sezione Hero"
+              fill
+              className="object-cover brightness-[0.8]" // Scurito leggermente lo sfondo
+              priority
+            />
+          </div>
 
-        <Link
-          href="https://iscrizione.snalv.it"
-          className="bg-white text-snalv-600 px-8 py-2 rounded-md uppercase font-bold text-sm text-center md:text-lg hover:bg-blue-600 transition-colors absolute bottom-8 left-1/2 transform -translate-x-1/2 "
-        >
-          Unisciti, partecipa, conta!
-        </Link>
+          {/* Contenitore del pulsante con sfondo semi-trasparente */}
+          <div className="absolute bottom-4 md:bottom-8 left-0 right-0 px-4 md:px-0 z-10">
+            <Link
+              href="https://iscrizione.snalv.it"
+              className="block mx-auto w-fit
+              bg-white/90 backdrop-blur-sm 
+              text-snalv-600 
+              px-8 sm:px-10 
+              py-3 sm:py-4
+              rounded-lg
+              uppercase font-bold 
+              text-sm sm:text-base md:text-lg
+              hover:bg-blue-600 hover:text-white
+              transition-all duration-300
+              shadow-lg hover:shadow-xl
+              text-center
+              tracking-wide
+              border-2 border-transparent hover:border-white/20
+              max-w-[90%] sm:max-w-none"
+            >
+              <span className="drop-shadow-sm">
+                Unisciti, partecipa, conta!
+              </span>
+            </Link>
+          </div>
+
+          {/* Overlay gradiente opzionale per migliorare la leggibilità */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent z-[1]"></div>
+        </div>
       </div>
 
       {/* Features Section */}

@@ -2,31 +2,42 @@
 
 import React from "react";
 
-const SocialShare = ({ title, url, image }) => {
-  // Costruiamo l'URL completo in modo sicuro
+const SocialShare = ({ title, url }) => {
+  // Debug: stampiamo l'URL che riceviamo
+  console.log("URL ricevuto:", url);
+
   const getFullUrl = (path) => {
-    const baseUrl = "https://www.snalv.it";
-    // Rimuoviamo eventuali slash doppi e assicuriamoci che il path sia pulito
     const cleanPath = path.replace(/^\/+|\/+$/g, "").replace(/\/+/g, "/");
-    return `${baseUrl}/${cleanPath}`;
+    const fullUrl = `https://www.snalv.it/${cleanPath}`;
+    // Debug: stampiamo l'URL pulito
+    console.log("URL completo:", fullUrl);
+    return fullUrl;
   };
 
-  // Prepara gli URL completi
   const fullUrl = getFullUrl(url);
 
-  const shareUrls = {
-    facebook: `https://www.facebook.com/sharer.php?u=${encodeURIComponent(
-      fullUrl
-    )}`,
-    twitter: `https://twitter.com/intent/tweet?text=${encodeURIComponent(
-      title
-    )}&url=${encodeURIComponent(fullUrl)}`,
-    linkedin: `https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(
-      fullUrl
-    )}&title=${encodeURIComponent(title)}`,
-    whatsapp: `https://api.whatsapp.com/send?text=${encodeURIComponent(
-      `${title} ${fullUrl}`
-    )}`,
+  // Debug: stampiamo gli URL di condivisione
+  const getShareUrl = (platform) => {
+    switch (platform) {
+      case "facebook":
+        return `https://www.facebook.com/sharer.php?u=${encodeURIComponent(
+          fullUrl
+        )}`;
+      case "twitter":
+        return `https://twitter.com/intent/tweet?text=${encodeURIComponent(
+          title
+        )}&url=${encodeURIComponent(fullUrl)}`;
+      case "linkedin":
+        return `https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(
+          fullUrl
+        )}`;
+      case "whatsapp":
+        return `https://api.whatsapp.com/send?text=${encodeURIComponent(
+          `${title} ${fullUrl}`
+        )}`;
+      default:
+        return "";
+    }
   };
 
   const handleShare = (platform) => {
@@ -37,14 +48,9 @@ const SocialShare = ({ title, url, image }) => {
     const left = (window.innerWidth - width) / 2;
     const top = (window.innerHeight - height) / 2;
 
-    const shareUrl = shareUrls[platform];
-
-    // Debug
-    console.log("Sharing:", {
-      platform,
-      url: fullUrl,
-      shareUrl,
-    });
+    const shareUrl = getShareUrl(platform);
+    // Debug: stampiamo l'URL di condivisione completo
+    console.log("Share URL per", platform, ":", shareUrl);
 
     window.open(
       shareUrl,
@@ -59,7 +65,6 @@ const SocialShare = ({ title, url, image }) => {
         Condividi questo articolo
       </h3>
       <div className="flex gap-4">
-        {/* Facebook */}
         <button
           onClick={() => handleShare("facebook")}
           className="p-2 rounded-full bg-blue-600 text-white hover:bg-blue-700 transition-colors"
@@ -70,7 +75,6 @@ const SocialShare = ({ title, url, image }) => {
           </svg>
         </button>
 
-        {/* Twitter/X */}
         <button
           onClick={() => handleShare("twitter")}
           className="p-2 rounded-full bg-black text-white hover:bg-gray-800 transition-colors"
@@ -81,7 +85,6 @@ const SocialShare = ({ title, url, image }) => {
           </svg>
         </button>
 
-        {/* LinkedIn */}
         <button
           onClick={() => handleShare("linkedin")}
           className="p-2 rounded-full bg-blue-500 text-white hover:bg-blue-600 transition-colors"
@@ -92,7 +95,6 @@ const SocialShare = ({ title, url, image }) => {
           </svg>
         </button>
 
-        {/* WhatsApp */}
         <button
           onClick={() => handleShare("whatsapp")}
           className="p-2 rounded-full bg-green-500 text-white hover:bg-green-600 transition-colors"

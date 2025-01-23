@@ -109,36 +109,35 @@ const ComunicatiStampa = ({
   // Versione default con griglia
   return (
     <div className="relative">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 my-8 sm:my-16">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 my-6 md:my-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
           {comunicati.map((comunicato, index) => (
             <motion.div
               key={comunicato.id}
-              className="w-full bg-white rounded-lg shadow-sm overflow-hidden min-h-[460px] flex flex-col justify-between "
+              className="w-full bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow overflow-hidden flex flex-col"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3, delay: index * 0.1 }}
             >
-              <div className="relative h-48 sm:h-48 md:h-64 border-b-[6px] border-blue-600 w-full">
+              <div className="relative border-b-[4px] md:border-b-[6px] border-blue-600">
                 <Image
                   src={comunicato.coverImage || "/img/logo.jpg"}
                   alt={comunicato.title}
-                  fill
-                  className={`w-full ${
-                    comunicato.coverImage ? "object-contain" : "object-contain"
-                  }`}
+                  width={800}
+                  height={600}
+                  className="w-full h-auto"
                 />
-                <div className="absolute bottom-0 left-4 bg-blue-600 text-white px-4 font-bold py-2 text-sm">
+                <div className="absolute bottom-0 left-0 md:left-4 bg-blue-600 text-white px-3 md:px-4 py-1 md:py-2 text-xs md:text-sm font-bold">
                   {formatDate(comunicato.createdAt)}
                 </div>
               </div>
-              <div className="p-6 w-full">
-                <p className="text-gray-800 mb-6 line-clamp-3 text-base sm:text-lg">
+              <div className="p-4 md:p-6 flex flex-col flex-grow">
+                <p className="text-gray-800 mb-4 md:mb-6 line-clamp-3 text-sm md:text-base lg:text-lg font-medium">
                   {comunicato.title}
                 </p>
                 <Link
                   href={`/comunicato/${comunicato.linkNews}`}
-                  className="w-full flex justify-center items-center gap-2 uppercase py-4 text-center border border-snalv-200 text-snalv-600 rounded-md hover:bg-snalv-50 transition-colors font-bold"
+                  className="mt-auto w-full flex justify-center items-center gap-2 uppercase py-3 md:py-4 text-center border border-snalv-200 text-snalv-600 rounded-md hover:bg-snalv-50 transition-colors font-bold text-sm md:text-base"
                 >
                   LEGGI DI PIÙ
                 </Link>

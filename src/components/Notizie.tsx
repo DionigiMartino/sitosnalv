@@ -62,41 +62,41 @@ const RecentNews = () => {
   }
 
   return (
-    <div className="py-16">
+    <div className="py-8 md:py-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h2 className="text-5xl font-bold text-white mb-12 text-center sm:text-3xl lg:text-4xl">
+        <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-8 md:mb-12 text-center">
           NOTIZIE RECENTI
         </h2>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 lg:gap-8">
           {news.map((item, index) => (
             <motion.div
               key={item.id}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3, delay: index * 0.1 }}
-              className="min-h-[460px]"
             >
-              <Card className="overflow-hidden bg-white shadow-md h-full ">
-                <CardContent className="p-0 flex flex-col justify-between h-full">
-                  <div className="relative h-48 sm:h-48 lg:h-56 border-b-[6px] border-blue-600">
+              <Card className="overflow-hidden bg-white shadow-lg hover:shadow-xl transition-shadow h-full flex flex-col">
+                <CardContent className="p-0 flex flex-col h-full">
+                  <div className="relative border-b-[4px] md:border-b-[6px] border-blue-600">
                     <Image
                       src={item.coverImage || "/img/notizia1.jpg"}
                       alt={item.title}
-                      fill
-                      className="object-contain"
+                      width={800}
+                      height={600}
+                      className="w-full h-auto"
                     />
-                    <div className="absolute bottom-0 left-4 bg-blue-600 text-white px-4 font-bold py-2 text-sm">
+                    <div className="absolute bottom-0 left-0 md:left-4 bg-blue-600 text-white px-3 md:px-4 py-1 md:py-2 text-xs md:text-sm font-bold">
                       {formatDate(item.createdAt)}
                     </div>
                   </div>
-                  <div className="p-6">
-                    <p className="text-gray-800 mb-6 line-clamp-3 text-base sm:text-lg">
+                  <div className="p-4 md:p-6 flex flex-col flex-grow">
+                    <p className="text-gray-800 mb-4 md:mb-6 line-clamp-3 text-sm md:text-base lg:text-lg font-medium">
                       {item.title}
                     </p>
                     <Link
                       href={`/notizia/${item.linkNews}`}
-                      className="block w-full text-center hover:bg-blue-700 font-bold uppercase bg-blue-600 p-4 rounded-md text-white transition-colors"
+                      className="mt-auto block w-full text-center font-bold uppercase bg-blue-600 px-3 md:px-4 py-3 md:py-4 rounded-md text-white text-sm md:text-base transition-all hover:bg-blue-700 hover:shadow-md"
                     >
                       LEGGI DI PIÙ
                     </Link>

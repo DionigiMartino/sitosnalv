@@ -159,9 +159,7 @@ async function getPost(tipo: string, link: string): Promise<Post | null> {
 }
 
 // Metadata generator with complete social media support
-export async function generateMetadata({
-  params,
-}: any): Promise<Metadata> {
+export async function generateMetadata({ params }: any): Promise<Metadata> {
   const post = await getPost(params.tipo, params.link);
 
   if (!post) {
@@ -259,15 +257,18 @@ export default async function PostPage({ params }: any) {
           <article className="lg:col-span-8 space-y-8">
             {/* Cover Image */}
             {post.coverImage && (
-              <div className="relative w-full aspect-video md:aspect-[4/3] lg:aspect-[16/9] rounded-lg overflow-hidden">
-                <Image
-                  src={post.coverImage}
-                  alt={post.title}
-                  fill
-                  className="object-cover"
-                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                  priority
-                />
+              <div className="w-full overflow-hidden rounded-lg bg-gradient-to-b from-gray-50 to-white">
+                {/* Vista unificata per mobile e desktop */}
+                <div className="max-w-4xl mx-auto px-4 md:px-8 py-8">
+                  <Image
+                    src={post.coverImage}
+                    alt={post.title}
+                    width={1080}
+                    height={1080}
+                    className="w-full h-auto rounded-lg shadow-lg"
+                    priority
+                  />
+                </div>
               </div>
             )}
 
@@ -296,8 +297,9 @@ export default async function PostPage({ params }: any) {
 
             <SocialShare
               title={post.title}
-              url={`/${post.type === "comunicati" ? "comunicato" : post.type}/${post.linkNews}`}
-              image={post.coverImage}
+              url={`${post.type === "comunicati" ? "comunicato" : post.type}/${
+                post.linkNews
+              }`}
             />
 
             {/* Content */}
