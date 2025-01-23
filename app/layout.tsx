@@ -80,7 +80,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <AuthProvider>{children}</AuthProvider>
+        {children}
 
         {/* Configurazione Iubenda */}
         <Script id="iubenda-config" strategy="beforeInteractive">
