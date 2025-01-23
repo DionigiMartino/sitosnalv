@@ -13,10 +13,21 @@ import { Separator } from "@/components/ui/separator";
 import News from "@/src/components/Dashboard/News";
 import Comunicati from "@/src/components/Dashboard/Comunicati";
 import Sedi from "@/src/components/Dashboard/Sedi";
+import { useSession } from "next-auth/react";
+import { redirect } from "next/navigation";
 
 const DashboardLayout = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
-  const [activeComponent, setActiveComponent] = useState("news"); // Default to news
+  const [activeComponent, setActiveComponent] = useState("news"); 
+  const { data: session, status } = useSession();
+
+  if (status === "loading") {
+    return <div>Loading...</div>;
+  }
+
+  if (!session) {
+    redirect("/login");
+  }
 
   const menuItems = [
     {

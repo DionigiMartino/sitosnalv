@@ -10,7 +10,7 @@ const nextConfig = {
       },
     ],
   },
-  output: 'standalone',
+  output: "standalone",
   async headers() {
     return [
       {
@@ -19,6 +19,28 @@ const nextConfig = {
           {
             key: "Content-Type",
             value: "application/pdf",
+          },
+        ],
+      },
+      {
+        // Headers per NextAuth
+        source: "/:path*",
+        headers: [
+          {
+            key: "Access-Control-Allow-Credentials",
+            value: "true",
+          },
+          {
+            key: "Access-Control-Allow-Origin",
+            value: "https://www.snalv.it",
+          },
+          {
+            key: "Access-Control-Allow-Methods",
+            value: "GET,HEAD,PUT,PATCH,POST,DELETE",
+          },
+          {
+            key: "Access-Control-Allow-Headers",
+            value: "Content-Type, Authorization",
           },
         ],
       },
