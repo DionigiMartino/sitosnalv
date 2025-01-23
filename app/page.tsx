@@ -19,7 +19,7 @@ const HomePage = () => {
 
       {/* Hero Section */}
       <div className="relative w-full">
-        <div className="relative h-[45vh] md:h-[80vh] flex items-center">
+        <div className="relative h-[45vh] md:h-[95vh] lg:h-[90vh] flex items-center">
           {/* Immagine di sfondo */}
           <div className="absolute inset-0 z-0">
             <Image
