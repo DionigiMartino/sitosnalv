@@ -9,7 +9,7 @@ const handler = NextAuth({
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
-        if (credentials?.password === process.env.NEXTAUTH_PASSWORD) {
+        if (credentials?.password === "SNALV_Gamma_12") {
           return { id: "1", name: "Admin" };
         }
         return null;
@@ -19,7 +19,7 @@ const handler = NextAuth({
   pages: {
     signIn: "/login",
   },
-  secret: process.env.NEXTAUTH_SECRET,
+  secret: "57jseAh9H2EKVtcwMIMTvCwjoVhbMOp1WblP3tysTfJUHLWbwA",
 });
 
 export { handler as GET, handler as POST };
