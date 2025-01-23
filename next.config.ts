@@ -23,7 +23,6 @@ const nextConfig = {
         ],
       },
       {
-        // Headers per NextAuth
         source: "/:path*",
         headers: [
           {
