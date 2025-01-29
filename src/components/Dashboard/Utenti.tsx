@@ -53,10 +53,10 @@ const Users = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
-  const [role, setRole] = useState("user");
+  const [role, setRole] = useState("Responsabile Sindacale");
   const [isDuplicateUsername, setIsDuplicateUsername] = useState(false);
 
-  const roles = ["admin", "editor", "user"];
+  const roles = ["Responsabile Sindacale", "Lavoratore"];
 
   const fetchUsers = async () => {
     try {

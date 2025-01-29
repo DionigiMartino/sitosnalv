@@ -38,6 +38,7 @@ import {
   serverTimestamp,
 } from "firebase/firestore";
 import { db } from "@/src/lib/firebase";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 type TipoSede = "Ufficio Provinciale" | "Ufficio Regionale" | "Centro SNALV";
 
@@ -549,201 +550,207 @@ const Sedi = () => {
 
       {/* Form Dialog */}
       <Dialog open={showForm} onOpenChange={setShowForm}>
-        <DialogContent className="max-w-2xl">
+        <DialogContent className="min-w-3xl max-w-3xl">
           <DialogHeader>
             <DialogTitle>
               {selectedSede ? "Modifica Sede" : "Nuova Sede"}
             </DialogTitle>
           </DialogHeader>
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label>Tipo Sede</Label>
-                <Select
-                  value={formData.tipo}
-                  onValueChange={(value: TipoSede) =>
-                    setFormData((prev) => ({ ...prev, tipo: value }))
-                  }
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Seleziona tipo sede" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {tipiSede.map((tipo) => (
-                      <SelectItem key={tipo} value={tipo}>
-                        {tipo}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div className="space-y-2">
-                <Label>Regione</Label>
-                <Select
-                  value={formData.regione}
-                  onValueChange={(value) =>
-                    setFormData((prev) => ({ ...prev, regione: value }))
-                  }
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Seleziona regione" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {regioni.map((regione) => (
-                      <SelectItem key={regione} value={regione}>
-                        {regione}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label>Provincia</Label>
-                <Select
-                  value={formData.provincia}
-                  onValueChange={(value) =>
-                    setFormData((prev) => ({ ...prev, provincia: value }))
-                  }
-                  disabled={!formData.regione}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Seleziona provincia" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {formData.regione &&
-                      provincePerRegione[formData.regione].map((provincia) => (
-                        <SelectItem key={provincia} value={provincia}>
-                          {provincia}
+          <ScrollArea className="h-[600px] w-full">
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label>Tipo Sede</Label>
+                  <Select
+                    value={formData.tipo}
+                    onValueChange={(value: TipoSede) =>
+                      setFormData((prev) => ({ ...prev, tipo: value }))
+                    }
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Seleziona tipo sede" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {tipiSede.map((tipo) => (
+                        <SelectItem key={tipo} value={tipo}>
+                          {tipo}
                         </SelectItem>
                       ))}
-                  </SelectContent>
-                </Select>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="space-y-2">
+                  <Label>Regione</Label>
+                  <Select
+                    value={formData.regione}
+                    onValueChange={(value) =>
+                      setFormData((prev) => ({ ...prev, regione: value }))
+                    }
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Seleziona regione" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {regioni.map((regione) => (
+                        <SelectItem key={regione} value={regione}>
+                          {regione}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label>Provincia</Label>
+                  <Select
+                    value={formData.provincia}
+                    onValueChange={(value) =>
+                      setFormData((prev) => ({ ...prev, provincia: value }))
+                    }
+                    disabled={!formData.regione}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Seleziona provincia" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {formData.regione &&
+                        provincePerRegione[formData.regione].map(
+                          (provincia) => (
+                            <SelectItem key={provincia} value={provincia}>
+                              {provincia}
+                            </SelectItem>
+                          )
+                        )}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="space-y-2">
+                  <Label>Città</Label>
+                  <Input
+                    name="citta"
+                    value={formData.citta}
+                    onChange={handleInputChange}
+                    required
+                  />
+                </div>
               </div>
 
               <div className="space-y-2">
-                <Label>Città</Label>
+                <Label>Indirizzo</Label>
                 <Input
-                  name="citta"
-                  value={formData.citta}
+                  name="indirizzo"
+                  value={formData.indirizzo}
                   onChange={handleInputChange}
                   required
                 />
               </div>
-            </div>
 
-            <div className="space-y-2">
-              <Label>Indirizzo</Label>
-              <Input
-                name="indirizzo"
-                value={formData.indirizzo}
-                onChange={handleInputChange}
-                required
-              />
-            </div>
+              <div className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label>Latitudine</Label>
+                    <Input
+                      name="coordinate.lat"
+                      value={formData.coordinate?.lat || ""}
+                      onChange={handleInputChange}
+                      type="number"
+                      step="any"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Longitudine</Label>
+                    <Input
+                      name="coordinate.lng"
+                      value={formData.coordinate?.lng || ""}
+                      onChange={handleInputChange}
+                      type="number"
+                      step="any"
+                    />
+                  </div>
+                </div>
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={handleGetCoordinates}
+                  disabled={
+                    !formData.indirizzo ||
+                    !formData.citta ||
+                    !formData.provincia
+                  }
+                >
+                  <MapPin className="h-4 w-4 mr-2" />
+                  Ottieni Coordinate da Indirizzo
+                </Button>
+              </div>
 
-            <div className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label>Latitudine</Label>
+                  <Label>Email</Label>
                   <Input
-                    name="coordinate.lat"
-                    value={formData.coordinate?.lat || ""}
+                    name="email"
+                    type="email"
+                    value={formData.email}
                     onChange={handleInputChange}
-                    type="number"
-                    step="any"
                   />
                 </div>
+
                 <div className="space-y-2">
-                  <Label>Longitudine</Label>
+                  <Label>PEC</Label>
                   <Input
-                    name="coordinate.lng"
-                    value={formData.coordinate?.lng || ""}
+                    name="pec"
+                    type="email"
+                    value={formData.pec}
                     onChange={handleInputChange}
-                    type="number"
-                    step="any"
                   />
                 </div>
               </div>
-              <Button
-                type="button"
-                variant="outline"
-                onClick={handleGetCoordinates}
-                disabled={
-                  !formData.indirizzo || !formData.citta || !formData.provincia
-                }
-              >
-                <MapPin className="h-4 w-4 mr-2" />
-                Ottieni Coordinate da Indirizzo
-              </Button>
-            </div>
 
-            <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label>Telefono</Label>
+                  <Input
+                    name="tel"
+                    type="tel"
+                    value={formData.tel}
+                    onChange={handleInputChange}
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label>Cellulare</Label>
+                  <Input
+                    name="cel"
+                    type="tel"
+                    value={formData.cel}
+                    onChange={handleInputChange}
+                  />
+                </div>
+              </div>
+
               <div className="space-y-2">
-                <Label>Email</Label>
+                <Label>Responsabile</Label>
                 <Input
-                  name="email"
-                  type="email"
-                  value={formData.email}
+                  name="responsabile"
+                  value={formData.responsabile}
                   onChange={handleInputChange}
                 />
               </div>
 
-              <div className="space-y-2">
-                <Label>PEC</Label>
-                <Input
-                  name="pec"
-                  type="email"
-                  value={formData.pec}
-                  onChange={handleInputChange}
-                />
-              </div>
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label>Telefono</Label>
-                <Input
-                  name="tel"
-                  type="tel"
-                  value={formData.tel}
-                  onChange={handleInputChange}
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label>Cellulare</Label>
-                <Input
-                  name="cel"
-                  type="tel"
-                  value={formData.cel}
-                  onChange={handleInputChange}
-                />
-              </div>
-            </div>
-
-            <div className="space-y-2">
-              <Label>Responsabile</Label>
-              <Input
-                name="responsabile"
-                value={formData.responsabile}
-                onChange={handleInputChange}
-              />
-            </div>
-
-            <DialogFooter>
-              <Button type="submit" disabled={isLoading}>
-                {isLoading
-                  ? "Salvataggio..."
-                  : selectedSede
-                  ? "Aggiorna"
-                  : "Salva"}
-              </Button>
-            </DialogFooter>
-          </form>
+              <DialogFooter>
+                <Button type="submit" disabled={isLoading}>
+                  {isLoading
+                    ? "Salvataggio..."
+                    : selectedSede
+                    ? "Aggiorna"
+                    : "Salva"}
+                </Button>
+              </DialogFooter>
+            </form>
+          </ScrollArea>
         </DialogContent>
       </Dialog>
 

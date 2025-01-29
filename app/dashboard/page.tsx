@@ -104,7 +104,6 @@ const DashboardLayout = () => {
     }
   };
 
-  /* 
   if (!loggedIn) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-50 py-12 px-4 sm:px-6 lg:px-8">
@@ -144,7 +143,6 @@ const DashboardLayout = () => {
       </div>
     );
   }
-  */
 
   return (
     <div className="flex h-screen bg-gray-50">

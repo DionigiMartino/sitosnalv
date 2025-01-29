@@ -34,6 +34,7 @@ const WebinarViewer = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedPDF, setSelectedPDF] = useState(null);
   const [showPDFViewer, setShowPDFViewer] = useState(false);
+  const [save, setSave] = useState(false);
 
   // Fetch dei webinar
   useEffect(() => {
@@ -261,11 +262,11 @@ const WebinarViewer = () => {
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-12">
             <h1 className="text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600 mb-4">
-              I nostri Webinar
+              Webinar & guide operative
             </h1>
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">
               Esplora i nostri webinar formativi e accedi a contenuti esclusivi
-              e materiali didattici
+              e materiali didattici.
             </p>
           </div>
 
@@ -345,8 +346,8 @@ const WebinarViewer = () => {
             )}
           </div>
         </div>
-          </div>
-          <Footer />
+      </div>
+      <Footer />
     </>
   );
 };
