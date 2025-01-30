@@ -3,6 +3,8 @@ import Script from "next/script";
 import localFont from "next/font/local";
 import "./globals.css";
 import { AuthProvider } from "@/src/components/AuthProvider";
+import "react-pdf/dist/esm/Page/AnnotationLayer.css";
+import "react-pdf/dist/esm/Page/TextLayer.css";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",

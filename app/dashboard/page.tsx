@@ -11,6 +11,7 @@ import {
   Settings,
   ChevronDown,
   Blocks,
+  BookOpen,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
@@ -24,6 +25,7 @@ import Comunicati from "@/src/components/Dashboard/Comunicati";
 import Sedi from "@/src/components/Dashboard/Sedi";
 import Users from "@/src/components/Dashboard/Utenti";
 import Webinar from "@/src/components/Dashboard/Webinar";
+import CourseManager from "@/src/components/Dashboard/Corso";
 
 const DashboardLayout = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -68,6 +70,11 @@ const DashboardLayout = () => {
           label: "Webinar",
           id: "webinar",
         },
+        {
+          icon: <BookOpen className="w-4 h-4" />,
+          label: "Corsi",
+          id: "corso",
+        },
       ],
     },
   };
@@ -99,11 +106,14 @@ const DashboardLayout = () => {
         return <Users />;
       case "webinar":
         return <Webinar />;
+      case "corso":
+        return <CourseManager />;
       default:
         return <News />;
     }
   };
 
+  /* 
   if (!loggedIn) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-50 py-12 px-4 sm:px-6 lg:px-8">
@@ -143,6 +153,7 @@ const DashboardLayout = () => {
       </div>
     );
   }
+  */
 
   return (
     <div className="flex h-screen bg-gray-50">
