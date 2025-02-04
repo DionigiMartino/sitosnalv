@@ -60,7 +60,6 @@ const LoginForm = () => {
     <>
       <Header />
       <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-blue-50 via-white to-blue-50 py-12 px-4 sm:px-6 lg:px-8">
-        <div className="absolute top-0 left-0 w-full h-32 bg-blue-600" />
 
         <div className="relative max-w-md w-full space-y-8">
           <div className="bg-white rounded-2xl shadow-xl p-8 space-y-6">
