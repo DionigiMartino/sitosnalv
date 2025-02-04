@@ -82,11 +82,12 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {children}
+        <AuthProvider>
+          {children}
 
-        {/* Configurazione Iubenda */}
-        <Script id="iubenda-config" strategy="beforeInteractive">
-          {`
+          {/* Configurazione Iubenda */}
+          <Script id="iubenda-config" strategy="beforeInteractive">
+            {`
             var _iub = _iub || [];
             _iub.csConfiguration = {
               consentOnContinuedBrowsing: false,
@@ -108,18 +109,19 @@ export default function RootLayout({
               }
             };
           `}
-        </Script>
+          </Script>
 
-        {/* Script Iubenda */}
-        <Script
-          src="//cs.iubenda.com/sync/2660346.js"
-          strategy="afterInteractive"
-        />
-        <Script
-          src="//cdn.iubenda.com/cs/iubenda_cs.js"
-          strategy="afterInteractive"
-          async
-        />
+          {/* Script Iubenda */}
+          <Script
+            src="//cs.iubenda.com/sync/2660346.js"
+            strategy="afterInteractive"
+          />
+          <Script
+            src="//cdn.iubenda.com/cs/iubenda_cs.js"
+            strategy="afterInteractive"
+            async
+          />
+        </AuthProvider>
       </body>
     </html>
   );

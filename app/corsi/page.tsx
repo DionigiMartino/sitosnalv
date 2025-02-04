@@ -1,6 +1,8 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import {
   FileText,
   Calendar,
@@ -16,72 +18,96 @@ import {
   BookmarkIcon,
   PlayIcon,
   X,
+  Lock,
+  Check,
 } from "lucide-react";
 import { format } from "date-fns";
 import { it } from "date-fns/locale";
-import { collection, getDocs, query, orderBy } from "firebase/firestore";
+import {
+  collection,
+  getDocs,
+  query,
+  orderBy,
+  doc,
+  getDoc,
+  setDoc,
+} from "firebase/firestore";
 import { db } from "@/src/lib/firebase";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { toast } from "@/hooks/use-toast";
 import Header from "@/src/components/Header";
 import Footer from "@/src/components/Footer";
 import PDFViewer from "@/src/components/PDFViewer";
 import "react-pdf/dist/esm/Page/AnnotationLayer.css";
 import "react-pdf/dist/esm/Page/TextLayer.css";
-import { useToast } from "@/hooks/use-toast";
+
+interface LessonProgress {
+  currentTime: number;
+  lastUpdated: Date;
+  completed: boolean;
+  totalDuration: number;
+  title: string;
+  lessonId: string;
+  watchedPercentage: number;
+}
+
+interface Lesson {
+  id: string;
+  title: string;
+  description: string;
+  video?: {
+    url: string;
+  };
+  files?: {
+    url: string;
+    title: string;
+    filename: string;
+  }[];
+}
+
+interface Course {
+  id: string;
+  title: string;
+  description: string;
+  createdAt: any;
+  updatedAt: any;
+  lessons: Lesson[];
+  progress?: {
+    [key: string]: LessonProgress;
+  };
+}
 
 const CourseViewer = () => {
-  const [courses, setCourses] = useState([]);
-  const [selectedCourse, setSelectedCourse] = useState(null);
-  const [selectedLesson, setSelectedLesson] = useState(null);
-  const [selectedPDF, setSelectedPDF] = useState(null);
+  const { data: session, status } = useSession();
+  const router = useRouter();
+  const [courses, setCourses] = useState<Course[]>([]);
+  const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
+  const [selectedLesson, setSelectedLesson] = useState<Lesson | null>(null);
+  const [selectedPDF, setSelectedPDF] = useState<{
+    url: string;
+    title: string;
+    filename: string;
+  } | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
-  // All'inizio del componente aggiungiamo gli stati necessari
-  const videoRef = useRef(null);
+  const videoRef = useRef<HTMLVideoElement | null>(null);
   const [currentTime, setCurrentTime] = useState(0);
   const [saved, setSaved] = useState(false);
-  const toast = useToast();
+  const [watchedPercentage, setWatchedPercentage] = useState(0);
+  const [canComplete, setCanComplete] = useState(false);
 
-  // Funzione per formattare il tempo in formato mm:ss
-  const getStorageKey = (courseId, lessonId) => {
-    return `videoProgress_${courseId}_${lessonId}`;
-  };
-
-  // Funzione per salvare il progresso
-  const handleSaveProgress = () => {
-    if (videoRef.current && selectedLesson?.video) {
-      const key = getStorageKey(selectedCourse.id, selectedLesson.id);
-      const saveData = {
-        lessonId: selectedLesson.id,
-        courseId: selectedCourse.id,
-        time: videoRef.current.currentTime,
-        timestamp: new Date().getTime(),
-      };
-      localStorage.setItem(key, JSON.stringify(saveData));
-      setSaved(true);
-      alert(`Progresso salvato a ${formatTime(videoRef.current.currentTime)}`);
+  // Redirect se non autenticato
+  useEffect(() => {
+    if (status === "unauthenticated") {
+      router.push("/login");
     }
-  };
+  }, [status, router]);
 
-  // Funzione per riprendere il progresso
-  const handleResumeProgress = () => {
-    if (videoRef.current && selectedLesson?.video) {
-      const key = getStorageKey(selectedCourse.id, selectedLesson.id);
-      const savedData = localStorage.getItem(key);
-      if (savedData) {
-        const { time } = JSON.parse(savedData);
-        videoRef.current.currentTime = time;
-        videoRef.current.play();
-        alert(`Video ripreso da ${formatTime(time)}`);
-      }
-    }
-  };
-
-  // Funzione per formattare il tempo
-  const formatTime = (timeInSeconds) => {
+  // Funzioni di utilità
+  const formatTime = (timeInSeconds: number): string => {
     const minutes = Math.floor(timeInSeconds / 60);
     const seconds = Math.floor(timeInSeconds % 60);
     return `${minutes.toString().padStart(2, "0")}:${seconds
@@ -89,60 +115,538 @@ const CourseViewer = () => {
       .padStart(2, "0")}`;
   };
 
-  // Controlla se esiste un salvataggio quando cambia la lezione
-  useEffect(() => {
-    if (selectedLesson?.video) {
-      const key = getStorageKey(selectedCourse?.id, selectedLesson?.id);
-      const savedData = localStorage.getItem(key);
-      setSaved(!!savedData);
-    } else {
-      setSaved(false);
-    }
-  }, [selectedLesson?.id, selectedCourse?.id]);
-
-  useEffect(() => {
-    fetchCourses();
-  }, []);
-
-  const fetchCourses = async () => {
-    try {
-      const coursesQuery = query(
-        collection(db, "courses"),
-        orderBy("createdAt", "desc")
-      );
-      const querySnapshot = await getDocs(coursesQuery);
-      const coursesData = querySnapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-      setCourses(coursesData);
-    } catch (error) {
-      console.error("Error fetching courses:", error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const filteredCourses = courses.filter((course) =>
-    course.title.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
-  const formatDate = (date) => {
+  const formatDate = (date: any): string => {
     if (!date) return "";
     return format(date.toDate(), "d MMMM yyyy", { locale: it });
   };
 
-  if (isLoading) {
+  // Funzione per verificare se una lezione è sbloccata
+  const isLessonUnlocked = (lessonIndex: number) => {
+    if (lessonIndex === 0) return true;
+
+    const previousLesson = selectedCourse?.lessons[lessonIndex - 1];
+    if (!previousLesson) return false;
+
+    const previousProgress = selectedCourse?.progress?.[previousLesson.id];
+    return previousProgress?.completed === true;
+  };
+
+  // Calcolo percentuale video guardato
+  const calculateWatchedPercentage = (
+    currentTime: number,
+    duration: number
+  ) => {
+    if (!duration) return 0;
+    return (currentTime / duration) * 100;
+  };
+
+  // Gestione dell'aggiornamento del tempo del video
+  const handleTimeUpdate = (e: React.SyntheticEvent<HTMLVideoElement>) => {
+    const video = e.currentTarget;
+    const percentage = calculateWatchedPercentage(
+      video.currentTime,
+      video.duration
+    );
+    setCurrentTime(video.currentTime);
+    setWatchedPercentage(percentage);
+    setCanComplete(percentage >= 99);
+  };
+
+  // Funzione per completare la lezione
+  const handleCompleteLesson = async () => {
+    if (!session?.user?.email || !selectedCourse?.id || !selectedLesson?.id)
+      return;
+
+    try {
+      const progressRef = doc(
+        db,
+        "users",
+        session.user.email,
+        "courseProgress",
+        selectedCourse.id
+      );
+
+      const lessonProgress: LessonProgress = {
+        currentTime: videoRef.current?.currentTime || 0,
+        lastUpdated: new Date(),
+        completed: true,
+        totalDuration: videoRef.current?.duration || 0,
+        title: selectedLesson.title,
+        lessonId: selectedLesson.id,
+        watchedPercentage: watchedPercentage,
+      };
+
+      await setDoc(
+        progressRef,
+        {
+          lessons: {
+            [selectedLesson.id]: lessonProgress,
+          },
+        },
+        { merge: true }
+      );
+
+      toast({
+        title: "Lezione completata",
+        description: "Puoi procedere con la prossima lezione",
+      });
+
+      // Aggiorna il corso selezionato con il nuovo progresso
+      const updatedProgress = {
+        ...selectedCourse.progress,
+        [selectedLesson.id]: lessonProgress,
+      };
+
+      setSelectedCourse({
+        ...selectedCourse,
+        progress: updatedProgress,
+      });
+    } catch (error) {
+      console.error("Error completing lesson:", error);
+      toast({
+        title: "Errore",
+        description: "Impossibile completare la lezione",
+        variant: "destructive",
+      });
+    }
+  };
+
+  // Salvataggio progresso
+  const handleSaveProgress = async () => {
+    if (
+      !videoRef.current ||
+      !selectedLesson?.video ||
+      !session?.user?.email ||
+      !selectedCourse?.id
+    ) {
+      console.log("Dati mancanti per il salvataggio:", {
+        hasVideo: !!videoRef.current,
+        hasLesson: !!selectedLesson?.video,
+        hasUser: !!session?.user?.email,
+        hasCourse: !!selectedCourse?.id,
+      });
+      return;
+    }
+
+    try {
+      const progressRef = doc(
+        db,
+        "users",
+        session.user.email,
+        "courseProgress",
+        selectedCourse.id
+      );
+
+      const lessonProgress: LessonProgress = {
+        currentTime: videoRef.current.currentTime,
+        lastUpdated: new Date(),
+        completed:
+          selectedCourse?.progress?.[selectedLesson.id]?.completed || false,
+        totalDuration: videoRef.current.duration || 0,
+        title: selectedLesson.title,
+        lessonId: selectedLesson.id,
+        watchedPercentage: watchedPercentage,
+      };
+
+      await setDoc(
+        progressRef,
+        {
+          lessons: {
+            [selectedLesson.id]: lessonProgress,
+          },
+        },
+        { merge: true }
+      );
+
+      setSaved(true);
+      toast({
+        title: "Progresso salvato",
+        description: `Progresso salvato a ${formatTime(
+          videoRef.current.currentTime
+        )}`,
+      });
+    } catch (error) {
+      console.error("Error saving progress:", error);
+      toast({
+        title: "Errore",
+        description: "Impossibile salvare il progresso",
+        variant: "destructive",
+      });
+    }
+  };
+
+  // Ripresa video
+  const handleResumeProgress = async () => {
+    if (
+      !videoRef.current ||
+      !selectedLesson?.video ||
+      !session?.user?.email ||
+      !selectedCourse?.id
+    ) {
+      return;
+    }
+
+    try {
+      const progressRef = doc(
+        db,
+        "users",
+        session.user.email,
+        "courseProgress",
+        selectedCourse.id
+      );
+
+      const progressDoc = await getDoc(progressRef);
+
+      if (progressDoc.exists()) {
+        const data = progressDoc.data();
+        const lessonProgress = data?.lessons?.[selectedLesson.id];
+
+        if (lessonProgress?.currentTime != null) {
+          videoRef.current.currentTime = lessonProgress.currentTime;
+          videoRef.current.play();
+          toast({
+            title: "Video ripreso",
+            description: `Video ripreso da ${formatTime(
+              lessonProgress.currentTime
+            )}`,
+          });
+        }
+      }
+    } catch (error) {
+      console.error("Error resuming progress:", error);
+      toast({
+        title: "Errore",
+        description: "Impossibile recuperare il progresso",
+        variant: "destructive",
+      });
+    }
+  };
+
+  // Verifica progresso salvato
+  const checkSavedProgress = async () => {
+    if (
+      !selectedLesson?.video ||
+      !session?.user?.email ||
+      !selectedCourse?.id
+    ) {
+      setSaved(false);
+      return;
+    }
+
+    try {
+      const progressRef = doc(
+        db,
+        "users",
+        session.user.email,
+        "courseProgress",
+        selectedCourse.id
+      );
+
+      const progressDoc = await getDoc(progressRef);
+
+      if (progressDoc.exists()) {
+        const data = progressDoc.data();
+        const lessonProgress = data?.lessons?.[selectedLesson.id];
+
+        setSaved(!!lessonProgress);
+        if (lessonProgress?.currentTime != null) {
+          setCurrentTime(lessonProgress.currentTime);
+          setWatchedPercentage(lessonProgress.watchedPercentage || 0);
+          setCanComplete(lessonProgress.watchedPercentage >= 99);
+        }
+      } else {
+        setSaved(false);
+      }
+    } catch (error) {
+      console.error("Error checking saved progress:", error);
+      setSaved(false);
+    }
+  };
+
+  // Effect per controllo progresso
+  useEffect(() => {
+    checkSavedProgress();
+  }, [selectedLesson?.id, selectedCourse?.id, session?.user?.email]);
+
+  // Caricamento corsi
+  useEffect(() => {
+    const fetchCourses = async () => {
+      if (!session?.user?.email) return;
+
+      try {
+        const coursesQuery = query(
+          collection(db, "courses"),
+          orderBy("createdAt", "desc")
+        );
+        const querySnapshot = await getDocs(coursesQuery);
+        const coursesData = querySnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        })) as Course[];
+        setCourses(coursesData);
+      } catch (error) {
+        console.error("Error fetching courses:", error);
+        toast({
+          title: "Errore",
+          description: "Impossibile caricare i corsi",
+          variant: "destructive",
+        });
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchCourses();
+  }, [session]);
+
+  // Selezione corso
+  const handleCourseSelection = async (course: Course) => {
+    try {
+      const progressRef = doc(
+        db,
+        "users",
+        session?.user?.email!,
+        "courseProgress",
+        course.id
+      );
+      const progressDoc = await getDoc(progressRef);
+      const progress = progressDoc.exists() ? progressDoc.data().lessons : {};
+
+      setSelectedCourse({
+        ...course,
+        progress,
+      });
+    } catch (error) {
+      console.error("Error fetching course progress:", error);
+      setSelectedCourse(course);
+    }
+  };
+
+  // Rendering delle lezioni nella sidebar
+  const renderLessonItem = (lesson: Lesson, index: number) => {
+    const isUnlocked = isLessonUnlocked(index);
+    const isCompleted = selectedCourse?.progress?.[lesson.id]?.completed;
+
+    return (
+      <div
+        key={lesson.id}
+        className={`group relative bg-white rounded-xl border transition-all duration-200 
+          ${!isUnlocked ? "opacity-75 cursor-not-allowed" : "cursor-pointer"}
+          ${
+            selectedLesson?.id === lesson.id
+              ? "border-purple-200 shadow-md bg-purple-50"
+              : "border-gray-100 hover:border-purple-200 hover:shadow-md"
+          }`}
+        onClick={() => {
+          if (isUnlocked) {
+            setSelectedLesson(lesson);
+            setSelectedPDF(null);
+          } else {
+            toast({
+              title: "Lezione bloccata",
+              description:
+                "Completa la lezione precedente per sbloccare questa",
+              variant: "destructive",
+            });
+          }
+        }}
+      >
+        <div className="relative p-4">
+          <div className="flex flex-col gap-3">
+            {/* Video Preview */}
+            {lesson.video && (
+              <div className="relative aspect-video w-full rounded-lg overflow-hidden bg-black">
+                <video
+                  src={lesson.video.url}
+                  className="w-full h-full object-cover"
+                  muted
+                  preload="metadata"
+                >
+                  <div className="absolute inset-0 flex items-center justify-center bg-gray-900">
+                    <Play className="h-8 w-8 text-white opacity-75" />
+                  </div>
+                </video>
+                {selectedLesson?.id !== lesson.id && (
+                  <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50">
+                    <Play className="h-8 w-8 text-white" />
+                  </div>
+                )}
+              </div>
+            )}
+
+            <div className="flex items-start gap-4">
+              <div
+                className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium
+                  ${
+                    !isUnlocked
+                      ? "bg-gray-100 text-gray-400"
+                      : selectedLesson?.id === lesson.id
+                      ? "bg-purple-100 text-purple-700"
+                      : "bg-gray-100 text-gray-700"
+                  }`}
+              >
+                {!isUnlocked ? <Lock className="h-4 w-4" /> : index + 1}
+              </div>
+              <div className="flex-1 min-w-0">
+                <h4
+                  className={`font-medium truncate ${
+                    selectedLesson?.id === lesson.id
+                      ? "text-purple-900"
+                      : "text-gray-900"
+                  }`}
+                >
+                  {lesson.title}
+                </h4>
+                <div className="flex items-center gap-3 mt-2">
+                  {lesson.video && (
+                    <div className="flex items-center gap-1 text-xs">
+                      <Play className="h-3 w-3 text-blue-500" />
+                      <span className="text-gray-600">Video</span>
+                    </div>
+                  )}
+                  {lesson.files?.length > 0 && (
+                    <div className="flex items-center gap-1 text-xs">
+                      <FileText className="h-3 w-3 text-red-500" />
+                      <span className="text-gray-600">
+                        {lesson.files.length} materiali
+                      </span>
+                    </div>
+                  )}
+                </div>
+              </div>
+              {isCompleted && (
+                <div className="absolute top-2 right-2">
+                  <div className="bg-green-100 text-green-600 p-1 rounded-full">
+                    <Check className="h-4 w-4" />
+                  </div>
+                </div>
+              )}
+            </div>
+            {selectedCourse?.progress?.[lesson.id] && !isCompleted && (
+              <div className="mt-2">
+                <div className="h-1 w-full bg-gray-200 rounded">
+                  <div
+                    className="h-full bg-blue-500 rounded transition-all duration-300"
+                    style={{
+                      width: `${Math.min(
+                        selectedCourse.progress[lesson.id].watchedPercentage ||
+                          0,
+                        100
+                      )}%`,
+                    }}
+                  />
+                </div>
+                <span className="text-xs text-gray-500 mt-1">
+                  {Math.round(
+                    selectedCourse.progress[lesson.id].watchedPercentage || 0
+                  )}
+                  % completato
+                </span>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  // Filtraggio corsi
+  const filteredCourses = courses.filter((course) =>
+    course.title.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  // Rendering del video player con pulsante di completamento
+  const renderVideoPlayer = () => (
+    <div className="space-y-4">
+      <div className="relative rounded-2xl overflow-hidden bg-black shadow-2xl ring-1 ring-black/5">
+        <div className="aspect-video">
+          <video
+            ref={videoRef}
+            controls
+            className="absolute inset-0 w-full h-full object-cover"
+            src={selectedLesson?.video?.url}
+            onTimeUpdate={handleTimeUpdate}
+          >
+            Il tuo browser non supporta il tag video.
+          </video>
+        </div>
+      </div>
+
+      <div className="flex items-center justify-between bg-white rounded-lg p-4 shadow-sm">
+        <div className="flex items-center gap-4">
+          <Button
+            onClick={handleSaveProgress}
+            variant="outline"
+            className="hover:bg-purple-50"
+          >
+            <BookmarkIcon className="h-4 w-4 mr-2" />
+            Salva
+          </Button>
+
+          <Button
+            onClick={handleResumeProgress}
+            variant="outline"
+            className={`hover:bg-purple-50`}
+            disabled={!saved}
+          >
+            <PlayIcon className="h-4 w-4 mr-2" />
+            Riprendi
+          </Button>
+
+          <Button
+            onClick={handleCompleteLesson}
+            variant="outline"
+            className={`hover:bg-green-50 ${
+              !canComplete && "opacity-50 cursor-not-allowed"
+            }`}
+            disabled={!canComplete}
+          >
+            <Check className="h-4 w-4 mr-2" />
+            Completa lezione
+          </Button>
+        </div>
+
+        <div className="text-sm text-gray-500 flex items-center gap-4">
+          <div className="flex items-center gap-2">
+            {saved && (
+              <>
+                <div className="w-2 h-2 rounded-full bg-green-500"></div>
+                <span>Progresso salvato</span>
+              </>
+            )}
+          </div>
+          <div className="flex items-center gap-2">
+            <span>Completamento:</span>
+            <div className="w-24 h-2 bg-gray-200 rounded-full overflow-hidden">
+              <div
+                className="h-full bg-blue-500 transition-all duration-300"
+                style={{ width: `${Math.min(watchedPercentage, 100)}%` }}
+              />
+            </div>
+            <span>{Math.round(watchedPercentage)}%</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+
+  // Rendering principale
+  if (status === "loading" || isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-50">
         <div className="text-center">
           <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-purple-500 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Caricamento corsi...</p>
+          <p className="mt-4 text-gray-600">Caricamento...</p>
         </div>
       </div>
     );
   }
 
+  if (!session) {
+    return null;
+  }
+
+  // Vista dettaglio corso
   if (selectedCourse) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-blue-50">
@@ -187,58 +691,7 @@ const CourseViewer = () => {
                 <>
                   {/* Video Player */}
                   {selectedLesson.video ? (
-                    <div className="space-y-4">
-                      <div className="relative rounded-2xl overflow-hidden bg-black shadow-2xl ring-1 ring-black/5">
-                        <div className="aspect-video">
-                          <video
-                            ref={videoRef}
-                            controls
-                            className="absolute inset-0 w-full h-full object-cover"
-                            src={selectedLesson.video.url}
-                            onTimeUpdate={(e) =>
-                              // @ts-ignore
-                              setCurrentTime(e.target.currentTime)
-                            }
-                          >
-                            Il tuo browser non supporta il tag video.
-                          </video>
-                        </div>
-                      </div>
-
-                      <div className="flex items-center justify-between bg-white rounded-lg p-4 shadow-sm">
-                        <div className="flex items-center gap-4">
-                          <Button
-                            onClick={handleSaveProgress}
-                            variant="outline"
-                            className="hover:bg-purple-50"
-                          >
-                            <BookmarkIcon className="h-4 w-4 mr-2" />
-                            Salva
-                          </Button>
-
-                          <Button
-                            onClick={handleResumeProgress}
-                            variant="outline"
-                            className={`hover:bg-purple-50`}
-                            disabled={!saved}
-                          >
-                            <PlayIcon className="h-4 w-4 mr-2" />
-                            Riprendi
-                          </Button>
-                        </div>
-
-                        <div className="text-sm text-gray-500 flex items-center gap-2">
-                          {saved && (
-                            <>
-                              <div className="w-2 h-2 rounded-full bg-green-500"></div>
-                              <span>Progresso salvato</span>
-                            </>
-                          )}
-                          <span className="px-2">•</span>
-                          Tempo: {formatTime(currentTime)}
-                        </div>
-                      </div>
-                    </div>
+                    renderVideoPlayer()
                   ) : (
                     <div className="relative aspect-video rounded-2xl overflow-hidden bg-gradient-to-br from-gray-100 to-gray-50 flex items-center justify-center ring-1 ring-black/5">
                       <div className="text-center text-gray-500">
@@ -263,7 +716,6 @@ const CourseViewer = () => {
                   {/* Materials and PDF Viewer */}
                   {selectedLesson.files?.length > 0 && (
                     <div className="space-y-6">
-                      {/* PDF Viewer */}
                       {selectedPDF && (
                         <div
                           key={selectedPDF.url}
@@ -298,7 +750,7 @@ const CourseViewer = () => {
                           Materiali della lezione
                         </h4>
                         <div className="space-y-3">
-                          {selectedLesson.files.map((file, index) => (
+                          {selectedLesson.files.map((file) => (
                             <div
                               key={file.url}
                               className={`flex items-center justify-between p-3 rounded-lg transition-colors ${
@@ -391,89 +843,9 @@ const CourseViewer = () => {
                 <CardContent className="p-6">
                   <ScrollArea className="h-[calc(100vh-400px)]">
                     <div className="space-y-4">
-                      {selectedCourse.lessons.map((lesson, index) => (
-                        <div
-                          key={lesson.id}
-                          className={`group relative bg-white rounded-xl border cursor-pointer transition-all duration-200 ${
-                            selectedLesson?.id === lesson.id
-                              ? "border-purple-200 shadow-md bg-purple-50"
-                              : "border-gray-100 hover:border-purple-200 hover:shadow-md"
-                          }`}
-                          onClick={() => {
-                            setSelectedLesson(lesson);
-                            setSelectedPDF(null);
-                          }}
-                        >
-                          <div className="relative p-4">
-                            <div className="flex flex-col gap-3">
-                              {/* Video Preview */}
-                              {lesson.video && (
-                                <div className="relative aspect-video w-full rounded-lg overflow-hidden bg-black">
-                                  <video
-                                    src={lesson.video.url}
-                                    className="w-full h-full object-cover"
-                                    muted
-                                    preload="metadata"
-                                  >
-                                    <div className="absolute inset-0 flex items-center justify-center bg-gray-900">
-                                      <Play className="h-8 w-8 text-white opacity-75" />
-                                    </div>
-                                  </video>
-                                  {selectedLesson?.id !== lesson.id && (
-                                    <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50">
-                                      <Play className="h-8 w-8 text-white" />
-                                    </div>
-                                  )}
-                                </div>
-                              )}
-
-                              <div className="flex items-start gap-4">
-                                <div
-                                  className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
-                                    selectedLesson?.id === lesson.id
-                                      ? "bg-purple-100 text-purple-700"
-                                      : "bg-gray-100 text-gray-700"
-                                  }`}
-                                >
-                                  {index + 1}
-                                </div>
-                                <div className="flex-1 min-w-0">
-                                  <h4
-                                    className={`font-medium truncate ${
-                                      selectedLesson?.id === lesson.id
-                                        ? "text-purple-900"
-                                        : "text-gray-900"
-                                    }`}
-                                  >
-                                    {lesson.title}
-                                  </h4>
-                                  <div className="flex items-center gap-3 mt-2">
-                                    {lesson.video && (
-                                      <div className="flex items-center gap-1 text-xs">
-                                        <Play className="h-3 w-3 text-blue-500" />
-                                        <span className="text-gray-600">
-                                          Video
-                                        </span>
-                                      </div>
-                                    )}
-                                    {lesson.files?.length > 0 && (
-                                      <div className="flex items-center gap-1 text-xs">
-                                        <FileText className="h-3 w-3 text-red-500" />
-                                        <span className="text-gray-600">
-                                          {lesson.files.length} materiali
-                                        </span>
-                                      </div>
-                                    )}
-                                  </div>
-                                </div>
-                                {selectedLesson?.id === lesson.id && (
-                                  <CheckCircle className="h-5 w-5 text-purple-500" />
-                                )}
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      ))}
+                      {selectedCourse.lessons.map((lesson, index) =>
+                        renderLessonItem(lesson, index)
+                      )}
                     </div>
                   </ScrollArea>
                 </CardContent>
@@ -519,7 +891,7 @@ const CourseViewer = () => {
               <Card
                 key={course.id}
                 className="group relative h-full bg-white/50 backdrop-blur-sm hover:bg-white border-0 shadow-lg hover:shadow-xl transition-all duration-300 rounded-2xl overflow-hidden cursor-pointer transform hover:-translate-y-1"
-                onClick={() => setSelectedCourse(course)}
+                onClick={() => handleCourseSelection(course)}
               >
                 <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 to-indigo-500/5 opacity-0 group-hover:opacity-100 transition-opacity" />
                 <CardContent className="p-6 relative">
