@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
 import Header from "@/src/components/Header";
 import Footer from "@/src/components/Footer";
+import Link from "next/link";
 
 interface CertificatoFormData {
   nome: string;
@@ -76,16 +77,24 @@ const CertificatoPage = () => {
 
       <main className="flex-grow flex items-center justify-center py-8 px-4">
         <div className="w-full max-w-5xl">
+          <h2 className="text-xl sm:text-xl font-bold text-[#1a365d] mb-6 sm:mb-8 text-center">
+            {" "}
+            COMPARTO SOCIO-SANITARIO-ASSISTENZIALE-EDUCATIVO ASSICURAZIONE COLPA
+            GRAVE PER GLI ISCRITTI ALLO SNALV CONFSAL (
+            <Link className="text-snalv-600" href="https://www.gbsapri.it/convenzioni/colpa-grave-snalv-confsal/">
+              qui
+            </Link>{" "}
+            tutti i dettagli)
+          </h2>
+          <h3 className="text-md sm:text-md font-bold text-[#1a365d] mb-6 sm:mb-8 text-center">
+            RICHIESTA CERTIFICATO
+          </h3>
           <Card className="shadow-lg">
             <CardContent>
               <form
                 onSubmit={handleSubmit}
                 className="space-y-6 bg-gray-50 p-6 sm:p-8 rounded-lg"
               >
-                <h2 className="text-xl sm:text-2xl font-bold text-[#1a365d] mb-6 sm:mb-8 text-center">
-                  RICHIESTA CERTIFICATO
-                </h2>
-
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-8">
                   <div className="space-y-4">
                     <div>
@@ -218,7 +227,6 @@ const CertificatoPage = () => {
           </Card>
         </div>
       </main>
-
       <Footer />
     </div>
   );
