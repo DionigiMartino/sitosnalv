@@ -1,5 +1,6 @@
 "use client";
 
+import { Suspense } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
@@ -7,7 +8,7 @@ import { Lock, User, Loader2 } from "lucide-react";
 import Header from "@/src/components/Header";
 import Footer from "@/src/components/Footer";
 
-export default function LoginPage() {
+const LoginForm = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get("callbackUrl") || "/area-riservata";
@@ -139,5 +140,22 @@ export default function LoginPage() {
       </div>
       <Footer />
     </>
+  );
+};
+
+export default function LoginPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-white to-blue-50">
+          <div className="text-center">
+            <Loader2 className="h-8 w-8 animate-spin mx-auto text-blue-600" />
+            <p className="mt-2 text-gray-600">Caricamento...</p>
+          </div>
+        </div>
+      }
+    >
+      <LoginForm />
+    </Suspense>
   );
 }
