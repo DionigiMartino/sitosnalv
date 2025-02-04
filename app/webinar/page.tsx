@@ -25,6 +25,8 @@ import "react-pdf/dist/esm/Page/AnnotationLayer.css";
 import "react-pdf/dist/esm/Page/TextLayer.css";
 import Header from "@/src/components/Header";
 import Footer from "@/src/components/Footer";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 const WebinarViewer = () => {
   // Stati
@@ -35,6 +37,15 @@ const WebinarViewer = () => {
   const [selectedPDF, setSelectedPDF] = useState(null);
   const [showPDFViewer, setShowPDFViewer] = useState(false);
   const [save, setSave] = useState(false);
+  const { data: session, status } = useSession();
+  const router = useRouter();
+
+  // Redirect se non autenticato
+  useEffect(() => {
+    if (status === "unauthenticated") {
+      router.push("/login");
+    }
+  }, [status, router]);
 
   // Fetch dei webinar
   useEffect(() => {

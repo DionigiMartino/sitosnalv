@@ -572,58 +572,72 @@ const CourseViewer = () => {
         </div>
       </div>
 
-      <div className="flex items-center justify-between bg-white rounded-lg p-4 shadow-sm">
-        <div className="flex items-center gap-4">
-          <Button
-            onClick={handleSaveProgress}
-            variant="outline"
-            className="hover:bg-purple-50"
-          >
-            <BookmarkIcon className="h-4 w-4 mr-2" />
-            Salva
-          </Button>
-
-          <Button
-            onClick={handleResumeProgress}
-            variant="outline"
-            className={`hover:bg-purple-50`}
-            disabled={!saved}
-          >
-            <PlayIcon className="h-4 w-4 mr-2" />
-            Riprendi
-          </Button>
-
-          <Button
-            onClick={handleCompleteLesson}
-            variant="outline"
-            className={`hover:bg-green-50 ${
-              !canComplete && "opacity-50 cursor-not-allowed"
-            }`}
-            disabled={!canComplete}
-          >
-            <Check className="h-4 w-4 mr-2" />
-            Completa lezione
-          </Button>
+      <div className="bg-white rounded-lg p-4 shadow-sm">
+        {/* Barra di progresso principale */}
+        <div className="w-full h-2 bg-gray-200 mb-4">
+          <div
+            className="h-full bg-blue-500 transition-all duration-300"
+            style={{ width: `${Math.min(watchedPercentage, 100)}%` }}
+          />
         </div>
 
-        <div className="text-sm text-gray-500 flex items-center gap-4">
-          <div className="flex items-center gap-2">
-            {saved && (
-              <>
-                <div className="w-2 h-2 rounded-full bg-green-500"></div>
-                <span>Progresso salvato</span>
-              </>
-            )}
+        {/* Contenitore principale */}
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+          {/* Gruppo pulsanti */}
+          <div className="flex flex-wrap gap-2">
+            <Button
+              onClick={handleSaveProgress}
+              variant="outline"
+              className="hover:bg-purple-50 min-w-[100px]"
+            >
+              <BookmarkIcon className="h-4 w-4 mr-2" />
+              Salva
+            </Button>
+
+            <Button
+              onClick={handleResumeProgress}
+              variant="outline"
+              className="hover:bg-purple-50 min-w-[100px]"
+              disabled={!saved}
+            >
+              <PlayIcon className="h-4 w-4 mr-2" />
+              Riprendi
+            </Button>
+
+            <Button
+              onClick={handleCompleteLesson}
+              variant="outline"
+              className={`hover:bg-green-50 min-w-[140px] ${
+                !canComplete && "opacity-50 cursor-not-allowed"
+              }`}
+              disabled={!canComplete}
+            >
+              <Check className="h-4 w-4 mr-2" />
+              Completa lezione
+            </Button>
           </div>
-          <div className="flex items-center gap-2">
-            <span>Completamento:</span>
-            <div className="w-24 h-2 bg-gray-200 rounded-full overflow-hidden">
-              <div
-                className="h-full bg-blue-500 transition-all duration-300"
-                style={{ width: `${Math.min(watchedPercentage, 100)}%` }}
-              />
+
+          {/* Gruppo informazioni */}
+          <div className="flex flex-wrap items-center gap-4">
+            {saved && (
+              <div className="flex items-center gap-2 text-sm text-gray-500 min-w-[140px]">
+                <div className="w-2 h-2 rounded-full bg-green-500" />
+                <span>Progresso salvato</span>
+              </div>
+            )}
+
+            <div className="flex items-center gap-2 text-sm text-gray-500 min-w-[200px]">
+              <span className="whitespace-nowrap">Completamento:</span>
+              <div className="w-20 h-2 bg-gray-200 rounded-full overflow-hidden">
+                <div
+                  className="h-full bg-blue-500 transition-all duration-300"
+                  style={{ width: `${Math.min(watchedPercentage, 100)}%` }}
+                />
+              </div>
+              <span className="min-w-[40px]">
+                {Math.round(watchedPercentage)}%
+              </span>
             </div>
-            <span>{Math.round(watchedPercentage)}%</span>
           </div>
         </div>
       </div>
