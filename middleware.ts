@@ -1,41 +1,44 @@
+import { withAuth } from "next-auth/middleware";
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import { withAuth } from "next-auth/middleware";
-import { getToken } from "next-auth/jwt";
 
-export default async function middleware(request: NextRequest) {
-  // Gestione PDF
-  if (request.nextUrl.pathname.endsWith(".pdf")) {
-    const absoluteUrl = new URL(
-      request.nextUrl.pathname,
-      request.url
-    ).toString();
-    return NextResponse.rewrite(
-      new URL(`/api/pdf?url=${encodeURIComponent(absoluteUrl)}`, request.url)
-    );
-  }
-
-  // Gestione autenticazione per le rotte protette
-  const isAuthPath = ["/area-riservata", "/webinar", "/corsi"].some((path) =>
-    request.nextUrl.pathname.startsWith(path)
-  );
-
-  if (isAuthPath) {
-    const token = await getToken({ req: request });
-
-    if (!token) {
-      const loginUrl = new URL("/login", request.url);
-      loginUrl.searchParams.set("callbackUrl", request.url);
-      return NextResponse.redirect(loginUrl);
+export default withAuth(
+  function middleware(request: NextRequest) {
+    // Gestione PDF
+    if (request.nextUrl.pathname.endsWith(".pdf")) {
+      const absoluteUrl = new URL(
+        request.nextUrl.pathname,
+        request.url
+      ).toString();
+      return NextResponse.rewrite(
+        new URL(`/api/pdf?url=${encodeURIComponent(absoluteUrl)}`, request.url)
+      );
     }
-  }
 
-  return NextResponse.next();
-}
+    return NextResponse.next();
+  },
+  {
+    callbacks: {
+      authorized: ({ req, token }) => {
+        // Se il percorso richiede autenticazione
+        if (
+          req.nextUrl.pathname.startsWith("/area-riservata") ||
+          req.nextUrl.pathname.startsWith("/webinar") ||
+          req.nextUrl.pathname.startsWith("/corsi")
+        ) {
+          return !!token; // true se l'utente è autenticato
+        }
+
+        // Per tutti gli altri percorsi, consenti l'accesso
+        return true;
+      },
+    },
+  }
+);
 
 export const config = {
   matcher: [
-    "/docs/:path*", // Per i PDF
+    "/docs/:path*",
     "/area-riservata/:path*",
     "/webinar/:path*",
     "/corsi/:path*",
