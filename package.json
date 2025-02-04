@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "serverbuild": "git pull && npm run build && pm2 restart snalv"
   },
   "dependencies": {
     "@radix-ui/react-accordion": "^1.2.1",

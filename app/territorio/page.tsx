@@ -502,7 +502,7 @@ const TerritorioPage = () => {
               {activeSection === "cerca-sede" && (
                 <div className="w-full h-[500px] rounded-lg overflow-hidden shadow-md">
                   <MapComponent
-                    center={mapCenter}
+                    center={mapCenter as [number, number]}
                     zoom={mapZoom}
                     locations={
                       searchResults.length > 0 ? searchResults : sediList
