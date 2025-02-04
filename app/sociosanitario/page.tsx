@@ -209,7 +209,7 @@ export default function SocioSanitarioPage() {
                       Se sei iscritto al Sindacato, richiedi{" "}
                       <Link
                         className="text-snalv-500"
-                        href="https://www.gbsapri.it/convenzioni/colpa-grave-snalv-confsal"
+                        href="/richiestacertificato"
                       >
                         qui
                       </Link>{" "}
