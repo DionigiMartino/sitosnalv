@@ -1,6 +1,7 @@
-// app/api/auth/[...nextauth]/route.ts
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
+import { collection, query, where, getDocs } from "firebase/firestore";
+import { db } from "@/src/lib/firebase";
 
 const handler = NextAuth({
   providers: [
@@ -11,53 +12,64 @@ const handler = NextAuth({
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
-        if (!credentials?.password) {
-          throw new Error("Password richiesta");
+        if (!credentials?.username || !credentials?.password) {
+          throw new Error("Username e password richiesti");
         }
 
-        // Log per debug in produzione
-        console.log("Auth attempt:", {
-          hasUsername: !!credentials.username,
-          hasPassword: !!credentials.password,
-          env: {
-            hasSecret: !!process.env.NEXTAUTH_SECRET,
-            hasUrl: !!process.env.NEXTAUTH_URL,
-          },
-        });
+        try {
+          const usersRef = collection(db, "users");
+          const q = query(
+            usersRef,
+            where("username", "==", credentials.username),
+            where("password", "==", credentials.password)
+          );
 
-        if (credentials.password === process.env.NEXTAUTH_PASSWORD) {
+          const snapshot = await getDocs(q);
+
+          if (snapshot.empty) {
+            return null;
+          }
+
+          const userData = snapshot.docs[0].data();
           return {
-            id: "1",
-            name: credentials.username || "Admin",
-            role: "admin",
+            id: snapshot.docs[0].id,
+            name: userData.username,
+            role: userData.role || "user",
+            email: userData.email,
           };
+        } catch (error) {
+          console.error("Auth error:", error);
+          throw new Error("Errore durante l'autenticazione");
         }
-
-        return null;
       },
     }),
   ],
-  secret: process.env.NEXTAUTH_SECRET,
   session: {
     strategy: "jwt",
-    maxAge: 24 * 60 * 60, // 24 ore
+    maxAge: 24 * 60 * 60,
   },
+  secret: process.env.NEXTAUTH_SECRET,
   pages: {
     signIn: "/login",
-    error: "/login", // pagina di errore personalizzata
+    error: "/login",
   },
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
+        token.id = user.id;
         // @ts-ignore
         token.role = user.role;
+        token.email = user.email;
       }
       return token;
     },
     async session({ session, token }) {
       if (session.user) {
         // @ts-ignore
+        session.user.id = token.id;
+        // @ts-ignore
         session.user.role = token.role;
+        session.user.email = token.email;
       }
       return session;
     },
