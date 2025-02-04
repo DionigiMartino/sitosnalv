@@ -79,9 +79,13 @@ const CertificatoPage = () => {
         <div className="w-full max-w-5xl">
           <h2 className="text-xl sm:text-xl font-bold text-[#1a365d] mb-6 sm:mb-8 text-center">
             {" "}
-            COMPARTO SOCIO-SANITARIO-ASSISTENZIALE-EDUCATIVO ASSICURAZIONE COLPA
-            GRAVE PER GLI ISCRITTI ALLO SNALV CONFSAL (
-            <Link className="text-snalv-600" href="https://www.gbsapri.it/convenzioni/colpa-grave-snalv-confsal/">
+            COMPARTO SOCIO-SANITARIO-ASSISTENZIALE-EDUCATIVO
+            <br />
+            ASSICURAZIONE COLPA GRAVE PER GLI ISCRITTI ALLO SNALV CONFSAL (
+            <Link
+              className="text-snalv-600"
+              href="https://www.gbsapri.it/convenzioni/colpa-grave-snalv-confsal/"
+            >
               qui
             </Link>{" "}
             tutti i dettagli)
