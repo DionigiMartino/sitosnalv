@@ -40,10 +40,6 @@ const FormazionePage = () => {
           <h1 className="text-4xl md:text-5xl font-bold text-blue-900 mb-4">
             Area Formazione
           </h1>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            {/* @ts-ignore */}
-            {session.user?.username || session.user?.email}
-          </p>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto mt-2">
             Scegli il percorso formativo più adatto alle tue esigenze
           </p>
