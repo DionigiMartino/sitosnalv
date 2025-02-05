@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useRef, useCallback} from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import {
@@ -784,6 +784,15 @@ const CourseViewer = () => {
                 <GraduationCap className="h-4 w-4" />
                 {selectedCourse.lessons.length} lezioni
               </div>
+              {allLessonsCompleted && (
+                <>
+                  <div className="h-4 w-px bg-gray-200"></div>
+                  <div className="flex items-center gap-1">
+                    <CheckCircle className="h-4 w-4" />
+                    Completato
+                  </div>
+                </>
+              )}
             </div>
           </nav>
 
