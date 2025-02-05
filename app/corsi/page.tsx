@@ -43,6 +43,7 @@ import Footer from "@/src/components/Footer";
 import PDFViewer from "@/src/components/PDFViewer";
 import "react-pdf/dist/esm/Page/AnnotationLayer.css";
 import "react-pdf/dist/esm/Page/TextLayer.css";
+import { PDFDocument, StandardFonts, rgb } from "pdf-lib";
 
 interface LessonProgress {
   currentTime: number;
@@ -555,6 +556,68 @@ const CourseViewer = () => {
     course.title.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  
+async function fillAndDownloadPDF() {
+  if (!session?.user) {
+    console.error("Nessuna sessione utente trovata");
+    return;
+  }
+
+  try {
+    // Carica il PDF
+    const pdfResponse = await fetch("/docs/attestato.pdf");
+    if (!pdfResponse.ok) {
+      throw new Error("PDF non trovato");
+    }
+
+    const pdfBlob = await pdfResponse.blob();
+    const arrayBuffer = await pdfBlob.arrayBuffer();
+
+    if (!arrayBuffer || arrayBuffer.byteLength === 0) {
+      throw new Error("PDF non valido o vuoto");
+    }
+
+    // Carica il documento
+    const pdfDoc = await PDFDocument.load(arrayBuffer);
+    const page = pdfDoc.getPages()[0];
+
+    // Carica il font
+    const helveticaFont = await pdfDoc.embedFont(StandardFonts.Helvetica);
+
+    // Ottieni i dati utente
+    const { name = "", email = "" } = session.user;
+
+    // Inserisci il nome (coordinate da aggiustare in base al PDF)
+    page.drawText(name, {
+      x: 250,
+      y: 485,
+      size: 14,
+      font: helveticaFont,
+      color: rgb(0, 0, 0),
+    });
+
+    // Salva il PDF modificato
+    const modifiedPdfBytes = await pdfDoc.save();
+
+    // Crea il blob e scarica
+    const modifiedPdfBlob = new Blob([modifiedPdfBytes], {
+      type: "application/pdf",
+    });
+    const url = URL.createObjectURL(modifiedPdfBlob);
+
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `attestato_${name.replace(/\s+/g, "_")}.pdf`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  } catch (error) {
+    console.error("Errore nella generazione del PDF:", error);
+    // Qui puoi aggiungere un toast o un altro feedback visuale per l'utente
+  }
+}
+
   // Rendering del video player con pulsante di completamento
   const renderVideoPlayer = () => (
     <div className="space-y-4">
@@ -615,6 +678,12 @@ const CourseViewer = () => {
               <Check className="h-4 w-4 mr-2" />
               Completa lezione
             </Button>
+            <button
+              onClick={fillAndDownloadPDF}
+              className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+            >
+              Scarica Attestato
+            </button>
           </div>
 
           {/* Gruppo informazioni */}
