@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback} from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import {
@@ -99,6 +99,21 @@ const CourseViewer = () => {
   const [saved, setSaved] = useState(false);
   const [watchedPercentage, setWatchedPercentage] = useState(0);
   const [canComplete, setCanComplete] = useState(false);
+  const [allLessonsCompleted, setAllLessonsCompleted] = useState(false);
+
+  // Funzione per verificare se tutte le lezioni sono completate
+  const checkAllLessonsCompleted = useCallback(() => {
+    if (!selectedCourse?.lessons || !selectedCourse?.progress) return false;
+
+    return selectedCourse.lessons.every(
+      (lesson) => selectedCourse.progress[lesson.id]?.completed === true
+    );
+  }, [selectedCourse?.lessons, selectedCourse?.progress]);
+
+  // Aggiorna lo stato quando cambia il corso o il progresso
+  useEffect(() => {
+    setAllLessonsCompleted(checkAllLessonsCompleted());
+  }, [selectedCourse, checkAllLessonsCompleted]);
 
   // Redirect se non autenticato
   useEffect(() => {
@@ -556,67 +571,72 @@ const CourseViewer = () => {
     course.title.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  
-async function fillAndDownloadPDF() {
-  if (!session?.user) {
-    console.error("Nessuna sessione utente trovata");
-    return;
-  }
+  console.log("Session", session);
 
-  try {
-    // Carica il PDF
-    const pdfResponse = await fetch("/docs/attestato.pdf");
-    if (!pdfResponse.ok) {
-      throw new Error("PDF non trovato");
+  async function fillAndDownloadPDF() {
+    if (!session?.user) {
+      console.error("Nessuna sessione utente trovata");
+      return;
     }
 
-    const pdfBlob = await pdfResponse.blob();
-    const arrayBuffer = await pdfBlob.arrayBuffer();
+    try {
+      const pdfResponse = await fetch("/docs/attestato.pdf");
+      if (!pdfResponse.ok) throw new Error("PDF non trovato");
 
-    if (!arrayBuffer || arrayBuffer.byteLength === 0) {
-      throw new Error("PDF non valido o vuoto");
+      const pdfBlob = await pdfResponse.blob();
+      const arrayBuffer = await pdfBlob.arrayBuffer();
+
+      const pdfDoc = await PDFDocument.load(arrayBuffer);
+      const page = pdfDoc.getPages()[0];
+      const helveticaFont = await pdfDoc.embedFont(StandardFonts.Helvetica);
+
+      // @ts-ignore
+      const name = `${session.user.nome} ${session.user.cognome}`;
+      const today = format(new Date(), "dd/MM/yyyy");
+
+      page.drawText(name, {
+        x: 300,
+        y: 245, // Posizione da aggiustare
+        size: 22, // Font più grande
+        font: helveticaFont,
+        color: rgb(0, 0, 0),
+      });
+
+      // @ts-ignore
+      page.drawText(session.user.luogoNascita, {
+        x: 295,
+        y: 212.5, // Posizione da aggiustare
+        size: 10, // Font più grande
+        font: helveticaFont,
+        color: rgb(0, 0, 0),
+      });
+
+      // Data in basso al centro
+      page.drawText(today, {
+        x: 395, // Centrare orizzontalmente
+        y: 55, // Posizione da aggiustare per il fondo pagina
+        size: 12,
+        font: helveticaFont,
+        color: rgb(0, 0, 0),
+      });
+
+      const modifiedPdfBytes = await pdfDoc.save();
+      const modifiedPdfBlob = new Blob([modifiedPdfBytes], {
+        type: "application/pdf",
+      });
+      const url = URL.createObjectURL(modifiedPdfBlob);
+
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `attestato_${name.replace(/\s+/g, "_")}.pdf`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error("Errore nella generazione del PDF:", error);
     }
-
-    // Carica il documento
-    const pdfDoc = await PDFDocument.load(arrayBuffer);
-    const page = pdfDoc.getPages()[0];
-
-    // Carica il font
-    const helveticaFont = await pdfDoc.embedFont(StandardFonts.Helvetica);
-
-    // Ottieni i dati utente
-    const { name = "", email = "" } = session.user;
-
-    // Inserisci il nome (coordinate da aggiustare in base al PDF)
-    page.drawText(name, {
-      x: 250,
-      y: 485,
-      size: 14,
-      font: helveticaFont,
-      color: rgb(0, 0, 0),
-    });
-
-    // Salva il PDF modificato
-    const modifiedPdfBytes = await pdfDoc.save();
-
-    // Crea il blob e scarica
-    const modifiedPdfBlob = new Blob([modifiedPdfBytes], {
-      type: "application/pdf",
-    });
-    const url = URL.createObjectURL(modifiedPdfBlob);
-
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = `attestato_${name.replace(/\s+/g, "_")}.pdf`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
-  } catch (error) {
-    console.error("Errore nella generazione del PDF:", error);
-    // Qui puoi aggiungere un toast o un altro feedback visuale per l'utente
   }
-}
 
   // Rendering del video player con pulsante di completamento
   const renderVideoPlayer = () => (
@@ -678,12 +698,17 @@ async function fillAndDownloadPDF() {
               <Check className="h-4 w-4 mr-2" />
               Completa lezione
             </Button>
-            <button
-              onClick={fillAndDownloadPDF}
-              className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-            >
-              Scarica Attestato
-            </button>
+
+            {allLessonsCompleted && (
+              <Button
+                onClick={fillAndDownloadPDF}
+                variant="outline"
+                className="hover:bg-blue-50 border-blue-200 text-blue-600 hover:text-blue-700 min-w-[140px] group transition-all duration-300 flex items-center justify-center gap-2"
+              >
+                <Download className="h-4 w-4 group-hover:scale-110 transition-transform duration-300" />
+                <span className="font-medium">Attestato</span>
+              </Button>
+            )}
           </div>
 
           {/* Gruppo informazioni */}

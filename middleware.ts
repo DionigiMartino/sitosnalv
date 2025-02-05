@@ -4,7 +4,12 @@ import type { NextRequest } from "next/server";
 
 export default withAuth(
   function middleware(request: NextRequest) {
-    // Gestione PDF
+    // Se il PDF è in /public/docs, permetti l'accesso diretto
+    if (request.nextUrl.pathname.startsWith("/docs/")) {
+      return NextResponse.next();
+    }
+
+    // Per altri PDF, usa il rewrite
     if (request.nextUrl.pathname.endsWith(".pdf")) {
       const absoluteUrl = new URL(
         request.nextUrl.pathname,
@@ -20,16 +25,13 @@ export default withAuth(
   {
     callbacks: {
       authorized: ({ req, token }) => {
-        // Se il percorso richiede autenticazione
         if (
           req.nextUrl.pathname.startsWith("/area-riservata") ||
           req.nextUrl.pathname.startsWith("/webinar") ||
           req.nextUrl.pathname.startsWith("/corsi")
         ) {
-          return !!token; // true se l'utente è autenticato
+          return !!token;
         }
-
-        // Per tutti gli altri percorsi, consenti l'accesso
         return true;
       },
     },

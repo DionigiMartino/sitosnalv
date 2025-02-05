@@ -6,10 +6,12 @@ import { Button } from "@/components/ui/button";
 import { ChevronDown, Menu, X, PenLine, UserCircle2 } from "lucide-react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useSession, signOut } from "next-auth/react";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const router = useRouter();
+  const { data: session } = useSession();
 
   const handleNavigation = (href) => {
     const [path, hash] = href.split("#");
@@ -47,22 +49,45 @@ const Header = () => {
   return (
     <>
       <div className="bg-blue-900 text-white">
-        <div className="max-w-7xl mx-auto px-4 py-2 flex justify-end items-center space-x-4">
-          <Link
-            href="https://iscrizione.snalv.it"
-            className="flex items-center gap-2 text-sm hover:text-blue-200 transition-colors"
-          >
-            <PenLine size={24} />
-            <span className="hidden sm:inline">Iscriviti</span>
-          </Link>
-          <div className="w-px h-4 bg-blue-700" /> {/* Separatore verticale */}
-          <Link
-            href="/elearning"
-            className="flex items-center gap-2 text-sm hover:text-blue-200 transition-colors"
-          >
-            <UserCircle2 size={24} />
-            <span className="hidden sm:inline">E-Learning</span>
-          </Link>
+        <div className="max-w-7xl mx-auto px-4 py-2 flex justify-between items-center">
+          {/* Lato sinistro - Info utente e logout se autenticato */}
+          <div className="flex items-center gap-4">
+            {session?.user && (
+              <>
+                <div className="text-sm">
+                  <span className="font-medium">
+                    {/* @ts-ignore */}
+                    Benvenuto, {session.user.nome} {session.user.cognome}
+                  </span>
+                </div>
+                <button
+                  onClick={() => signOut({ callbackUrl: "/login" })}
+                  className="text-sm bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded transition-colors"
+                >
+                  Logout
+                </button>
+              </>
+            )}
+          </div>
+
+          {/* Lato destro - Link */}
+          <div className="flex items-center space-x-4">
+            <Link
+              href="https://iscrizione.snalv.it"
+              className="flex items-center gap-2 text-sm hover:text-blue-200 transition-colors"
+            >
+              <PenLine size={24} />
+              <span className="hidden sm:inline">Iscriviti</span>
+            </Link>
+            <div className="w-px h-4 bg-blue-700" />
+            <Link
+              href="/elearning"
+              className="flex items-center gap-2 text-sm hover:text-blue-200 transition-colors"
+            >
+              <UserCircle2 size={24} />
+              <span className="hidden sm:inline">E-Learning</span>
+            </Link>
+          </div>
         </div>
       </div>
       <header className="border-b bg-white">

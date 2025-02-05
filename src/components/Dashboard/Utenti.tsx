@@ -18,7 +18,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { PlusCircle, Eye, EyeOff, Edit, Trash2, Lock } from "lucide-react";
+import { PlusCircle, Eye, EyeOff, Edit, Trash2 } from "lucide-react";
 import {
   collection,
   addDoc,
@@ -26,12 +26,9 @@ import {
   updateDoc,
   deleteDoc,
   doc,
-  query,
-  where,
   serverTimestamp,
 } from "firebase/firestore";
 import { db } from "@/src/lib/firebase";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   Select,
   SelectContent,
@@ -54,7 +51,10 @@ const Users = () => {
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
   const [role, setRole] = useState("Responsabile Sindacale");
-  const [isDuplicateUsername, setIsDuplicateUsername] = useState(false);
+  const [nome, setNome] = useState("");
+  const [cognome, setCognome] = useState("");
+  const [dataNascita, setDataNascita] = useState("");
+  const [luogoNascita, setLuogoNascita] = useState("");
 
   const roles = ["Responsabile Sindacale", "Lavoratore"];
 
@@ -87,6 +87,10 @@ const Users = () => {
       password,
       email,
       role,
+      nome,
+      cognome,
+      dataNascita,
+      luogoNascita,
       updatedAt: serverTimestamp(),
       createdAt: selectedUser?.createdAt || serverTimestamp(),
     };
@@ -116,9 +120,14 @@ const Users = () => {
     setPassword("");
     setEmail("");
     setRole("user");
+    setNome("");
+    setCognome("");
+    setDataNascita("");
+    setLuogoNascita("");
     setSelectedUser(null);
   };
 
+  // Delete functions remain the same...
   const handleDeleteClick = (user) => {
     setUserToDelete(user);
     setShowDeleteDialog(true);
@@ -156,6 +165,10 @@ const Users = () => {
           <Table>
             <TableHeader>
               <TableRow>
+                <TableHead>Nome</TableHead>
+                <TableHead>Cognome</TableHead>
+                <TableHead>Data di nascita</TableHead>
+                <TableHead>Luogo di nascita</TableHead>
                 <TableHead>Username</TableHead>
                 <TableHead>Email</TableHead>
                 <TableHead>Ruolo</TableHead>
@@ -165,6 +178,10 @@ const Users = () => {
             <TableBody>
               {users.map((user) => (
                 <TableRow key={user.id}>
+                  <TableCell>{user.nome}</TableCell>
+                  <TableCell>{user.cognome}</TableCell>
+                  <TableCell>{user.dataNascita}</TableCell>
+                  <TableCell>{user.luogoNascita}</TableCell>
                   <TableCell className="font-medium">{user.username}</TableCell>
                   <TableCell>{user.email}</TableCell>
                   <TableCell className="capitalize">{user.role}</TableCell>
@@ -177,6 +194,10 @@ const Users = () => {
                         setUsername(user.username);
                         setEmail(user.email);
                         setRole(user.role);
+                        setNome(user.nome);
+                        setCognome(user.cognome);
+                        setDataNascita(user.dataNascita);
+                        setLuogoNascita(user.luogoNascita);
                         setShowForm(true);
                       }}
                     >
@@ -205,6 +226,51 @@ const Users = () => {
             </DialogTitle>
           </DialogHeader>
           <form onSubmit={handleSubmit} className="space-y-6">
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="nome">Nome</Label>
+                <Input
+                  id="nome"
+                  value={nome}
+                  onChange={(e) => setNome(e.target.value)}
+                  required
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="cognome">Cognome</Label>
+                <Input
+                  id="cognome"
+                  value={cognome}
+                  onChange={(e) => setCognome(e.target.value)}
+                  required
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="dataNascita">Data di nascita</Label>
+                <Input
+                  id="dataNascita"
+                  type="date"
+                  value={dataNascita}
+                  onChange={(e) => setDataNascita(e.target.value)}
+                  required
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="luogoNascita">Luogo di nascita</Label>
+                <Input
+                  id="luogoNascita"
+                  value={luogoNascita}
+                  onChange={(e) => setLuogoNascita(e.target.value)}
+                  required
+                />
+              </div>
+            </div>
+
             <div className="space-y-2">
               <Label htmlFor="username">Username</Label>
               <Input

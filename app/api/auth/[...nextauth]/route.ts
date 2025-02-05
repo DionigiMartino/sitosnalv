@@ -36,6 +36,10 @@ const handler = NextAuth({
             name: userData.username,
             role: userData.role || "user",
             email: userData.email,
+            nome: userData.nome,
+            cognome: userData.cognome,
+            dataNascita: userData.dataNascita,
+            luogoNascita: userData.luogoNascita,
           };
         } catch (error) {
           console.error("Auth error:", error);
@@ -54,22 +58,27 @@ const handler = NextAuth({
     error: "/login",
   },
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user }: any) {
       if (user) {
         token.id = user.id;
-        // @ts-ignore
         token.role = user.role;
         token.email = user.email;
+        token.nome = user.nome;
+        token.cognome = user.cognome;
+        token.dataNascita = user.dataNascita;
+        token.luogoNascita = user.luogoNascita;
       }
       return token;
     },
-    async session({ session, token }) {
+    async session({ session, token }: any) {
       if (session.user) {
-        // @ts-ignore
         session.user.id = token.id;
-        // @ts-ignore
         session.user.role = token.role;
         session.user.email = token.email;
+        session.user.nome = token.nome;
+        session.user.cognome = token.cognome;
+        session.user.dataNascita = token.dataNascita;
+        session.user.luogoNascita = token.luogoNascita;
       }
       return session;
     },
