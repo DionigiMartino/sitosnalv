@@ -757,220 +757,224 @@ const CourseViewer = () => {
   // Vista dettaglio corso
   if (selectedCourse) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-blue-50">
-        <div className="max-w-7xl mx-auto px-4 py-8">
-          {/* Header */}
-          <nav className="mb-8 flex items-center gap-4">
-            <Button
-              variant="ghost"
-              onClick={() => {
-                setSelectedCourse(null);
-                setSelectedLesson(null);
-                setSelectedPDF(null);
-              }}
-              className="hover:bg-white/50 transition-colors"
-            >
-              <ChevronLeft className="h-4 w-4 mr-2" />
-              Torna alla lista
-            </Button>
-            <div className="h-6 w-px bg-gray-200"></div>
-            <div className="flex items-center gap-4 text-gray-600 text-sm">
-              <div className="flex items-center gap-1">
-                <Calendar className="h-4 w-4" />
-                {formatDate(selectedCourse.updatedAt)}
+      <>
+        <Header />
+        <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-blue-50">
+          <div className="max-w-7xl mx-auto px-4 py-8">
+            {/* Header */}
+            <nav className="mb-8 flex items-center gap-4">
+              <Button
+                variant="ghost"
+                onClick={() => {
+                  setSelectedCourse(null);
+                  setSelectedLesson(null);
+                  setSelectedPDF(null);
+                }}
+                className="hover:bg-white/50 transition-colors"
+              >
+                <ChevronLeft className="h-4 w-4 mr-2" />
+                Torna alla lista
+              </Button>
+              <div className="h-6 w-px bg-gray-200"></div>
+              <div className="flex items-center gap-4 text-gray-600 text-sm">
+                <div className="flex items-center gap-1">
+                  <Calendar className="h-4 w-4" />
+                  {formatDate(selectedCourse.updatedAt)}
+                </div>
+                <div className="h-4 w-px bg-gray-200"></div>
+                <div className="flex items-center gap-1">
+                  <GraduationCap className="h-4 w-4" />
+                  {selectedCourse.lessons.length} lezioni
+                </div>
+                {allLessonsCompleted && (
+                  <>
+                    <div className="h-4 w-px bg-gray-200"></div>
+                    <div className="flex items-center gap-1">
+                      <CheckCircle className="h-4 w-4" />
+                      Completato
+                    </div>
+                  </>
+                )}
               </div>
-              <div className="h-4 w-px bg-gray-200"></div>
-              <div className="flex items-center gap-1">
-                <GraduationCap className="h-4 w-4" />
-                {selectedCourse.lessons.length} lezioni
-              </div>
-              {allLessonsCompleted && (
-                <>
-                  <div className="h-4 w-px bg-gray-200"></div>
-                  <div className="flex items-center gap-1">
-                    <CheckCircle className="h-4 w-4" />
-                    Completato
-                  </div>
-                </>
-              )}
-            </div>
-          </nav>
+            </nav>
 
-          <h1 className="text-4xl font-bold text-gray-900 mb-6 leading-tight">
-            {selectedCourse.title}
-          </h1>
+            <h1 className="text-4xl font-bold text-gray-900 mb-6 leading-tight">
+              {selectedCourse.title}
+            </h1>
 
-          {/* Main Content */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            {/* Video & Content Section */}
-            <div className="lg:col-span-2 space-y-8">
-              {selectedLesson ? (
-                <>
-                  {/* Video Player */}
-                  {selectedLesson.video ? (
-                    renderVideoPlayer()
-                  ) : (
-                    <div className="relative aspect-video rounded-2xl overflow-hidden bg-gradient-to-br from-gray-100 to-gray-50 flex items-center justify-center ring-1 ring-black/5">
-                      <div className="text-center text-gray-500">
-                        <Play className="h-20 w-20 mx-auto mb-4 text-gray-400" />
-                        <p className="text-lg">Nessun video disponibile</p>
+            {/* Main Content */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+              {/* Video & Content Section */}
+              <div className="lg:col-span-2 space-y-8">
+                {selectedLesson ? (
+                  <>
+                    {/* Video Player */}
+                    {selectedLesson.video ? (
+                      renderVideoPlayer()
+                    ) : (
+                      <div className="relative aspect-video rounded-2xl overflow-hidden bg-gradient-to-br from-gray-100 to-gray-50 flex items-center justify-center ring-1 ring-black/5">
+                        <div className="text-center text-gray-500">
+                          <Play className="h-20 w-20 mx-auto mb-4 text-gray-400" />
+                          <p className="text-lg">Nessun video disponibile</p>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Lesson Description */}
+                    <div className="prose max-w-none">
+                      <h3 className="text-2xl font-semibold text-gray-900 mb-4">
+                        {selectedLesson.title}
+                      </h3>
+                      <div className="bg-white rounded-xl p-6 shadow-sm ring-1 ring-black/5">
+                        <p className="text-gray-600 whitespace-pre-wrap leading-relaxed">
+                          {selectedLesson.description}
+                        </p>
                       </div>
                     </div>
-                  )}
 
-                  {/* Lesson Description */}
+                    {/* Materials and PDF Viewer */}
+                    {selectedLesson.files?.length > 0 && (
+                      <div className="space-y-6">
+                        {selectedPDF && (
+                          <div
+                            key={selectedPDF.url}
+                            className="bg-white rounded-xl overflow-hidden shadow-sm ring-1 ring-black/5"
+                          >
+                            <div className="p-4 border-b flex items-center justify-between bg-gray-50">
+                              <div className="flex items-center gap-2">
+                                <FileText className="h-5 w-5 text-red-500" />
+                                <h4 className="font-medium text-gray-900">
+                                  {selectedPDF.title || selectedPDF.filename}
+                                </h4>
+                              </div>
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => setSelectedPDF(null)}
+                              >
+                                <X className="h-4 w-4" />
+                              </Button>
+                            </div>
+                            <PDFViewer
+                              key={selectedPDF.url}
+                              url={selectedPDF.url}
+                              title={selectedPDF.title}
+                            />
+                          </div>
+                        )}
+
+                        {/* Materials List */}
+                        <div className="bg-white rounded-xl p-6 shadow-sm ring-1 ring-black/5">
+                          <h4 className="text-lg font-semibold text-gray-900 mb-4">
+                            Materiali della lezione
+                          </h4>
+                          <div className="space-y-3">
+                            {selectedLesson.files.map((file) => (
+                              <div
+                                key={file.url}
+                                className={`flex items-center justify-between p-3 rounded-lg transition-colors ${
+                                  selectedPDF?.url === file.url
+                                    ? "bg-purple-50 ring-1 ring-purple-200"
+                                    : "bg-gray-50 hover:bg-gray-100"
+                                }`}
+                              >
+                                <div className="flex items-center gap-3">
+                                  <FileText
+                                    className={`h-5 w-5 ${
+                                      selectedPDF?.url === file.url
+                                        ? "text-purple-500"
+                                        : "text-red-500"
+                                    }`}
+                                  />
+                                  <div>
+                                    <p
+                                      className={`font-medium ${
+                                        selectedPDF?.url === file.url
+                                          ? "text-purple-900"
+                                          : "text-gray-900"
+                                      }`}
+                                    >
+                                      {file.title}
+                                    </p>
+                                    <p className="text-sm text-gray-500">
+                                      {file.filename}
+                                    </p>
+                                  </div>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                  <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    onClick={() =>
+                                      setSelectedPDF(
+                                        selectedPDF?.url === file.url
+                                          ? null
+                                          : file
+                                      )
+                                    }
+                                  >
+                                    <Eye className="h-4 w-4 mr-2" />
+                                    {selectedPDF?.url === file.url
+                                      ? "Nascondi"
+                                      : "Visualizza"}
+                                  </Button>
+                                  <a
+                                    href={file.url}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                  >
+                                    <Button variant="ghost" size="sm">
+                                      <Download className="h-4 w-4 mr-2" />
+                                      Scarica
+                                    </Button>
+                                  </a>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </>
+                ) : (
                   <div className="prose max-w-none">
-                    <h3 className="text-2xl font-semibold text-gray-900 mb-4">
-                      {selectedLesson.title}
-                    </h3>
                     <div className="bg-white rounded-xl p-6 shadow-sm ring-1 ring-black/5">
                       <p className="text-gray-600 whitespace-pre-wrap leading-relaxed">
-                        {selectedLesson.description}
+                        {selectedCourse.description}
                       </p>
                     </div>
                   </div>
+                )}
+              </div>
 
-                  {/* Materials and PDF Viewer */}
-                  {selectedLesson.files?.length > 0 && (
-                    <div className="space-y-6">
-                      {selectedPDF && (
-                        <div
-                          key={selectedPDF.url}
-                          className="bg-white rounded-xl overflow-hidden shadow-sm ring-1 ring-black/5"
-                        >
-                          <div className="p-4 border-b flex items-center justify-between bg-gray-50">
-                            <div className="flex items-center gap-2">
-                              <FileText className="h-5 w-5 text-red-500" />
-                              <h4 className="font-medium text-gray-900">
-                                {selectedPDF.title || selectedPDF.filename}
-                              </h4>
-                            </div>
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => setSelectedPDF(null)}
-                            >
-                              <X className="h-4 w-4" />
-                            </Button>
-                          </div>
-                          <PDFViewer
-                            key={selectedPDF.url}
-                            url={selectedPDF.url}
-                            title={selectedPDF.title}
-                          />
-                        </div>
-                      )}
-
-                      {/* Materials List */}
-                      <div className="bg-white rounded-xl p-6 shadow-sm ring-1 ring-black/5">
-                        <h4 className="text-lg font-semibold text-gray-900 mb-4">
-                          Materiali della lezione
-                        </h4>
-                        <div className="space-y-3">
-                          {selectedLesson.files.map((file) => (
-                            <div
-                              key={file.url}
-                              className={`flex items-center justify-between p-3 rounded-lg transition-colors ${
-                                selectedPDF?.url === file.url
-                                  ? "bg-purple-50 ring-1 ring-purple-200"
-                                  : "bg-gray-50 hover:bg-gray-100"
-                              }`}
-                            >
-                              <div className="flex items-center gap-3">
-                                <FileText
-                                  className={`h-5 w-5 ${
-                                    selectedPDF?.url === file.url
-                                      ? "text-purple-500"
-                                      : "text-red-500"
-                                  }`}
-                                />
-                                <div>
-                                  <p
-                                    className={`font-medium ${
-                                      selectedPDF?.url === file.url
-                                        ? "text-purple-900"
-                                        : "text-gray-900"
-                                    }`}
-                                  >
-                                    {file.title}
-                                  </p>
-                                  <p className="text-sm text-gray-500">
-                                    {file.filename}
-                                  </p>
-                                </div>
-                              </div>
-                              <div className="flex items-center gap-2">
-                                <Button
-                                  variant="ghost"
-                                  size="sm"
-                                  onClick={() =>
-                                    setSelectedPDF(
-                                      selectedPDF?.url === file.url
-                                        ? null
-                                        : file
-                                    )
-                                  }
-                                >
-                                  <Eye className="h-4 w-4 mr-2" />
-                                  {selectedPDF?.url === file.url
-                                    ? "Nascondi"
-                                    : "Visualizza"}
-                                </Button>
-                                <a
-                                  href={file.url}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                >
-                                  <Button variant="ghost" size="sm">
-                                    <Download className="h-4 w-4 mr-2" />
-                                    Scarica
-                                  </Button>
-                                </a>
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                </>
-              ) : (
-                <div className="prose max-w-none">
-                  <div className="bg-white rounded-xl p-6 shadow-sm ring-1 ring-black/5">
-                    <p className="text-gray-600 whitespace-pre-wrap leading-relaxed">
-                      {selectedCourse.description}
+              {/* Lessons Sidebar */}
+              <div className="lg:col-span-1">
+                <Card className="bg-white shadow-xl rounded-2xl border-0 overflow-hidden sticky top-8">
+                  <div className="bg-gradient-to-r from-purple-600 to-indigo-600 p-6">
+                    <h3 className="text-xl font-semibold text-white flex items-center gap-2">
+                      <BookOpen className="h-5 w-5" />
+                      Lezioni del corso
+                    </h3>
+                    <p className="text-purple-100 mt-1">
+                      {selectedCourse.lessons.length} lezioni disponibili
                     </p>
                   </div>
-                </div>
-              )}
-            </div>
-
-            {/* Lessons Sidebar */}
-            <div className="lg:col-span-1">
-              <Card className="bg-white shadow-xl rounded-2xl border-0 overflow-hidden sticky top-8">
-                <div className="bg-gradient-to-r from-purple-600 to-indigo-600 p-6">
-                  <h3 className="text-xl font-semibold text-white flex items-center gap-2">
-                    <BookOpen className="h-5 w-5" />
-                    Lezioni del corso
-                  </h3>
-                  <p className="text-purple-100 mt-1">
-                    {selectedCourse.lessons.length} lezioni disponibili
-                  </p>
-                </div>
-                <CardContent className="p-6">
-                  <ScrollArea className="h-[calc(100vh-400px)]">
-                    <div className="space-y-4">
-                      {selectedCourse.lessons.map((lesson, index) =>
-                        renderLessonItem(lesson, index)
-                      )}
-                    </div>
-                  </ScrollArea>
-                </CardContent>
-              </Card>
+                  <CardContent className="p-6">
+                    <ScrollArea className="h-[calc(100vh-400px)]">
+                      <div className="space-y-4">
+                        {selectedCourse.lessons.map((lesson, index) =>
+                          renderLessonItem(lesson, index)
+                        )}
+                      </div>
+                    </ScrollArea>
+                  </CardContent>
+                </Card>
+              </div>
             </div>
           </div>
         </div>
-      </div>
+        <Footer />
+      </>
     );
   }
 
