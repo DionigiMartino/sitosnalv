@@ -571,8 +571,6 @@ const CourseViewer = () => {
     course.title.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  console.log("Session", session);
-
   async function fillAndDownloadPDF() {
     if (!session?.user) {
       console.error("Nessuna sessione utente trovata");
