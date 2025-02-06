@@ -18,7 +18,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { PlusCircle, Eye, EyeOff, Edit, Trash2 } from "lucide-react";
+import { PlusCircle, Edit, Trash2 } from "lucide-react";
 import {
   collection,
   addDoc,
@@ -43,16 +43,14 @@ const Users = () => {
   const [showForm, setShowForm] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [userToDelete, setUserToDelete] = useState(null);
-  const [showPassword, setShowPassword] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
+  const [searchQuery, setSearchQuery] = useState("");
 
   // Form fields
   const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
   const [role, setRole] = useState("Responsabile Sindacale");
   const [nome, setNome] = useState("");
-  const [cognome, setCognome] = useState("");
   const [dataNascita, setDataNascita] = useState("");
   const [luogoNascita, setLuogoNascita] = useState("");
 
@@ -84,11 +82,10 @@ const Users = () => {
 
     const data = {
       username,
-      password,
+      password: "SN25FMR",
       email,
       role,
       nome,
-      cognome,
       dataNascita,
       luogoNascita,
       updatedAt: serverTimestamp(),
@@ -117,17 +114,14 @@ const Users = () => {
 
   const resetForm = () => {
     setUsername("");
-    setPassword("");
     setEmail("");
     setRole("user");
     setNome("");
-    setCognome("");
     setDataNascita("");
     setLuogoNascita("");
     setSelectedUser(null);
   };
 
-  // Delete functions remain the same...
   const handleDeleteClick = (user) => {
     setUserToDelete(user);
     setShowDeleteDialog(true);
@@ -151,22 +145,66 @@ const Users = () => {
     }
   };
 
+  const filteredUsers = users.filter((user) =>
+    user.username.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  const exportToCSV = () => {
+    const csvData = users.map((user) => ({
+      nome: user.nome,
+      dataNascita: user.dataNascita,
+      luogoNascita: user.luogoNascita,
+      username: user.username,
+      email: user.email,
+      role: user.role,
+    }));
+
+    const csvString = [
+      // Header
+      Object.keys(csvData[0]).join(","),
+      // Rows
+      ...csvData.map((row) => Object.values(row).join(",")),
+    ].join("\n");
+
+    const blob = new Blob([csvString], { type: "text/csv;charset=utf-8;" });
+    const link = document.createElement("a");
+    const url = URL.createObjectURL(blob);
+    link.setAttribute("href", url);
+    link.setAttribute("download", "utenti_piattaforma.csv");
+    link.style.visibility = "hidden";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   return (
     <>
       <Card>
         <CardHeader className="flex flex-row items-center justify-between">
           <CardTitle>Gestione Utenti</CardTitle>
-          <Button onClick={() => setShowForm(true)}>
-            <PlusCircle className="h-4 w-4 mr-2" />
-            Nuovo Utente
-          </Button>
+          <div className="flex gap-2">
+            <Button onClick={exportToCSV} variant="outline">
+              Scarica CSV
+            </Button>
+            <Button onClick={() => setShowForm(true)}>
+              <PlusCircle className="h-4 w-4 mr-2" />
+              Nuovo Utente
+            </Button>
+          </div>
         </CardHeader>
         <CardContent>
+          <div className="mb-4">
+            <Input
+              placeholder="Cerca per username..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="max-w-sm"
+            />
+          </div>
           <Table>
             <TableHeader>
               <TableRow>
                 <TableHead>Nome</TableHead>
-                <TableHead>Cognome</TableHead>
                 <TableHead>Data di nascita</TableHead>
                 <TableHead>Luogo di nascita</TableHead>
                 <TableHead>Username</TableHead>
@@ -176,10 +214,9 @@ const Users = () => {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {users.map((user) => (
+              {filteredUsers.map((user) => (
                 <TableRow key={user.id}>
                   <TableCell>{user.nome}</TableCell>
-                  <TableCell>{user.cognome}</TableCell>
                   <TableCell>{user.dataNascita}</TableCell>
                   <TableCell>{user.luogoNascita}</TableCell>
                   <TableCell className="font-medium">{user.username}</TableCell>
@@ -195,7 +232,6 @@ const Users = () => {
                         setEmail(user.email);
                         setRole(user.role);
                         setNome(user.nome);
-                        setCognome(user.cognome);
                         setDataNascita(user.dataNascita);
                         setLuogoNascita(user.luogoNascita);
                         setShowForm(true);
@@ -226,23 +262,13 @@ const Users = () => {
             </DialogTitle>
           </DialogHeader>
           <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
+            <div className="grid grid-cols-1 gap-4">
+              <div className="space-y-2 w-full">
                 <Label htmlFor="nome">Nome</Label>
                 <Input
                   id="nome"
                   value={nome}
                   onChange={(e) => setNome(e.target.value)}
-                  required
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="cognome">Cognome</Label>
-                <Input
-                  id="cognome"
-                  value={cognome}
-                  onChange={(e) => setCognome(e.target.value)}
                   required
                 />
               </div>
@@ -279,32 +305,6 @@ const Users = () => {
                 onChange={(e) => setUsername(e.target.value)}
                 required
               />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
-              <div className="relative">
-                <Input
-                  id="password"
-                  type={showPassword ? "text" : "password"}
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required={!selectedUser}
-                />
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="icon"
-                  className="absolute right-2 top-1/2 -translate-y-1/2"
-                  onClick={() => setShowPassword(!showPassword)}
-                >
-                  {showPassword ? (
-                    <EyeOff className="h-4 w-4" />
-                  ) : (
-                    <Eye className="h-4 w-4" />
-                  )}
-                </Button>
-              </div>
             </div>
 
             <div className="space-y-2">
