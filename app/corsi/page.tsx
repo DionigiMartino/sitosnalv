@@ -19,6 +19,9 @@ import {
   PlayIcon,
   X,
   Lock,
+  Pause,
+  RotateCcw,
+  Rewind,
   Check,
 } from "lucide-react";
 import { format } from "date-fns";
@@ -44,6 +47,17 @@ import PDFViewer from "@/src/components/PDFViewer";
 import "react-pdf/dist/esm/Page/AnnotationLayer.css";
 import "react-pdf/dist/esm/Page/TextLayer.css";
 import { PDFDocument, StandardFonts, rgb } from "pdf-lib";
+import {
+  AlertDialog,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogTrigger,
+  AlertDialogCancel,
+} from "@/components/ui/alert-dialog";
+import { Info } from "lucide-react";
 
 interface LessonProgress {
   currentTime: number;
@@ -100,6 +114,37 @@ const CourseViewer = () => {
   const [watchedPercentage, setWatchedPercentage] = useState(0);
   const [canComplete, setCanComplete] = useState(false);
   const [allLessonsCompleted, setAllLessonsCompleted] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [showInfo, setShowInfo] = useState(false);
+
+  const togglePlay = () => {
+    if (videoRef.current) {
+      if (videoRef.current.paused) {
+        videoRef.current.play();
+        setIsPlaying(true);
+      } else {
+        videoRef.current.pause();
+        setIsPlaying(false);
+      }
+    }
+  };
+
+  const handleRewind = () => {
+    if (videoRef.current) {
+      // Riavvolgi di 10 secondi
+      const newTime = Math.max(0, videoRef.current.currentTime - 5);
+      videoRef.current.currentTime = newTime;
+    }
+  };
+
+  const handleRestart = () => {
+    if (videoRef.current) {
+      videoRef.current.currentTime = 0;
+      if (!videoRef.current.paused) {
+        videoRef.current.play();
+      }
+    }
+  };
 
   // Funzione per verificare se tutte le lezioni sono completate
   const checkAllLessonsCompleted = useCallback(() => {
@@ -384,7 +429,13 @@ const CourseViewer = () => {
     checkSavedProgress();
   }, [selectedLesson?.id, selectedCourse?.id, session?.user?.email]);
 
-  // Caricamento corsi
+  const getNextLesson = () => {
+    if (!selectedCourse || !selectedLesson) return null;
+    const currentIndex = selectedCourse.lessons.findIndex(
+      (lesson) => lesson.id === selectedLesson.id
+    );
+    return selectedCourse.lessons[currentIndex + 1] || null;
+  };
   useEffect(() => {
     const fetchCourses = async () => {
       if (!session?.user?.email) return;
@@ -649,16 +700,48 @@ const CourseViewer = () => {
   const renderVideoPlayer = () => (
     <div className="space-y-4">
       <div className="relative rounded-2xl overflow-hidden bg-black shadow-2xl ring-1 ring-black/5">
-        <div className="aspect-video">
+        <div className="relative aspect-video bg-black">
           <video
             ref={videoRef}
-            controls
             className="absolute inset-0 w-full h-full object-cover"
             src={selectedLesson?.video?.url}
             onTimeUpdate={handleTimeUpdate}
           >
             Il tuo browser non supporta il tag video.
           </video>
+
+          {/* Custom controls */}
+          <div className="absolute bottom-0 left-0 right-0 bg-black/50 p-4">
+            <div className="flex items-center gap-4">
+              <button
+                onClick={handleRestart}
+                className="text-white hover:text-gray-200"
+                title="Ricomincia da capo"
+              >
+                <RotateCcw size={24} />
+              </button>
+
+              <button
+                onClick={handleRewind}
+                className="text-white hover:text-gray-200"
+                title="Indietro di 10 secondi"
+              >
+                <Rewind size={24} />
+              </button>
+
+              <button
+                onClick={togglePlay}
+                className="text-white hover:text-gray-200"
+                title={isPlaying ? "Pausa" : "Play"}
+              >
+                {isPlaying ? <Pause size={24} /> : <Play size={24} />}
+              </button>
+
+              <span className="text-white text-sm">
+                {formatTime(currentTime)}
+              </span>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -694,17 +777,35 @@ const CourseViewer = () => {
               Riprendi
             </Button>
 
-            <Button
-              onClick={handleCompleteLesson}
-              variant="outline"
-              className={`hover:bg-green-50 min-w-[140px] ${
-                !canComplete && "opacity-50 cursor-not-allowed"
-              }`}
-              disabled={!canComplete}
-            >
-              <Check className="h-4 w-4 mr-2" />
-              Completa lezione
-            </Button>
+            {selectedCourse?.progress?.[selectedLesson?.id]?.completed ? (
+              <>
+                {getNextLesson() && (
+                  <Button
+                    onClick={() => {
+                      setSelectedLesson(getNextLesson());
+                      setSelectedPDF(null);
+                    }}
+                    variant="outline"
+                    className="hover:bg-blue-50 text-blue-600 min-w-[140px]"
+                  >
+                    <Play className="h-4 w-4 mr-2" />
+                    Lezione successiva
+                  </Button>
+                )}
+              </>
+            ) : (
+              <Button
+                onClick={handleCompleteLesson}
+                variant="outline"
+                className={`hover:bg-green-50 min-w-[140px] ${
+                  !canComplete && "opacity-50 cursor-not-allowed"
+                }`}
+                disabled={!canComplete}
+              >
+                <Check className="h-4 w-4 mr-2" />
+                Completa lezione
+              </Button>
+            )}
 
             {allLessonsCompleted && (
               <Button
@@ -805,9 +906,114 @@ const CourseViewer = () => {
               </div>
             </nav>
 
-            <h1 className="text-4xl font-bold text-gray-900 mb-6 leading-tight">
-              {selectedCourse.title}
-            </h1>
+            <div className="flex items-center gap-1 mb-6">
+              <h1 className="text-4xl font-bold text-gray-900 leading-tight">
+                {selectedCourse.title}
+              </h1>
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="hover:bg-gray-100"
+                    title="Informazioni sui controlli"
+                  >
+                    <Info className="h-5 w-5 text-gray-500" />
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent className="max-w-2xl bg-gradient-to-br from-white to-gray-50">
+                  <AlertDialogHeader>
+                    <AlertDialogTitle className="text-2xl font-bold text-blue-900 text-center pb-4 border-b">
+                      Guida ai Controlli
+                    </AlertDialogTitle>
+                    <AlertDialogDescription className="space-y-6 pt-4">
+                      <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-100">
+                        <h4 className="text-lg font-semibold text-blue-800 mb-3 flex items-center gap-2">
+                          <Play className="h-5 w-5" />
+                          Controlli Video
+                        </h4>
+                        <ul className="space-y-2 text-gray-600">
+                          <li className="flex items-center gap-2">
+                            <RotateCcw className="h-4 w-4 text-blue-500" />
+                            <span>
+                              <span className="font-medium">Ricomincia</span>:
+                              Riporta il video all'inizio
+                            </span>
+                          </li>
+                          <li className="flex items-center gap-2">
+                            <Rewind className="h-4 w-4 text-blue-500" />
+                            <span>
+                              <span className="font-medium">Indietro</span>:
+                              Torna indietro di 5 secondi
+                            </span>
+                          </li>
+                          <li className="flex items-center gap-2">
+                            <Pause className="h-4 w-4 text-blue-500" />
+                            <span>
+                              <span className="font-medium">Play/Pausa</span>:
+                              Avvia o metti in pausa il video
+                            </span>
+                          </li>
+                        </ul>
+                      </div>
+
+                      <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-100">
+                        <h4 className="text-lg font-semibold text-blue-800 mb-3 flex items-center gap-2">
+                          <BookOpen className="h-5 w-5" />
+                          Pulsanti di Progresso
+                        </h4>
+                        <ul className="space-y-2 text-gray-600">
+                          <li className="flex items-center gap-2">
+                            <BookmarkIcon className="h-4 w-4 text-blue-500" />
+                            <span>
+                              <span className="font-medium">Salva</span>: Salva
+                              il punto in cui ti sei fermato
+                            </span>
+                          </li>
+                          <li className="flex items-center gap-2">
+                            <PlayIcon className="h-4 w-4 text-blue-500" />
+                            <span>
+                              <span className="font-medium">Riprendi</span>:
+                              Riprendi dal punto salvato precedentemente
+                            </span>
+                          </li>
+                          <li className="flex items-center gap-2">
+                            <Check className="h-4 w-4 text-green-500" />
+                            <span>
+                              <span className="font-medium">
+                                Completa lezione
+                              </span>
+                              : Segna la lezione come completata
+                            </span>
+                          </li>
+                          <li className="flex items-center gap-2">
+                            <Play className="h-4 w-4 text-purple-500" />
+                            <span>
+                              <span className="font-medium">
+                                Lezione successiva
+                              </span>
+                              : Passa alla prossima lezione quando disponibile
+                            </span>
+                          </li>
+                          <li className="flex items-center gap-2">
+                            <Download className="h-4 w-4 text-indigo-500" />
+                            <span>
+                              <span className="font-medium">Attestato</span>:
+                              Scarica l'attestato al completamento del corso
+                            </span>
+                          </li>
+                        </ul>
+                      </div>
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter className="sm:justify-center">
+                    <AlertDialogCancel className="bg-white hover:bg-gray-100 border-gray-200">
+                      Chiudi
+                    </AlertDialogCancel>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+            </div>
 
             {/* Main Content */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -829,9 +1035,130 @@ const CourseViewer = () => {
 
                     {/* Lesson Description */}
                     <div className="prose max-w-none">
-                      <h3 className="text-2xl font-semibold text-gray-900 mb-4">
-                        {selectedLesson.title}
-                      </h3>
+                      <div className="flex items-center gap-1 mb-4">
+                        <h3 className="text-2xl font-semibold text-gray-900">
+                          {selectedLesson.title}
+                        </h3>
+                        <AlertDialog>
+                          <AlertDialogTrigger asChild>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="hover:bg-gray-100"
+                              title="Informazioni sui controlli"
+                            >
+                              <Info className="h-5 w-5 text-gray-500" />
+                            </Button>
+                          </AlertDialogTrigger>
+                          <AlertDialogContent className="max-w-2xl bg-gradient-to-br from-white to-gray-50">
+                            <AlertDialogHeader>
+                              <AlertDialogTitle className="text-2xl font-bold text-blue-900 text-center pb-4 border-b">
+                                Guida ai Controlli
+                              </AlertDialogTitle>
+                              <AlertDialogDescription className="space-y-6 pt-4">
+                                <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-100">
+                                  <h4 className="text-lg font-semibold text-blue-800 mb-3 flex items-center gap-2">
+                                    <Play className="h-5 w-5" />
+                                    Controlli Video
+                                  </h4>
+                                  <ul className="space-y-2 text-gray-600">
+                                    <li className="flex items-center gap-2">
+                                      <RotateCcw className="h-4 w-4 text-blue-500" />
+                                      <span>
+                                        <span className="font-medium">
+                                          Ricomincia
+                                        </span>
+                                        : Riporta il video all'inizio
+                                      </span>
+                                    </li>
+                                    <li className="flex items-center gap-2">
+                                      <Rewind className="h-4 w-4 text-blue-500" />
+                                      <span>
+                                        <span className="font-medium">
+                                          Indietro
+                                        </span>
+                                        : Torna indietro di 5 secondi
+                                      </span>
+                                    </li>
+                                    <li className="flex items-center gap-2">
+                                      <Pause className="h-4 w-4 text-blue-500" />
+                                      <span>
+                                        <span className="font-medium">
+                                          Play/Pausa
+                                        </span>
+                                        : Avvia o metti in pausa il video
+                                      </span>
+                                    </li>
+                                  </ul>
+                                </div>
+
+                                <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-100">
+                                  <h4 className="text-lg font-semibold text-blue-800 mb-3 flex items-center gap-2">
+                                    <BookOpen className="h-5 w-5" />
+                                    Pulsanti di Progresso
+                                  </h4>
+                                  <ul className="space-y-2 text-gray-600">
+                                    <li className="flex items-center gap-2">
+                                      <BookmarkIcon className="h-4 w-4 text-blue-500" />
+                                      <span>
+                                        <span className="font-medium">
+                                          Salva
+                                        </span>
+                                        : Salva il punto in cui ti sei fermato
+                                      </span>
+                                    </li>
+                                    <li className="flex items-center gap-2">
+                                      <PlayIcon className="h-4 w-4 text-blue-500" />
+                                      <span>
+                                        <span className="font-medium">
+                                          Riprendi
+                                        </span>
+                                        : Riprendi dal punto salvato
+                                        precedentemente
+                                      </span>
+                                    </li>
+                                    <li className="flex items-center gap-2">
+                                      <Check className="h-4 w-4 text-green-500" />
+                                      <span>
+                                        <span className="font-medium">
+                                          Completa lezione
+                                        </span>
+                                        : Segna la lezione come completata
+                                      </span>
+                                    </li>
+                                    <li className="flex items-center gap-2">
+                                      <Play className="h-4 w-4 text-purple-500" />
+                                      <span>
+                                        <span className="font-medium">
+                                          Lezione successiva
+                                        </span>
+                                        : Passa alla prossima lezione quando
+                                        disponibile
+                                      </span>
+                                    </li>
+                                    <li className="flex items-center gap-2">
+                                      <Download className="h-4 w-4 text-indigo-500" />
+                                      <span>
+                                        <span className="font-medium">
+                                          Attestato
+                                        </span>
+                                        : Scarica l'attestato al completamento
+                                        del corso
+                                      </span>
+                                    </li>
+                                  </ul>
+                                </div>
+                              </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter className="sm:justify-center">
+                              <AlertDialogCancel className="bg-white hover:bg-gray-100 border-gray-200">
+                                Chiudi
+                              </AlertDialogCancel>
+                            </AlertDialogFooter>
+                          </AlertDialogContent>
+                        </AlertDialog>
+                      </div>
+
                       <div className="bg-white rounded-xl p-6 shadow-sm ring-1 ring-black/5">
                         <p className="text-gray-600 whitespace-pre-wrap leading-relaxed">
                           {selectedLesson.description}
@@ -1078,6 +1405,7 @@ const CourseViewer = () => {
           </div>
         </div>
       </div>
+
       <Footer />
     </>
   );
