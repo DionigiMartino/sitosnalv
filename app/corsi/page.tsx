@@ -502,8 +502,8 @@ const CourseViewer = () => {
           ${!isUnlocked ? "opacity-75 cursor-not-allowed" : "cursor-pointer"}
           ${
             selectedLesson?.id === lesson.id
-              ? "border-purple-200 shadow-md bg-purple-50"
-              : "border-gray-100 hover:border-purple-200 hover:shadow-md"
+              ? "border-blue-200 shadow-md bg-blue-50"
+              : "border-gray-100 hover:border-blue-200 hover:shadow-md"
           }`}
         onClick={() => {
           if (isUnlocked) {
@@ -549,7 +549,7 @@ const CourseViewer = () => {
                     !isUnlocked
                       ? "bg-gray-100 text-gray-400"
                       : selectedLesson?.id === lesson.id
-                      ? "bg-purple-100 text-purple-700"
+                      ? "bg-blue-100 text-blue-700"
                       : "bg-gray-100 text-gray-700"
                   }`}
               >
@@ -559,7 +559,7 @@ const CourseViewer = () => {
                 <h4
                   className={`font-medium truncate ${
                     selectedLesson?.id === lesson.id
-                      ? "text-purple-900"
+                      ? "text-blue-900"
                       : "text-gray-900"
                   }`}
                 >
@@ -762,7 +762,7 @@ const CourseViewer = () => {
             <Button
               onClick={handleSaveProgress}
               variant="outline"
-              className="hover:bg-purple-50 min-w-[100px]"
+              className="hover:bg-blue-50 min-w-[100px]"
             >
               <BookmarkIcon className="h-4 w-4 mr-2" />
               Salva
@@ -771,7 +771,7 @@ const CourseViewer = () => {
             <Button
               onClick={handleResumeProgress}
               variant="outline"
-              className="hover:bg-purple-50 min-w-[100px]"
+              className="hover:bg-blue-50 min-w-[100px]"
               disabled={!saved}
             >
               <PlayIcon className="h-4 w-4 mr-2" />
@@ -852,7 +852,7 @@ const CourseViewer = () => {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-50">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-purple-500 mx-auto"></div>
+          <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-blue-500 mx-auto"></div>
           <p className="mt-4 text-gray-600">Caricamento...</p>
         </div>
       </div>
@@ -988,7 +988,7 @@ const CourseViewer = () => {
                             </span>
                           </li>
                           <li className="flex items-center gap-2">
-                            <Play className="h-4 w-4 text-purple-500" />
+                            <Play className="h-4 w-4 text-blue-500" />
                             <span>
                               <span className="font-medium">
                                 Lezione successiva
@@ -1128,7 +1128,7 @@ const CourseViewer = () => {
                                       </span>
                                     </li>
                                     <li className="flex items-center gap-2">
-                                      <Play className="h-4 w-4 text-purple-500" />
+                                      <Play className="h-4 w-4 text-blue-500" />
                                       <span>
                                         <span className="font-medium">
                                           Lezione successiva
@@ -1209,7 +1209,7 @@ const CourseViewer = () => {
                                 key={file.url}
                                 className={`flex items-center justify-between p-3 rounded-lg transition-colors ${
                                   selectedPDF?.url === file.url
-                                    ? "bg-purple-50 ring-1 ring-purple-200"
+                                    ? "bg-blue-50 ring-1 ring-blue-200"
                                     : "bg-gray-50 hover:bg-gray-100"
                                 }`}
                               >
@@ -1217,7 +1217,7 @@ const CourseViewer = () => {
                                   <FileText
                                     className={`h-5 w-5 ${
                                       selectedPDF?.url === file.url
-                                        ? "text-purple-500"
+                                        ? "text-blue-500"
                                         : "text-red-500"
                                     }`}
                                   />
@@ -1225,7 +1225,7 @@ const CourseViewer = () => {
                                     <p
                                       className={`font-medium ${
                                         selectedPDF?.url === file.url
-                                          ? "text-purple-900"
+                                          ? "text-blue-900"
                                           : "text-gray-900"
                                       }`}
                                     >
@@ -1285,12 +1285,12 @@ const CourseViewer = () => {
               {/* Lessons Sidebar */}
               <div className="lg:col-span-1">
                 <Card className="bg-white shadow-xl rounded-2xl border-0 overflow-hidden sticky top-8">
-                  <div className="bg-gradient-to-r from-purple-600 to-indigo-600 p-6">
+                  <div className="bg-gradient-to-r from-blue-600 to-indigo-600 p-6">
                     <h3 className="text-xl font-semibold text-white flex items-center gap-2">
                       <BookOpen className="h-5 w-5" />
                       Lezioni del corso
                     </h3>
-                    <p className="text-purple-100 mt-1">
+                    <p className="text-blue-100 mt-1">
                       {selectedCourse.lessons.length} lezioni disponibili
                     </p>
                   </div>
@@ -1320,7 +1320,7 @@ const CourseViewer = () => {
       <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-blue-50 px-4 py-8">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-12">
-            <h1 className="text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-indigo-600 mb-4">
+            <h1 className="text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600 mb-4">
               Corsi & materiali didattici
             </h1>
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">
@@ -1337,7 +1337,7 @@ const CourseViewer = () => {
                 placeholder="Cerca corsi..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10 bg-white/50 backdrop-blur-sm border-gray-200 focus:border-purple-500 transition-colors"
+                className="pl-10 bg-white/50 backdrop-blur-sm border-gray-200 focus:border-blue-500 transition-colors"
               />
             </div>
           </div>
@@ -1349,7 +1349,7 @@ const CourseViewer = () => {
                 className="group relative h-full bg-white/50 backdrop-blur-sm hover:bg-white border-0 shadow-lg hover:shadow-xl transition-all duration-300 rounded-2xl overflow-hidden cursor-pointer transform hover:-translate-y-1"
                 onClick={() => handleCourseSelection(course)}
               >
-                <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 to-indigo-500/5 opacity-0 group-hover:opacity-100 transition-opacity" />
+                <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-indigo-500/5 opacity-0 group-hover:opacity-100 transition-opacity" />
                 <CardContent className="p-6 relative">
                   <div className="flex flex-col h-full">
                     <div className="flex items-center gap-2 text-sm text-gray-600 mb-4">
@@ -1363,7 +1363,7 @@ const CourseViewer = () => {
                       </div>
                     </div>
 
-                    <h2 className="text-xl font-semibold text-gray-900 mb-3 group-hover:text-purple-600 transition-colors line-clamp-2">
+                    <h2 className="text-xl font-semibold text-gray-900 mb-3 group-hover:text-blue-600 transition-colors line-clamp-2">
                       {course.title}
                     </h2>
 

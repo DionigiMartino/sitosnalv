@@ -41,7 +41,7 @@ const FormazionePage = () => {
             Area Formazione
           </h1>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto mt-2">
-            Scegli il percorso formativo più adatto alle tue esigenze
+            Benvenuto nella piattaforma e-learning dello SNALV Confsal
           </p>
         </div>
 
@@ -60,9 +60,9 @@ const FormazionePage = () => {
                       Webinar
                     </h2>
                     <p className="text-gray-600 mb-6">
-                      Partecipa ai nostri webinar live interattivi. Apprendi da
-                      esperti del settore e interagisci in tempo reale con
-                      domande e discussioni.
+                      Partecipa ai nostri webinar interattivi o scaricare le
+                      guide formative redatte dall'ufficio legislativo Snalv
+                      Confsal.
                     </p>
                   </div>
 
@@ -89,9 +89,9 @@ const FormazionePage = () => {
                       Corsi
                     </h2>
                     <p className="text-gray-600 mb-6">
-                      Accedi ai nostri corsi strutturati. Materiale didattico
-                      completo, esercitazioni pratiche e certificazioni
-                      riconosciute.
+                      Accedi ai nostri corsi strutturati: video lezioni,
+                      materiale didattico completo e certificazioni
+                      automatizzate.
                     </p>
                   </div>
 
