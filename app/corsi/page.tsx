@@ -23,6 +23,7 @@ import {
   RotateCcw,
   Rewind,
   Check,
+  SquareArrowRight,
 } from "lucide-react";
 import { format } from "date-fns";
 import { it } from "date-fns/locale";
@@ -788,7 +789,7 @@ const CourseViewer = () => {
                     variant="outline"
                     className="hover:bg-blue-50 text-blue-600 min-w-[140px]"
                   >
-                    <Play className="h-4 w-4 mr-2" />
+                    <SquareArrowRight className="h-4 w-4 mr-2" />
                     Lezione successiva
                   </Button>
                 )}
