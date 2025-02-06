@@ -609,6 +609,15 @@ const CourseViewer = () => {
         color: rgb(0, 0, 0),
       });
 
+      // @ts-ignore
+      page.drawText(format(new Date(session.user.dataNascita), "dd/MM/yyyy"), {
+        x: 450,
+        y: 212.5,
+        size: 14,
+        font: helveticaFont,
+        color: rgb(0, 0, 0),
+      });
+
       // Data in basso al centro
       page.drawText(today, {
         x: 395, // Centrare orizzontalmente
