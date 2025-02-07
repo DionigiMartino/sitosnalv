@@ -9,9 +9,9 @@ import {
   Plus,
   ArrowLeft,
   FileText,
-  FileVideo,
-  Loader2,
   Trash2,
+  CheckCircle2,
+  Loader2,
 } from "lucide-react";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import {
@@ -29,6 +29,7 @@ const CreateEditCourse = ({ existingCourse = null, onBack }) => {
     title: existingCourse?.title || "",
     description: existingCourse?.description || "",
     lessons: existingCourse?.lessons || [],
+    test: existingCourse?.test || { questions: [] },
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -70,6 +71,92 @@ const CreateEditCourse = ({ existingCourse = null, onBack }) => {
           files: [],
         },
       ],
+    }));
+  };
+
+  const handleAddCourseTestQuestion = () => {
+    setCourse((prev) => ({
+      ...prev,
+      test: {
+        ...prev.test,
+        questions: [
+          ...(prev.test?.questions || []),
+          {
+            question: "",
+            answers: [
+              { text: "", isCorrect: false },
+              { text: "", isCorrect: false },
+              { text: "", isCorrect: false },
+              { text: "", isCorrect: false },
+            ],
+          },
+        ],
+      },
+    }));
+  };
+
+  const handleCourseTestChange = (
+    questionIndex,
+    field,
+    value,
+    answerIndex = null
+  ) => {
+    setCourse((prev) => {
+      if (!prev.test?.questions) return prev;
+
+      const updatedQuestions = [...prev.test.questions];
+
+      if (field === "question") {
+        updatedQuestions[questionIndex] = {
+          ...updatedQuestions[questionIndex],
+          question: value,
+        };
+      }
+
+      if (field === "answer") {
+        const updatedAnswers = [...updatedQuestions[questionIndex].answers];
+        updatedAnswers[answerIndex] = {
+          ...updatedAnswers[answerIndex],
+          text: value,
+        };
+        updatedQuestions[questionIndex] = {
+          ...updatedQuestions[questionIndex],
+          answers: updatedAnswers,
+        };
+      }
+
+      if (field === "correctAnswer") {
+        const updatedAnswers = updatedQuestions[questionIndex].answers.map(
+          (answer, index) => ({
+            ...answer,
+            isCorrect: index === answerIndex,
+          })
+        );
+        updatedQuestions[questionIndex] = {
+          ...updatedQuestions[questionIndex],
+          answers: updatedAnswers,
+        };
+      }
+
+      return {
+        ...prev,
+        test: {
+          ...prev.test,
+          questions: updatedQuestions,
+        },
+      };
+    });
+  };
+
+  const handleDeleteCourseTestQuestion = (questionIndex) => {
+    setCourse((prev) => ({
+      ...prev,
+      test: {
+        ...prev.test,
+        questions: prev.test.questions.filter(
+          (_, index) => index !== questionIndex
+        ),
+      },
     }));
   };
 
@@ -130,6 +217,7 @@ const CreateEditCourse = ({ existingCourse = null, onBack }) => {
         title: course.title,
         description: course.description,
         lessons: processedLessons,
+        test: course.test,
         updatedAt: serverTimestamp(),
       };
 
@@ -235,6 +323,108 @@ const CreateEditCourse = ({ existingCourse = null, onBack }) => {
                       onLessonChange={handleLessonChange}
                       onDelete={handleDeleteLesson}
                     />
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Sezione Test del Corso */}
+            <div className="bg-gray-50 p-4 rounded-lg">
+              <div className="flex items-center justify-between mb-4">
+                <Label className="flex items-center gap-2">
+                  Test del Corso
+                </Label>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={handleAddCourseTestQuestion}
+                >
+                  <Plus className="h-4 w-4 mr-2" />
+                  Aggiungi Domanda
+                </Button>
+              </div>
+
+              {course.test?.questions?.length > 0 && (
+                <div className="space-y-6">
+                  {course.test.questions.map((testQuestion, questionIndex) => (
+                    <div
+                      key={questionIndex}
+                      className="bg-white p-4 rounded-lg border relative"
+                    >
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon"
+                        className="absolute top-2 right-2"
+                        onClick={() =>
+                          handleDeleteCourseTestQuestion(questionIndex)
+                        }
+                      >
+                        <Trash2 className="h-4 w-4 text-red-500" />
+                      </Button>
+                      <div className="space-y-4">
+                        <div className="space-y-2">
+                          <Label>Domanda {questionIndex + 1}</Label>
+                          <Input
+                            value={testQuestion.question}
+                            onChange={(e) =>
+                              handleCourseTestChange(
+                                questionIndex,
+                                "question",
+                                e.target.value
+                              )
+                            }
+                            placeholder="Inserisci la domanda del test"
+                          />
+                        </div>
+
+                        <div className="space-y-2">
+                          <Label>Risposte</Label>
+                          {testQuestion.answers.map((answer, answerIndex) => (
+                            <div
+                              key={answerIndex}
+                              className="flex items-center space-x-2"
+                            >
+                              <Input
+                                value={answer.text}
+                                onChange={(e) =>
+                                  handleCourseTestChange(
+                                    questionIndex,
+                                    "answer",
+                                    e.target.value,
+                                    answerIndex
+                                  )
+                                }
+                                placeholder={`Risposta ${answerIndex + 1}`}
+                                className="flex-grow"
+                              />
+                              <Button
+                                type="button"
+                                variant={
+                                  answer.isCorrect ? "default" : "outline"
+                                }
+                                size="icon"
+                                onClick={() =>
+                                  handleCourseTestChange(
+                                    questionIndex,
+                                    "correctAnswer",
+                                    null,
+                                    answerIndex
+                                  )
+                                }
+                              >
+                                {answer.isCorrect ? (
+                                  <CheckCircle2 className="h-4 w-4" />
+                                ) : (
+                                  <CheckCircle2 className="h-4 w-4 text-gray-400" />
+                                )}
+                              </Button>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
                   ))}
                 </div>
               )}

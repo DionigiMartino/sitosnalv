@@ -24,6 +24,7 @@ import {
   Rewind,
   Check,
   SquareArrowRight,
+  Info,
 } from "lucide-react";
 import { format } from "date-fns";
 import { it } from "date-fns/locale";
@@ -58,7 +59,16 @@ import {
   AlertDialogTrigger,
   AlertDialogCancel,
 } from "@/components/ui/alert-dialog";
-import { Info } from "lucide-react";
+
+interface TestAnswer {
+  text: string;
+  isCorrect: boolean;
+}
+
+interface TestQuestion {
+  question: string;
+  answers: TestAnswer[];
+}
 
 interface LessonProgress {
   currentTime: number;
@@ -91,6 +101,9 @@ interface Course {
   createdAt: any;
   updatedAt: any;
   lessons: Lesson[];
+  test?: {
+    questions: TestQuestion[];
+  };
   progress?: {
     [key: string]: LessonProgress;
   };
@@ -117,6 +130,12 @@ const CourseViewer = () => {
   const [allLessonsCompleted, setAllLessonsCompleted] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
   const [showInfo, setShowInfo] = useState(false);
+  const [testMode, setTestMode] = useState(false);
+  const [selectedAnswers, setSelectedAnswers] = useState<{
+    [questionIndex: number]: number | null;
+  }>({});
+  const [testSubmitted, setTestSubmitted] = useState(false);
+  const [testPassed, setTestPassed] = useState(false);
 
   const togglePlay = () => {
     if (videoRef.current) {
@@ -132,7 +151,6 @@ const CourseViewer = () => {
 
   const handleRewind = () => {
     if (videoRef.current) {
-      // Riavvolgi di 10 secondi
       const newTime = Math.max(0, videoRef.current.currentTime - 5);
       videoRef.current.currentTime = newTime;
     }
@@ -147,7 +165,6 @@ const CourseViewer = () => {
     }
   };
 
-  // Funzione per verificare se tutte le lezioni sono completate
   const checkAllLessonsCompleted = useCallback(() => {
     if (!selectedCourse?.lessons || !selectedCourse?.progress) return false;
 
@@ -156,19 +173,16 @@ const CourseViewer = () => {
     );
   }, [selectedCourse?.lessons, selectedCourse?.progress]);
 
-  // Aggiorna lo stato quando cambia il corso o il progresso
   useEffect(() => {
     setAllLessonsCompleted(checkAllLessonsCompleted());
   }, [selectedCourse, checkAllLessonsCompleted]);
 
-  // Redirect se non autenticato
   useEffect(() => {
     if (status === "unauthenticated") {
       router.push("/login");
     }
   }, [status, router]);
 
-  // Funzioni di utilità
   const formatTime = (timeInSeconds: number): string => {
     const minutes = Math.floor(timeInSeconds / 60);
     const seconds = Math.floor(timeInSeconds % 60);
@@ -182,7 +196,6 @@ const CourseViewer = () => {
     return format(date.toDate(), "d MMMM yyyy", { locale: it });
   };
 
-  // Funzione per verificare se una lezione è sbloccata
   const isLessonUnlocked = (lessonIndex: number) => {
     if (lessonIndex === 0) return true;
 
@@ -193,7 +206,6 @@ const CourseViewer = () => {
     return previousProgress?.completed === true;
   };
 
-  // Calcolo percentuale video guardato
   const calculateWatchedPercentage = (
     currentTime: number,
     duration: number
@@ -202,7 +214,6 @@ const CourseViewer = () => {
     return (currentTime / duration) * 100;
   };
 
-  // Gestione dell'aggiornamento del tempo del video
   const handleTimeUpdate = (e: React.SyntheticEvent<HTMLVideoElement>) => {
     const video = e.currentTarget;
     const percentage = calculateWatchedPercentage(
@@ -214,7 +225,64 @@ const CourseViewer = () => {
     setCanComplete(percentage >= 99);
   };
 
-  // Funzione per completare la lezione
+  const handleTestAnswerSelect = (
+    questionIndex: number,
+    answerIndex: number
+  ) => {
+    if (testSubmitted) return;
+
+    setSelectedAnswers((prev) => ({
+      ...prev,
+      [questionIndex]: answerIndex,
+    }));
+  };
+
+  const handleTestSubmit = () => {
+    if (!selectedCourse?.test) return;
+
+    const allQuestionsAnswered = selectedCourse.test.questions.every(
+      (_, index) =>
+        selectedAnswers[index] !== undefined && selectedAnswers[index] !== null
+    );
+
+    if (!allQuestionsAnswered) {
+      toast({
+        title: "Errore",
+        description: "Per favore, rispondi a tutte le domande",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    const correctAnswersCount = selectedCourse.test.questions.filter(
+      (question, index) => question.answers[selectedAnswers[index]].isCorrect
+    ).length;
+
+    const passPercentage =
+      (correctAnswersCount / selectedCourse.test.questions.length) * 100;
+    const isPassed = passPercentage >= 60; // 60% pass rate
+
+    setTestSubmitted(true);
+    setTestPassed(isPassed);
+
+    if (isPassed) {
+      toast({
+        title: "Test superato",
+        description: `Hai risposto correttamente al ${Math.round(
+          passPercentage
+        )}% delle domande`,
+      });
+    } else {
+      toast({
+        title: "Test non superato",
+        description: `Hai risposto correttamente al ${Math.round(
+          passPercentage
+        )}% delle domande. Riprova.`,
+        variant: "destructive",
+      });
+    }
+  };
+
   const handleCompleteLesson = async () => {
     if (!session?.user?.email || !selectedCourse?.id || !selectedLesson?.id)
       return;
@@ -253,7 +321,6 @@ const CourseViewer = () => {
         description: "Puoi procedere con la prossima lezione",
       });
 
-      // Aggiorna il corso selezionato con il nuovo progresso
       const updatedProgress = {
         ...selectedCourse.progress,
         [selectedLesson.id]: lessonProgress,
@@ -273,7 +340,104 @@ const CourseViewer = () => {
     }
   };
 
-  // Salvataggio progresso
+  const fillAndDownloadPDF = async () => {
+    if (!session?.user) {
+      console.error("Nessuna sessione utente trovata");
+      return;
+    }
+
+    // Verifica se tutte le lezioni sono completate
+    const allLessonsAreCompleted = selectedCourse?.lessons.every(
+      (lesson) => selectedCourse.progress?.[lesson.id]?.completed
+    );
+
+    // Verifica se il test è superato (se esiste)
+    const isTestPassed = !selectedCourse?.test || (testSubmitted && testPassed);
+
+    // Verifica le condizioni per il completamento del corso
+    if (!allLessonsAreCompleted || !isTestPassed) {
+      toast({
+        title: "Requisiti non completati",
+        description:
+          "Devi completare tutte le lezioni e superare il test (se presente)",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    try {
+      const pdfResponse = await fetch("/docs/attestato.pdf");
+      if (!pdfResponse.ok) throw new Error("PDF non trovato");
+
+      const pdfBlob = await pdfResponse.blob();
+      const arrayBuffer = await pdfBlob.arrayBuffer();
+
+      const pdfDoc = await PDFDocument.load(arrayBuffer);
+      const page = pdfDoc.getPages()[0];
+      const helveticaFont = await pdfDoc.embedFont(StandardFonts.Helvetica);
+
+      // @ts-ignore
+      const name = `${session.user.nome} ${session.user.cognome}`;
+      const today = format(new Date(), "dd/MM/yyyy");
+
+      // Aggiungi i dati al PDF
+      page.drawText(name, {
+        x: 300,
+        y: 245,
+        size: 22,
+        font: helveticaFont,
+        color: rgb(0, 0, 0),
+      });
+
+      // @ts-ignore
+      page.drawText(session.user.luogoNascita, {
+        x: 295,
+        y: 212.5,
+        size: 10,
+        font: helveticaFont,
+        color: rgb(0, 0, 0),
+      });
+
+      // @ts-ignore
+      page.drawText(format(new Date(session.user.dataNascita), "dd/MM/yyyy"), {
+        x: 450,
+        y: 212.5,
+        size: 14,
+        font: helveticaFont,
+        color: rgb(0, 0, 0),
+      });
+
+      page.drawText(today, {
+        x: 395,
+        y: 55,
+        size: 12,
+        font: helveticaFont,
+        color: rgb(0, 0, 0),
+      });
+
+      const modifiedPdfBytes = await pdfDoc.save();
+      const modifiedPdfBlob = new Blob([modifiedPdfBytes], {
+        type: "application/pdf",
+      });
+      const url = URL.createObjectURL(modifiedPdfBlob);
+
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `attestato_${name.replace(/\s+/g, "_")}.pdf`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error("Errore nella generazione del PDF:", error);
+      toast({
+        title: "Errore",
+        description: "Impossibile generare l'attestato",
+        variant: "destructive",
+      });
+    }
+  };
+
   const handleSaveProgress = async () => {
     if (
       !videoRef.current ||
@@ -281,12 +445,6 @@ const CourseViewer = () => {
       !session?.user?.email ||
       !selectedCourse?.id
     ) {
-      console.log("Dati mancanti per il salvataggio:", {
-        hasVideo: !!videoRef.current,
-        hasLesson: !!selectedLesson?.video,
-        hasUser: !!session?.user?.email,
-        hasCourse: !!selectedCourse?.id,
-      });
       return;
     }
 
@@ -337,7 +495,6 @@ const CourseViewer = () => {
     }
   };
 
-  // Ripresa video
   const handleResumeProgress = async () => {
     if (
       !videoRef.current ||
@@ -384,7 +541,6 @@ const CourseViewer = () => {
     }
   };
 
-  // Verifica progresso salvato
   const checkSavedProgress = async () => {
     if (
       !selectedLesson?.video ||
@@ -425,7 +581,6 @@ const CourseViewer = () => {
     }
   };
 
-  // Effect per controllo progresso
   useEffect(() => {
     checkSavedProgress();
   }, [selectedLesson?.id, selectedCourse?.id, session?.user?.email]);
@@ -437,6 +592,114 @@ const CourseViewer = () => {
     );
     return selectedCourse.lessons[currentIndex + 1] || null;
   };
+
+  const renderTestSection = () => {
+    if (!selectedCourse?.test || !allLessonsCompleted) return null;
+
+    return (
+      <div className="bg-white rounded-xl p-6 shadow-sm ring-1 ring-black/5 mt-4">
+        <h4 className="text-2xl font-semibold text-gray-900 mb-6">
+          Test Finale del Corso
+        </h4>
+        {selectedCourse.test.questions.map((question, questionIndex) => (
+          <div key={questionIndex} className="mb-6">
+            <p className="text-lg font-medium text-gray-800 mb-4">
+              {question.question}
+            </p>
+            <div className="space-y-3">
+              {question.answers.map((answer, answerIndex) => (
+                <button
+                  key={answerIndex}
+                  onClick={() =>
+                    handleTestAnswerSelect(questionIndex, answerIndex)
+                  }
+                  className={`w-full text-left p-3 rounded-lg transition-all duration-300 
+                    ${
+                      testSubmitted
+                        ? answer.isCorrect
+                          ? "bg-green-100 border-2 border-green-300"
+                          : selectedAnswers[questionIndex] === answerIndex
+                          ? "bg-red-100 border-2 border-red-300"
+                          : "bg-gray-100"
+                        : selectedAnswers[questionIndex] === answerIndex
+                        ? "bg-blue-100 border-2 border-blue-300"
+                        : "bg-gray-100 hover:bg-gray-200"
+                    }`}
+                  disabled={testSubmitted}
+                >
+                  {answer.text}
+                  {testSubmitted && (
+                    <span className="float-right">
+                      {answer.isCorrect ? (
+                        <CheckCircle className="text-green-500 inline-block" />
+                      ) : selectedAnswers[questionIndex] === answerIndex ? (
+                        <X className="text-red-500 inline-block" />
+                      ) : null}
+                    </span>
+                  )}
+                </button>
+              ))}
+            </div>
+          </div>
+        ))}
+        {!testSubmitted && (
+          <Button
+            onClick={handleTestSubmit}
+            className="w-full mt-4"
+            disabled={
+              Object.keys(selectedAnswers).length !==
+              selectedCourse.test.questions.length
+            }
+          >
+            Invia Risposte
+          </Button>
+        )}
+        {testSubmitted && !testPassed && (
+          <Button
+            onClick={() => {
+              setTestSubmitted(false);
+              setSelectedAnswers({});
+            }}
+            className="w-full mt-4 bg-red-500 hover:bg-red-600"
+          >
+            Riprova Test
+          </Button>
+        )}
+        {testSubmitted && testPassed && (
+          <Button
+            onClick={fillAndDownloadPDF}
+            className="w-full mt-4 bg-green-500 hover:bg-green-600"
+          >
+            Scarica Attestato
+          </Button>
+        )}
+      </div>
+    );
+  };
+
+  const renderTestInSidebar = () => {
+    if (!selectedCourse?.test || !allLessonsCompleted) return null;
+
+    return (
+      <div className="bg-white rounded-xl p-4 mt-4 border border-blue-100 bg-blue-50/50">
+        <div className="flex items-center gap-2 mb-4">
+          <GraduationCap className="h-6 w-6 text-blue-600" />
+          <h4 className="text-lg font-semibold text-blue-900">Test Finale</h4>
+        </div>
+        <p className="text-sm text-gray-600 mb-4">
+          Completa il test finale per ottenere l'attestato del corso
+        </p>
+        <Button
+          onClick={() => setTestMode(true)}
+          variant="outline"
+          className="w-full"
+        >
+          Inizia Test
+        </Button>
+      </div>
+    );
+  };
+
   useEffect(() => {
     const fetchCourses = async () => {
       if (!session?.user?.email) return;
@@ -467,7 +730,6 @@ const CourseViewer = () => {
     fetchCourses();
   }, [session]);
 
-  // Selezione corso
   const handleCourseSelection = async (course: Course) => {
     try {
       const progressRef = doc(
@@ -490,7 +752,6 @@ const CourseViewer = () => {
     }
   };
 
-  // Rendering delle lezioni nella sidebar
   const renderLessonItem = (lesson: Lesson, index: number) => {
     const isUnlocked = isLessonUnlocked(index);
     const isCompleted = selectedCourse?.progress?.[lesson.id]?.completed;
@@ -509,6 +770,7 @@ const CourseViewer = () => {
           if (isUnlocked) {
             setSelectedLesson(lesson);
             setSelectedPDF(null);
+            setTestMode(false);
           } else {
             toast({
               title: "Lezione bloccata",
@@ -521,7 +783,6 @@ const CourseViewer = () => {
       >
         <div className="relative p-4">
           <div className="flex flex-col gap-3">
-            {/* Video Preview */}
             {lesson.video && (
               <div className="relative aspect-video w-full rounded-lg overflow-hidden bg-black">
                 <video
@@ -618,236 +879,10 @@ const CourseViewer = () => {
     );
   };
 
-  // Filtraggio corsi
   const filteredCourses = courses.filter((course) =>
     course.title.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  async function fillAndDownloadPDF() {
-    if (!session?.user) {
-      console.error("Nessuna sessione utente trovata");
-      return;
-    }
-
-    try {
-      const pdfResponse = await fetch("/docs/attestato.pdf");
-      if (!pdfResponse.ok) throw new Error("PDF non trovato");
-
-      const pdfBlob = await pdfResponse.blob();
-      const arrayBuffer = await pdfBlob.arrayBuffer();
-
-      const pdfDoc = await PDFDocument.load(arrayBuffer);
-      const page = pdfDoc.getPages()[0];
-      const helveticaFont = await pdfDoc.embedFont(StandardFonts.Helvetica);
-
-      // @ts-ignore
-      const name = `${session.user.nome} ${session.user.cognome}`;
-      const today = format(new Date(), "dd/MM/yyyy");
-
-      page.drawText(name, {
-        x: 300,
-        y: 245, // Posizione da aggiustare
-        size: 22, // Font più grande
-        font: helveticaFont,
-        color: rgb(0, 0, 0),
-      });
-
-      // @ts-ignore
-      page.drawText(session.user.luogoNascita, {
-        x: 295,
-        y: 212.5, // Posizione da aggiustare
-        size: 10, // Font più grande
-        font: helveticaFont,
-        color: rgb(0, 0, 0),
-      });
-
-      // @ts-ignore
-      page.drawText(format(new Date(session.user.dataNascita), "dd/MM/yyyy"), {
-        x: 450,
-        y: 212.5,
-        size: 14,
-        font: helveticaFont,
-        color: rgb(0, 0, 0),
-      });
-
-      // Data in basso al centro
-      page.drawText(today, {
-        x: 395, // Centrare orizzontalmente
-        y: 55, // Posizione da aggiustare per il fondo pagina
-        size: 12,
-        font: helveticaFont,
-        color: rgb(0, 0, 0),
-      });
-
-      const modifiedPdfBytes = await pdfDoc.save();
-      const modifiedPdfBlob = new Blob([modifiedPdfBytes], {
-        type: "application/pdf",
-      });
-      const url = URL.createObjectURL(modifiedPdfBlob);
-
-      const link = document.createElement("a");
-      link.href = url;
-      link.download = `attestato_${name.replace(/\s+/g, "_")}.pdf`;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      URL.revokeObjectURL(url);
-    } catch (error) {
-      console.error("Errore nella generazione del PDF:", error);
-    }
-  }
-
-  // Rendering del video player con pulsante di completamento
-  const renderVideoPlayer = () => (
-    <div className="space-y-4">
-      <div className="relative rounded-2xl overflow-hidden bg-black shadow-2xl ring-1 ring-black/5">
-        <div className="relative aspect-video bg-black">
-          <video
-            ref={videoRef}
-            className="absolute inset-0 w-full h-full object-cover"
-            src={selectedLesson?.video?.url}
-            onTimeUpdate={handleTimeUpdate}
-          >
-            Il tuo browser non supporta il tag video.
-          </video>
-
-          {/* Custom controls */}
-          <div className="absolute bottom-0 left-0 right-0 bg-black/50 p-4">
-            <div className="flex items-center gap-4">
-              <button
-                onClick={handleRestart}
-                className="text-white hover:text-gray-200"
-                title="Ricomincia da capo"
-              >
-                <RotateCcw size={24} />
-              </button>
-
-              <button
-                onClick={handleRewind}
-                className="text-white hover:text-gray-200"
-                title="Indietro di 10 secondi"
-              >
-                <Rewind size={24} />
-              </button>
-
-              <button
-                onClick={togglePlay}
-                className="text-white hover:text-gray-200"
-                title={isPlaying ? "Pausa" : "Play"}
-              >
-                {isPlaying ? <Pause size={24} /> : <Play size={24} />}
-              </button>
-
-              <span className="text-white text-sm">
-                {formatTime(currentTime)}
-              </span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div className="bg-white rounded-lg p-4 shadow-sm">
-        {/* Barra di progresso principale */}
-        <div className="w-full h-2 bg-gray-200 mb-4">
-          <div
-            className="h-full bg-blue-500 transition-all duration-300"
-            style={{ width: `${Math.min(watchedPercentage, 100)}%` }}
-          />
-        </div>
-
-        {/* Contenitore principale */}
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-          {/* Gruppo pulsanti */}
-          <div className="flex flex-wrap gap-2">
-            <Button
-              onClick={handleSaveProgress}
-              variant="outline"
-              className="hover:bg-blue-50 min-w-[100px]"
-            >
-              <BookmarkIcon className="h-4 w-4 mr-2" />
-              Salva
-            </Button>
-
-            <Button
-              onClick={handleResumeProgress}
-              variant="outline"
-              className="hover:bg-blue-50 min-w-[100px]"
-              disabled={!saved}
-            >
-              <PlayIcon className="h-4 w-4 mr-2" />
-              Riprendi
-            </Button>
-
-            {selectedCourse?.progress?.[selectedLesson?.id]?.completed ? (
-              <>
-                {getNextLesson() && (
-                  <Button
-                    onClick={() => {
-                      setSelectedLesson(getNextLesson());
-                      setSelectedPDF(null);
-                    }}
-                    variant="outline"
-                    className="hover:bg-blue-50 text-blue-600 min-w-[140px]"
-                  >
-                    <SquareArrowRight className="h-4 w-4 mr-2" />
-                    Lezione successiva
-                  </Button>
-                )}
-              </>
-            ) : (
-              <Button
-                onClick={handleCompleteLesson}
-                variant="outline"
-                className={`hover:bg-green-50 min-w-[140px] ${
-                  !canComplete && "opacity-50 cursor-not-allowed"
-                }`}
-                disabled={!canComplete}
-              >
-                <Check className="h-4 w-4 mr-2" />
-                Completa lezione
-              </Button>
-            )}
-
-            {allLessonsCompleted && (
-              <Button
-                onClick={fillAndDownloadPDF}
-                variant="outline"
-                className="hover:bg-blue-50 border-blue-200 text-blue-600 hover:text-blue-700 min-w-[140px] group transition-all duration-300 flex items-center justify-center gap-2"
-              >
-                <Download className="h-4 w-4 group-hover:scale-110 transition-transform duration-300" />
-                <span className="font-medium">Attestato</span>
-              </Button>
-            )}
-          </div>
-
-          {/* Gruppo informazioni */}
-          <div className="flex flex-wrap items-center gap-4">
-            {saved && (
-              <div className="flex items-center gap-2 text-sm text-gray-500 min-w-[140px]">
-                <div className="w-2 h-2 rounded-full bg-green-500" />
-                <span>Progresso salvato</span>
-              </div>
-            )}
-
-            <div className="flex items-center gap-2 text-sm text-gray-500 min-w-[200px]">
-              <span className="whitespace-nowrap">Completamento:</span>
-              <div className="w-20 h-2 bg-gray-200 rounded-full overflow-hidden">
-                <div
-                  className="h-full bg-blue-500 transition-all duration-300"
-                  style={{ width: `${Math.min(watchedPercentage, 100)}%` }}
-                />
-              </div>
-              <span className="min-w-[40px]">
-                {Math.round(watchedPercentage)}%
-              </span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-
-  // Rendering principale
   if (status === "loading" || isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-50">
@@ -870,7 +905,6 @@ const CourseViewer = () => {
         <Header />
         <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-blue-50">
           <div className="max-w-7xl mx-auto px-4 py-8">
-            {/* Header */}
             <nav className="mb-8 flex items-center gap-4">
               <Button
                 variant="ghost"
@@ -928,82 +962,50 @@ const CourseViewer = () => {
                       Guida ai Controlli
                     </AlertDialogTitle>
                     <AlertDialogDescription className="space-y-6 pt-4">
-                      <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-100">
-                        <h4 className="text-lg font-semibold text-blue-800 mb-3 flex items-center gap-2">
-                          <Play className="h-5 w-5" />
-                          Controlli Video
-                        </h4>
-                        <ul className="space-y-2 text-gray-600">
-                          <li className="flex items-center gap-2">
-                            <RotateCcw className="h-4 w-4 text-blue-500" />
-                            <span>
-                              <span className="font-medium">Ricomincia</span>:
-                              Riporta il video all'inizio
-                            </span>
-                          </li>
-                          <li className="flex items-center gap-2">
-                            <Rewind className="h-4 w-4 text-blue-500" />
-                            <span>
-                              <span className="font-medium">Indietro</span>:
-                              Torna indietro di 5 secondi
-                            </span>
-                          </li>
-                          <li className="flex items-center gap-2">
-                            <Pause className="h-4 w-4 text-blue-500" />
-                            <span>
-                              <span className="font-medium">Play/Pausa</span>:
-                              Avvia o metti in pausa il video
-                            </span>
-                          </li>
-                        </ul>
-                      </div>
-
-                      <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-100">
-                        <h4 className="text-lg font-semibold text-blue-800 mb-3 flex items-center gap-2">
-                          <BookOpen className="h-5 w-5" />
-                          Pulsanti di Progresso
-                        </h4>
-                        <ul className="space-y-2 text-gray-600">
-                          <li className="flex items-center gap-2">
-                            <BookmarkIcon className="h-4 w-4 text-blue-500" />
-                            <span>
-                              <span className="font-medium">Salva</span>: Salva
-                              il punto in cui ti sei fermato
-                            </span>
-                          </li>
-                          <li className="flex items-center gap-2">
-                            <PlayIcon className="h-4 w-4 text-blue-500" />
-                            <span>
-                              <span className="font-medium">Riprendi</span>:
-                              Riprendi dal punto salvato precedentemente
-                            </span>
-                          </li>
-                          <li className="flex items-center gap-2">
-                            <Check className="h-4 w-4 text-green-500" />
-                            <span>
-                              <span className="font-medium">
-                                Completa lezione
-                              </span>
-                              : Segna la lezione come completata
-                            </span>
-                          </li>
-                          <li className="flex items-center gap-2">
-                            <Play className="h-4 w-4 text-blue-500" />
-                            <span>
-                              <span className="font-medium">
-                                Lezione successiva
-                              </span>
-                              : Passa alla prossima lezione quando disponibile
-                            </span>
-                          </li>
-                          <li className="flex items-center gap-2">
-                            <Download className="h-4 w-4 text-indigo-500" />
-                            <span>
-                              <span className="font-medium">Attestato</span>:
-                              Scarica l'attestato al completamento del corso
-                            </span>
-                          </li>
-                        </ul>
+                      <div className="space-y-4">
+                        <div>
+                          <h3 className="font-semibold text-gray-900 mb-2">
+                            Controlli Video:
+                          </h3>
+                          <ul className="list-disc pl-5 space-y-2">
+                            <li>Play/Pausa: Avvia o mette in pausa il video</li>
+                            <li>
+                              Indietro di 5 secondi: Riavvolge il video di 5
+                              secondi
+                            </li>
+                            <li>Riavvia: Riporta il video all'inizio</li>
+                          </ul>
+                        </div>
+                        <div>
+                          <h3 className="font-semibold text-gray-900 mb-2">
+                            Lezioni:
+                          </h3>
+                          <ul className="list-disc pl-5 space-y-2">
+                            <li>Le lezioni si sbloccano in sequenza</li>
+                            <li>
+                              Devi completare almeno il 99% di una lezione per
+                              proseguire
+                            </li>
+                            <li>Il progresso viene salvato automaticamente</li>
+                          </ul>
+                        </div>
+                        {selectedCourse.test && (
+                          <div>
+                            <h3 className="font-semibold text-gray-900 mb-2">
+                              Test Finale:
+                            </h3>
+                            <ul className="list-disc pl-5 space-y-2">
+                              <li>
+                                Si sblocca dopo aver completato tutte le lezioni
+                              </li>
+                              <li>
+                                Devi rispondere correttamente al 60% delle
+                                domande
+                              </li>
+                              <li>Puoi ripetere il test se non lo superi</li>
+                            </ul>
+                          </div>
+                        )}
                       </div>
                     </AlertDialogDescription>
                   </AlertDialogHeader>
@@ -1016,15 +1018,72 @@ const CourseViewer = () => {
               </AlertDialog>
             </div>
 
-            {/* Main Content */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-              {/* Video & Content Section */}
               <div className="lg:col-span-2 space-y-8">
                 {selectedLesson ? (
                   <>
-                    {/* Video Player */}
                     {selectedLesson.video ? (
-                      renderVideoPlayer()
+                      <div className="relative rounded-2xl overflow-hidden bg-black shadow-2xl ring-1 ring-black/5">
+                        <div className="relative aspect-video bg-black">
+                          <video
+                            ref={videoRef}
+                            className="absolute inset-0 w-full h-full object-cover"
+                            src={selectedLesson?.video?.url}
+                            onTimeUpdate={handleTimeUpdate}
+                          >
+                            Il tuo browser non supporta il tag video.
+                          </video>
+
+                          <div className="absolute bottom-0 left-0 right-0 bg-black/50 p-4">
+                            <div className="flex items-center gap-4">
+                              <button
+                                onClick={handleRestart}
+                                className="text-white hover:text-gray-200"
+                                title="Ricomincia da capo"
+                              >
+                                <RotateCcw size={24} />
+                              </button>
+
+                              <button
+                                onClick={handleRewind}
+                                className="text-white hover:text-gray-200"
+                                title="Indietro di 10 secondi"
+                              >
+                                <Rewind size={24} />
+                              </button>
+
+                              <button
+                                onClick={togglePlay}
+                                className="text-white hover:text-gray-200"
+                                title={isPlaying ? "Pausa" : "Play"}
+                              >
+                                {isPlaying ? (
+                                  <Pause size={24} />
+                                ) : (
+                                  <Play size={24} />
+                                )}
+                              </button>
+
+                              <span className="text-white text-sm">
+                                {formatTime(currentTime)}
+                              </span>
+
+                              {saved &&
+                                watchedPercentage >= 99 &&
+                                !selectedCourse?.progress?.[selectedLesson.id]
+                                  ?.completed && (
+                                  <Button
+                                    onClick={handleCompleteLesson}
+                                    className="ml-auto"
+                                    variant="outline"
+                                  >
+                                    Completa Lezione
+                                  </Button>
+                                )}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
                     ) : (
                       <div className="relative aspect-video rounded-2xl overflow-hidden bg-gradient-to-br from-gray-100 to-gray-50 flex items-center justify-center ring-1 ring-black/5">
                         <div className="text-center text-gray-500">
@@ -1034,130 +1093,106 @@ const CourseViewer = () => {
                       </div>
                     )}
 
-                    {/* Lesson Description */}
+                    <div className="bg-white rounded-lg p-4 shadow-sm">
+                      {/* Barra di progresso principale */}
+                      <div className="w-full h-2 bg-gray-200 mb-4">
+                        <div
+                          className="h-full bg-blue-500 transition-all duration-300"
+                          style={{
+                            width: `${Math.min(watchedPercentage, 100)}%`,
+                          }}
+                        />
+                      </div>
+
+                      {/* Contenitore principale */}
+                      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                        {/* Gruppo pulsanti */}
+                        <div className="flex flex-wrap gap-2">
+                          <Button
+                            onClick={handleSaveProgress}
+                            variant="outline"
+                            className="hover:bg-blue-50 min-w-[100px]"
+                          >
+                            <BookmarkIcon className="h-4 w-4 mr-2" />
+                            Salva
+                          </Button>
+
+                          <Button
+                            onClick={handleResumeProgress}
+                            variant="outline"
+                            className="hover:bg-blue-50 min-w-[100px]"
+                            disabled={!saved}
+                          >
+                            <PlayIcon className="h-4 w-4 mr-2" />
+                            Riprendi
+                          </Button>
+
+                          {selectedCourse?.progress?.[selectedLesson?.id]
+                            ?.completed ? (
+                            <>
+                              {getNextLesson() && (
+                                <Button
+                                  onClick={() => {
+                                    setSelectedLesson(getNextLesson());
+                                    setSelectedPDF(null);
+                                  }}
+                                  variant="outline"
+                                  className="hover:bg-blue-50 text-blue-600 min-w-[140px]"
+                                >
+                                  <SquareArrowRight className="h-4 w-4 mr-2" />
+                                  Lezione successiva
+                                </Button>
+                              )}
+                            </>
+                          ) : (
+                            <Button
+                              onClick={handleCompleteLesson}
+                              variant="outline"
+                              className={`hover:bg-green-50 min-w-[140px] ${
+                                !canComplete && "opacity-50 cursor-not-allowed"
+                              }`}
+                              disabled={!canComplete}
+                            >
+                              <Check className="h-4 w-4 mr-2" />
+                              Completa lezione
+                            </Button>
+                          )}
+                        </div>
+
+                        {/* Gruppo informazioni */}
+                        <div className="flex flex-wrap items-center gap-4">
+                          {saved && (
+                            <div className="flex items-center gap-2 text-sm text-gray-500 min-w-[140px]">
+                              <div className="w-2 h-2 rounded-full bg-green-500" />
+                              <span>Progresso salvato</span>
+                            </div>
+                          )}
+
+                          <div className="flex items-center gap-2 text-sm text-gray-500 min-w-[200px]">
+                            <span className="whitespace-nowrap">
+                              Completamento:
+                            </span>
+                            <div className="w-20 h-2 bg-gray-200 rounded-full overflow-hidden">
+                              <div
+                                className="h-full bg-blue-500 transition-all duration-300"
+                                style={{
+                                  width: `${Math.min(watchedPercentage, 100)}%`,
+                                }}
+                              />
+                            </div>
+                            <span className="min-w-[40px]">
+                              {Math.round(watchedPercentage)}%
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
                     <div className="prose max-w-none">
                       <div className="flex items-center gap-1 mb-4">
                         <h3 className="text-2xl font-semibold text-gray-900">
                           {selectedLesson.title}
                         </h3>
-                        <AlertDialog>
-                          <AlertDialogTrigger asChild>
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              className="hover:bg-gray-100"
-                              title="Informazioni sui controlli"
-                            >
-                              <Info className="h-5 w-5 text-gray-500" />
-                            </Button>
-                          </AlertDialogTrigger>
-                          <AlertDialogContent className="max-w-2xl bg-gradient-to-br from-white to-gray-50">
-                            <AlertDialogHeader>
-                              <AlertDialogTitle className="text-2xl font-bold text-blue-900 text-center pb-4 border-b">
-                                Guida ai Controlli
-                              </AlertDialogTitle>
-                              <AlertDialogDescription className="space-y-6 pt-4">
-                                <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-100">
-                                  <h4 className="text-lg font-semibold text-blue-800 mb-3 flex items-center gap-2">
-                                    <Play className="h-5 w-5" />
-                                    Controlli Video
-                                  </h4>
-                                  <ul className="space-y-2 text-gray-600">
-                                    <li className="flex items-center gap-2">
-                                      <RotateCcw className="h-4 w-4 text-blue-500" />
-                                      <span>
-                                        <span className="font-medium">
-                                          Ricomincia
-                                        </span>
-                                        : Riporta il video all'inizio
-                                      </span>
-                                    </li>
-                                    <li className="flex items-center gap-2">
-                                      <Rewind className="h-4 w-4 text-blue-500" />
-                                      <span>
-                                        <span className="font-medium">
-                                          Indietro
-                                        </span>
-                                        : Torna indietro di 5 secondi
-                                      </span>
-                                    </li>
-                                    <li className="flex items-center gap-2">
-                                      <Pause className="h-4 w-4 text-blue-500" />
-                                      <span>
-                                        <span className="font-medium">
-                                          Play/Pausa
-                                        </span>
-                                        : Avvia o metti in pausa il video
-                                      </span>
-                                    </li>
-                                  </ul>
-                                </div>
-
-                                <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-100">
-                                  <h4 className="text-lg font-semibold text-blue-800 mb-3 flex items-center gap-2">
-                                    <BookOpen className="h-5 w-5" />
-                                    Pulsanti di Progresso
-                                  </h4>
-                                  <ul className="space-y-2 text-gray-600">
-                                    <li className="flex items-center gap-2">
-                                      <BookmarkIcon className="h-4 w-4 text-blue-500" />
-                                      <span>
-                                        <span className="font-medium">
-                                          Salva
-                                        </span>
-                                        : Salva il punto in cui ti sei fermato
-                                      </span>
-                                    </li>
-                                    <li className="flex items-center gap-2">
-                                      <PlayIcon className="h-4 w-4 text-blue-500" />
-                                      <span>
-                                        <span className="font-medium">
-                                          Riprendi
-                                        </span>
-                                        : Riprendi dal punto salvato
-                                        precedentemente
-                                      </span>
-                                    </li>
-                                    <li className="flex items-center gap-2">
-                                      <Check className="h-4 w-4 text-green-500" />
-                                      <span>
-                                        <span className="font-medium">
-                                          Completa lezione
-                                        </span>
-                                        : Segna la lezione come completata
-                                      </span>
-                                    </li>
-                                    <li className="flex items-center gap-2">
-                                      <Play className="h-4 w-4 text-blue-500" />
-                                      <span>
-                                        <span className="font-medium">
-                                          Lezione successiva
-                                        </span>
-                                        : Passa alla prossima lezione quando
-                                        disponibile
-                                      </span>
-                                    </li>
-                                    <li className="flex items-center gap-2">
-                                      <Download className="h-4 w-4 text-indigo-500" />
-                                      <span>
-                                        <span className="font-medium">
-                                          Attestato
-                                        </span>
-                                        : Scarica l'attestato al completamento
-                                        del corso
-                                      </span>
-                                    </li>
-                                  </ul>
-                                </div>
-                              </AlertDialogDescription>
-                            </AlertDialogHeader>
-                            <AlertDialogFooter className="sm:justify-center">
-                              <AlertDialogCancel className="bg-white hover:bg-gray-100 border-gray-200">
-                                Chiudi
-                              </AlertDialogCancel>
-                            </AlertDialogFooter>
-                          </AlertDialogContent>
-                        </AlertDialog>
                       </div>
 
                       <div className="bg-white rounded-xl p-6 shadow-sm ring-1 ring-black/5">
@@ -1167,7 +1202,6 @@ const CourseViewer = () => {
                       </div>
                     </div>
 
-                    {/* Materials and PDF Viewer */}
                     {selectedLesson.files?.length > 0 && (
                       <div className="space-y-6">
                         {selectedPDF && (
@@ -1198,7 +1232,6 @@ const CourseViewer = () => {
                           </div>
                         )}
 
-                        {/* Materials List */}
                         <div className="bg-white rounded-xl p-6 shadow-sm ring-1 ring-black/5">
                           <h4 className="text-lg font-semibold text-gray-900 mb-4">
                             Materiali della lezione
@@ -1270,6 +1303,8 @@ const CourseViewer = () => {
                         </div>
                       </div>
                     )}
+
+                    {testMode && renderTestSection()}
                   </>
                 ) : (
                   <div className="prose max-w-none">
@@ -1282,7 +1317,6 @@ const CourseViewer = () => {
                 )}
               </div>
 
-              {/* Lessons Sidebar */}
               <div className="lg:col-span-1">
                 <Card className="bg-white shadow-xl rounded-2xl border-0 overflow-hidden sticky top-8">
                   <div className="bg-gradient-to-r from-blue-600 to-indigo-600 p-6">
@@ -1300,6 +1334,35 @@ const CourseViewer = () => {
                         {selectedCourse.lessons.map((lesson, index) =>
                           renderLessonItem(lesson, index)
                         )}
+
+                        {renderTestInSidebar()}
+
+                        {allLessonsCompleted &&
+                          (!selectedCourse.test ||
+                            (testSubmitted && testPassed)) && (
+                            <div className="bg-white rounded-xl p-4 mt-4 border border-green-100 bg-green-50/50">
+                              <div className="flex items-center gap-2 mb-4">
+                                <CheckCircle className="h-6 w-6 text-green-600" />
+                                <h4 className="text-lg font-semibold text-green-900">
+                                  Corso Completato!
+                                </h4>
+                              </div>
+                              <p className="text-sm text-gray-600 mb-4">
+                                Hai completato tutte le lezioni
+                                {selectedCourse.test
+                                  ? " e superato il test"
+                                  : ""}
+                              </p>
+                              <Button
+                                onClick={fillAndDownloadPDF}
+                                variant="outline"
+                                className="w-full"
+                              >
+                                <Download className="h-4 w-4 mr-2" />
+                                Scarica Attestato
+                              </Button>
+                            </div>
+                          )}
                       </div>
                     </ScrollArea>
                   </CardContent>
