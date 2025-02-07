@@ -78,6 +78,8 @@ interface LessonProgress {
   title: string;
   lessonId: string;
   watchedPercentage: number;
+  testCompleted?: boolean;
+  testPassed?: boolean;
 }
 
 interface Lesson {
@@ -92,6 +94,9 @@ interface Lesson {
     title: string;
     filename: string;
   }[];
+  test?: {
+    questions: TestQuestion[];
+  };
 }
 
 interface Course {
@@ -101,9 +106,6 @@ interface Course {
   createdAt: any;
   updatedAt: any;
   lessons: Lesson[];
-  test?: {
-    questions: TestQuestion[];
-  };
   progress?: {
     [key: string]: LessonProgress;
   };
@@ -237,10 +239,11 @@ const CourseViewer = () => {
     }));
   };
 
-  const handleTestSubmit = () => {
-    if (!selectedCourse?.test) return;
+  const handleTestSubmit = async () => {
+    if (!selectedLesson?.test || !selectedCourse?.id || !session?.user?.email)
+      return;
 
-    const allQuestionsAnswered = selectedCourse.test.questions.every(
+    const allQuestionsAnswered = selectedLesson.test.questions.every(
       (_, index) =>
         selectedAnswers[index] !== undefined && selectedAnswers[index] !== null
     );
@@ -254,30 +257,65 @@ const CourseViewer = () => {
       return;
     }
 
-    const correctAnswersCount = selectedCourse.test.questions.filter(
+    const correctAnswersCount = selectedLesson.test.questions.filter(
       (question, index) => question.answers[selectedAnswers[index]].isCorrect
     ).length;
 
     const passPercentage =
-      (correctAnswersCount / selectedCourse.test.questions.length) * 100;
-    const isPassed = passPercentage >= 60; // 60% pass rate
+      (correctAnswersCount / selectedLesson.test.questions.length) * 100;
+    const isPassed = passPercentage >= 60;
 
     setTestSubmitted(true);
     setTestPassed(isPassed);
 
-    if (isPassed) {
+    // Aggiorna il progresso del test nel database
+    try {
+      const progressRef = doc(
+        db,
+        "users",
+        session.user.email,
+        "courseProgress",
+        selectedCourse.id
+      );
+
+      const currentProgress =
+        selectedCourse.progress?.[selectedLesson.id] || {};
+
+      await setDoc(
+        progressRef,
+        {
+          lessons: {
+            [selectedLesson.id]: {
+              ...currentProgress,
+              testCompleted: true,
+              testPassed: isPassed,
+            },
+          },
+        },
+        { merge: true }
+      );
+
+      if (isPassed) {
+        toast({
+          title: "Test superato",
+          description: `Hai risposto correttamente al ${Math.round(
+            passPercentage
+          )}% delle domande`,
+        });
+      } else {
+        toast({
+          title: "Test non superato",
+          description: `Hai risposto correttamente al ${Math.round(
+            passPercentage
+          )}% delle domande. Puoi riprovare o continuare con la prossima lezione`,
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      console.error("Error updating test progress:", error);
       toast({
-        title: "Test superato",
-        description: `Hai risposto correttamente al ${Math.round(
-          passPercentage
-        )}% delle domande`,
-      });
-    } else {
-      toast({
-        title: "Test non superato",
-        description: `Hai risposto correttamente al ${Math.round(
-          passPercentage
-        )}% delle domande. Riprova.`,
+        title: "Errore",
+        description: "Impossibile salvare il risultato del test",
         variant: "destructive",
       });
     }
@@ -318,7 +356,9 @@ const CourseViewer = () => {
 
       toast({
         title: "Lezione completata",
-        description: "Puoi procedere con la prossima lezione",
+        description: selectedLesson.test
+          ? "Puoi procedere con il test o passare alla prossima lezione"
+          : "Puoi procedere con la prossima lezione",
       });
 
       const updatedProgress = {
@@ -347,19 +387,15 @@ const CourseViewer = () => {
     }
 
     // Verifica se tutte le lezioni sono completate
-    const allLessonsAreCompleted = selectedCourse?.lessons.every(
+    const allLessonsCompleted = selectedCourse?.lessons.every(
       (lesson) => selectedCourse.progress?.[lesson.id]?.completed
     );
 
-    // Verifica se il test è superato (se esiste)
-    const isTestPassed = !selectedCourse?.test || (testSubmitted && testPassed);
-
-    // Verifica le condizioni per il completamento del corso
-    if (!allLessonsAreCompleted || !isTestPassed) {
+    if (!allLessonsCompleted) {
       toast({
         title: "Requisiti non completati",
         description:
-          "Devi completare tutte le lezioni e superare il test (se presente)",
+          "Devi completare tutte le lezioni per ottenere l'attestato",
         variant: "destructive",
       });
       return;
@@ -380,7 +416,6 @@ const CourseViewer = () => {
       const name = `${session.user.nome} ${session.user.cognome}`;
       const today = format(new Date(), "dd/MM/yyyy");
 
-      // Aggiungi i dati al PDF
       page.drawText(name, {
         x: 300,
         y: 245,
@@ -593,109 +628,120 @@ const CourseViewer = () => {
     return selectedCourse.lessons[currentIndex + 1] || null;
   };
 
-  const renderTestSection = () => {
-    if (!selectedCourse?.test || !allLessonsCompleted) return null;
+  const renderLessonTest = () => {
+    if (
+      !selectedLesson?.test ||
+      !selectedCourse?.progress?.[selectedLesson.id]?.completed
+    ) {
+      return null;
+    }
 
     return (
-      <div className="bg-white rounded-xl p-6 shadow-sm ring-1 ring-black/5 mt-4">
-        <h4 className="text-2xl font-semibold text-gray-900 mb-6">
-          Test Finale del Corso
-        </h4>
-        {selectedCourse.test.questions.map((question, questionIndex) => (
-          <div key={questionIndex} className="mb-6">
-            <p className="text-lg font-medium text-gray-800 mb-4">
-              {question.question}
-            </p>
-            <div className="space-y-3">
-              {question.answers.map((answer, answerIndex) => (
-                <button
-                  key={answerIndex}
-                  onClick={() =>
-                    handleTestAnswerSelect(questionIndex, answerIndex)
-                  }
-                  className={`w-full text-left p-3 rounded-lg transition-all duration-300 
-                    ${
-                      testSubmitted
-                        ? answer.isCorrect
-                          ? "bg-green-100 border-2 border-green-300"
-                          : selectedAnswers[questionIndex] === answerIndex
-                          ? "bg-red-100 border-2 border-red-300"
-                          : "bg-gray-100"
-                        : selectedAnswers[questionIndex] === answerIndex
-                        ? "bg-blue-100 border-2 border-blue-300"
-                        : "bg-gray-100 hover:bg-gray-200"
-                    }`}
-                  disabled={testSubmitted}
-                >
-                  {answer.text}
-                  {testSubmitted && (
-                    <span className="float-right">
-                      {answer.isCorrect ? (
-                        <CheckCircle className="text-green-500 inline-block" />
-                      ) : selectedAnswers[questionIndex] === answerIndex ? (
-                        <X className="text-red-500 inline-block" />
-                      ) : null}
-                    </span>
-                  )}
-                </button>
-              ))}
-            </div>
-          </div>
-        ))}
-        {!testSubmitted && (
-          <Button
-            onClick={handleTestSubmit}
-            className="w-full mt-4"
-            disabled={
-              Object.keys(selectedAnswers).length !==
-              selectedCourse.test.questions.length
-            }
-          >
-            Invia Risposte
-          </Button>
-        )}
-        {testSubmitted && !testPassed && (
-          <Button
-            onClick={() => {
-              setTestSubmitted(false);
-              setSelectedAnswers({});
-            }}
-            className="w-full mt-4 bg-red-500 hover:bg-red-600"
-          >
-            Riprova Test
-          </Button>
-        )}
-        {testSubmitted && testPassed && (
-          <Button
-            onClick={fillAndDownloadPDF}
-            className="w-full mt-4 bg-green-500 hover:bg-green-600"
-          >
-            Scarica Attestato
-          </Button>
-        )}
-      </div>
-    );
-  };
-
-  const renderTestInSidebar = () => {
-    if (!selectedCourse?.test || !allLessonsCompleted) return null;
-
-    return (
-      <div className="bg-white rounded-xl p-4 mt-4 border border-blue-100 bg-blue-50/50">
-        <div className="flex items-center gap-2 mb-4">
-          <GraduationCap className="h-6 w-6 text-blue-600" />
-          <h4 className="text-lg font-semibold text-blue-900">Test Finale</h4>
+      <div className="bg-white rounded-xl p-6 shadow-sm ring-1 ring-black/5 mt-6">
+        <div className="flex items-center justify-between mb-4">
+          <h4 className="text-xl font-semibold text-gray-900">
+            Test della Lezione
+          </h4>
         </div>
-        <p className="text-sm text-gray-600 mb-4">
-          Completa il test finale per ottenere l'attestato del corso
-        </p>
-        <Button
-          onClick={() => setTestMode(true)}
-          variant="outline"
-          className="w-full"
-        >
-          Inizia Test
-        </Button>
+
+        {testMode ? (
+          <div className="space-y-6">
+            {selectedLesson.test.questions.map((question, questionIndex) => (
+              <div key={questionIndex} className="mb-6">
+                <p className="text-lg font-medium text-gray-800 mb-4">
+                  {question.question}
+                </p>
+                <div className="space-y-3">
+                  {question.answers.map((answer, answerIndex) => (
+                    <button
+                      key={answerIndex}
+                      onClick={() =>
+                        handleTestAnswerSelect(questionIndex, answerIndex)
+                      }
+                      className={`w-full text-left p-3 rounded-lg transition-all duration-300 
+                        ${
+                          testSubmitted
+                            ? answer.isCorrect
+                              ? "bg-green-100 border-2 border-green-300"
+                              : selectedAnswers[questionIndex] === answerIndex
+                              ? "bg-red-100 border-2 border-red-300"
+                              : "bg-gray-100"
+                            : selectedAnswers[questionIndex] === answerIndex
+                            ? "bg-blue-100 border-2 border-blue-300"
+                            : "bg-gray-100 hover:bg-gray-200"
+                        }`}
+                      disabled={testSubmitted}
+                    >
+                      {answer.text}
+                      {testSubmitted && (
+                        <span className="float-right">
+                          {answer.isCorrect ? (
+                            <CheckCircle className="text-green-500 inline-block" />
+                          ) : selectedAnswers[questionIndex] === answerIndex ? (
+                            <X className="text-red-500 inline-block" />
+                          ) : null}
+                        </span>
+                      )}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            ))}
+            {!testSubmitted ? (
+              <Button
+                onClick={handleTestSubmit}
+                className="w-full"
+                disabled={
+                  Object.keys(selectedAnswers).length !==
+                  selectedLesson.test.questions.length
+                }
+              >
+                Invia Risposte
+              </Button>
+            ) : (
+              <div className="flex justify-end gap-2">
+                {!testPassed && (
+                  <Button
+                    onClick={() => {
+                      setTestSubmitted(false);
+                      setSelectedAnswers({});
+                    }}
+                    variant="outline"
+                  >
+                    Riprova
+                  </Button>
+                )}
+                <Button onClick={() => setTestMode(false)}>
+                  {testPassed ? "Continua" : "Salta il test"}
+                </Button>
+              </div>
+            )}
+          </div>
+        ) : (
+          <div className="text-center py-6">
+            <p className="text-gray-600 mb-4">
+              Hai completato la lezione! Vuoi provare il test?
+            </p>
+            <div className="flex justify-center gap-4">
+              <Button onClick={() => setTestMode(true)} variant="outline">
+                Inizia il Test
+              </Button>
+              {getNextLesson() && (
+                <Button
+                  onClick={() => {
+                    setSelectedLesson(getNextLesson());
+                    setSelectedPDF(null);
+                  }}
+                >
+                  Prossima Lezione
+                </Button>
+              )}
+            </div>
+            <p className="text-sm text-gray-500 mt-4">
+              Il test è facoltativo - puoi procedere con la prossima lezione
+            </p>
+          </div>
+        )}
       </div>
     );
   };
@@ -752,9 +798,13 @@ const CourseViewer = () => {
     }
   };
 
+  // ... [Il resto del codice rimane invariato fino a renderLessonItem]
+
   const renderLessonItem = (lesson: Lesson, index: number) => {
     const isUnlocked = isLessonUnlocked(index);
     const isCompleted = selectedCourse?.progress?.[lesson.id]?.completed;
+    const hasTestAndPassed =
+      lesson.test && selectedCourse?.progress?.[lesson.id]?.testPassed;
 
     return (
       <div
@@ -771,6 +821,8 @@ const CourseViewer = () => {
             setSelectedLesson(lesson);
             setSelectedPDF(null);
             setTestMode(false);
+            setTestSubmitted(false);
+            setSelectedAnswers({});
           } else {
             toast({
               title: "Lezione bloccata",
@@ -841,13 +893,24 @@ const CourseViewer = () => {
                       </span>
                     </div>
                   )}
+                  {lesson.test && (
+                    <div className="flex items-center gap-1 text-xs">
+                      <GraduationCap className="h-3 w-3 text-purple-500" />
+                      <span className="text-gray-600">Test</span>
+                    </div>
+                  )}
                 </div>
               </div>
               {isCompleted && (
-                <div className="absolute top-2 right-2">
+                <div className="absolute top-2 right-2 flex gap-1">
                   <div className="bg-green-100 text-green-600 p-1 rounded-full">
                     <Check className="h-4 w-4" />
                   </div>
+                  {hasTestAndPassed && (
+                    <div className="bg-purple-100 text-purple-600 p-1 rounded-full">
+                      <GraduationCap className="h-4 w-4" />
+                    </div>
+                  )}
                 </div>
               )}
             </div>
@@ -989,23 +1052,6 @@ const CourseViewer = () => {
                             <li>Il progresso viene salvato automaticamente</li>
                           </ul>
                         </div>
-                        {selectedCourse.test && (
-                          <div>
-                            <h3 className="font-semibold text-gray-900 mb-2">
-                              Test Finale:
-                            </h3>
-                            <ul className="list-disc pl-5 space-y-2">
-                              <li>
-                                Si sblocca dopo aver completato tutte le lezioni
-                              </li>
-                              <li>
-                                Devi rispondere correttamente al 60% delle
-                                domande
-                              </li>
-                              <li>Puoi ripetere il test se non lo superi</li>
-                            </ul>
-                          </div>
-                        )}
                       </div>
                     </AlertDialogDescription>
                   </AlertDialogHeader>
@@ -1067,19 +1113,6 @@ const CourseViewer = () => {
                               <span className="text-white text-sm">
                                 {formatTime(currentTime)}
                               </span>
-
-                              {saved &&
-                                watchedPercentage >= 99 &&
-                                !selectedCourse?.progress?.[selectedLesson.id]
-                                  ?.completed && (
-                                  <Button
-                                    onClick={handleCompleteLesson}
-                                    className="ml-auto"
-                                    variant="outline"
-                                  >
-                                    Completa Lezione
-                                  </Button>
-                                )}
                             </div>
                           </div>
                         </div>
@@ -1304,7 +1337,8 @@ const CourseViewer = () => {
                       </div>
                     )}
 
-                    {testMode && renderTestSection()}
+                    {/* Render lesson test if available and lesson is completed */}
+                    {renderLessonTest()}
                   </>
                 ) : (
                   <div className="prose max-w-none">
@@ -1335,34 +1369,27 @@ const CourseViewer = () => {
                           renderLessonItem(lesson, index)
                         )}
 
-                        {renderTestInSidebar()}
-
-                        {allLessonsCompleted &&
-                          (!selectedCourse.test ||
-                            (testSubmitted && testPassed)) && (
-                            <div className="bg-white rounded-xl p-4 mt-4 border border-green-100 bg-green-50/50">
-                              <div className="flex items-center gap-2 mb-4">
-                                <CheckCircle className="h-6 w-6 text-green-600" />
-                                <h4 className="text-lg font-semibold text-green-900">
-                                  Corso Completato!
-                                </h4>
-                              </div>
-                              <p className="text-sm text-gray-600 mb-4">
-                                Hai completato tutte le lezioni
-                                {selectedCourse.test
-                                  ? " e superato il test"
-                                  : ""}
-                              </p>
-                              <Button
-                                onClick={fillAndDownloadPDF}
-                                variant="outline"
-                                className="w-full"
-                              >
-                                <Download className="h-4 w-4 mr-2" />
-                                Scarica Attestato
-                              </Button>
+                        {allLessonsCompleted && (
+                          <div className="bg-white rounded-xl p-4 mt-4 border border-green-100 bg-green-50/50">
+                            <div className="flex items-center gap-2 mb-4">
+                              <CheckCircle className="h-6 w-6 text-green-600" />
+                              <h4 className="text-lg font-semibold text-green-900">
+                                Corso Completato!
+                              </h4>
                             </div>
-                          )}
+                            <p className="text-sm text-gray-600 mb-4">
+                              Hai completato tutte le lezioni
+                            </p>
+                            <Button
+                              onClick={fillAndDownloadPDF}
+                              variant="outline"
+                              className="w-full"
+                            >
+                              <Download className="h-4 w-4 mr-2" />
+                              Scarica Attestato
+                            </Button>
+                          </div>
+                        )}
                       </div>
                     </ScrollArea>
                   </CardContent>
