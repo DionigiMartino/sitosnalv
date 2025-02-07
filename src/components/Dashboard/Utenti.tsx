@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { format } from "date-fns";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -18,7 +19,13 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { PlusCircle, Edit, Trash2 } from "lucide-react";
+import {
+  PlusCircle,
+  Edit,
+  Trash2,
+  ChevronDown,
+  ChevronRight,
+} from "lucide-react";
 import {
   collection,
   addDoc,
@@ -27,6 +34,9 @@ import {
   deleteDoc,
   doc,
   serverTimestamp,
+  orderBy,
+  query,
+  getDoc,
 } from "firebase/firestore";
 import { db } from "@/src/lib/firebase";
 import {
@@ -36,8 +46,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { toast } from "@/hooks/use-toast";
+import { it } from "date-fns/locale";
 
 const Users = () => {
+  // State declarations
   const [users, setUsers] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
@@ -45,6 +58,8 @@ const Users = () => {
   const [userToDelete, setUserToDelete] = useState(null);
   const [selectedUser, setSelectedUser] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
+  const [expandedUser, setExpandedUser] = useState(null);
+  const [courses, setCourses] = useState([]);
 
   // Form fields
   const [username, setUsername] = useState("");
@@ -54,35 +69,107 @@ const Users = () => {
   const [dataNascita, setDataNascita] = useState("");
   const [luogoNascita, setLuogoNascita] = useState("");
 
-  const roles = ["Responsabile Sindacale", "Lavoratore"];
+  const roles = ["Responsabile Sindacale", "Amministratore"];
 
-  const fetchUsers = async () => {
+  // Fetch courses from Firestore
+  const fetchCourses = async () => {
     try {
-      const querySnapshot = await getDocs(collection(db, "users"));
-      const userData = querySnapshot.docs.map((doc) => ({
+      const coursesQuery = query(
+        collection(db, "courses"),
+        orderBy("createdAt", "desc")
+      );
+      const querySnapshot = await getDocs(coursesQuery);
+      const coursesData = querySnapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
-        createdAt: doc.data().createdAt?.toDate(),
       }));
+      return coursesData;
+    } catch (error) {
+      console.error("Error fetching courses:", error);
+      toast({
+        title: "Errore",
+        description: "Impossibile caricare i corsi",
+        variant: "destructive",
+      });
+      return [];
+    }
+  };
+
+  // Fetch users and their progress from Firestore
+  const fetchUsers = async () => {
+    try {
+      const allCourses = await fetchCourses();
+      setCourses(allCourses);
+
+      const usersQuery = query(collection(db, "users"));
+      const querySnapshot = await getDocs(usersQuery);
+
+      const userData = await Promise.all(
+        querySnapshot.docs.map(async (userDoc) => {
+          const user = userDoc.data();
+          const courseProgressData = {};
+
+          // Fetch progress for each course
+          for (const course of allCourses) {
+            try {
+              const progressRef = doc(
+                db,
+                "users",
+                user.email, // Usiamo l'email dell'utente invece dell'ID del documento
+                "courseProgress",
+                course.id
+              );
+              const progressSnap = await getDoc(progressRef);
+
+              if (progressSnap.exists()) {
+                courseProgressData[course.id] = progressSnap.data();
+              } else {
+                courseProgressData[course.id] = { lessons: {} };
+              }
+            } catch (error) {
+              console.error(
+                `Error fetching progress for course ${course.id}:`,
+                error
+              );
+              courseProgressData[course.id] = { lessons: {} };
+            }
+          }
+
+          return {
+            id: userDoc.id,
+            ...user,
+            courseProgress: courseProgressData,
+            createdAt: user.createdAt?.toDate(),
+          };
+        })
+      );
+
       setUsers(userData);
     } catch (error) {
       console.error("Error fetching users:", error);
+      toast({
+        title: "Errore",
+        description: "Impossibile caricare gli utenti",
+        variant: "destructive",
+      });
     } finally {
       setIsLoading(false);
     }
   };
 
+  // Initial data fetch
   useEffect(() => {
     fetchUsers();
   }, []);
 
+  // Form submission handler
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
 
     const data = {
       username,
-      password: "SN25FMR",
+      password: "SN25FMR", // Default password
       email,
       role,
       nome,
@@ -94,34 +181,47 @@ const Users = () => {
 
     try {
       if (selectedUser?.id) {
-        const docRef = doc(db, "users", selectedUser.id);
-        await updateDoc(docRef, data);
+        const userRef = doc(db, "users", selectedUser.id);
+        await updateDoc(userRef, data);
+        toast({
+          title: "Successo",
+          description: "Utente aggiornato correttamente",
+        });
       } else {
         await addDoc(collection(db, "users"), data);
+        toast({
+          title: "Successo",
+          description: "Nuovo utente creato correttamente",
+        });
       }
 
       await fetchUsers();
       resetForm();
       setShowForm(false);
-      alert(selectedUser?.id ? "Utente aggiornato!" : "Utente creato!");
     } catch (error) {
       console.error("Error saving user:", error);
-      alert("Errore durante il salvataggio");
+      toast({
+        title: "Errore",
+        description: "Errore durante il salvataggio dell'utente",
+        variant: "destructive",
+      });
     } finally {
       setIsLoading(false);
     }
   };
 
+  // Reset form fields
   const resetForm = () => {
     setUsername("");
     setEmail("");
-    setRole("user");
+    setRole("Responsabile Sindacale");
     setNome("");
     setDataNascita("");
     setLuogoNascita("");
     setSelectedUser(null);
   };
 
+  // Delete user handlers
   const handleDeleteClick = (user) => {
     setUserToDelete(user);
     setShowDeleteDialog(true);
@@ -136,19 +236,28 @@ const Users = () => {
       await fetchUsers();
       setShowDeleteDialog(false);
       setUserToDelete(null);
-      alert("Utente eliminato!");
+      toast({
+        title: "Successo",
+        description: "Utente eliminato correttamente",
+      });
     } catch (error) {
       console.error("Error deleting user:", error);
-      alert("Errore durante l'eliminazione");
+      toast({
+        title: "Errore",
+        description: "Errore durante l'eliminazione dell'utente",
+        variant: "destructive",
+      });
     } finally {
       setIsLoading(false);
     }
   };
 
+  // Filter users based on search query
   const filteredUsers = users.filter((user) =>
     user.username.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
+  // Export users to CSV
   const exportToCSV = () => {
     const csvData = users.map((user) => ({
       nome: user.nome,
@@ -160,9 +269,7 @@ const Users = () => {
     }));
 
     const csvString = [
-      // Header
       Object.keys(csvData[0]).join(","),
-      // Rows
       ...csvData.map((row) => Object.values(row).join(",")),
     ].join("\n");
 
@@ -175,6 +282,61 @@ const Users = () => {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+  };
+
+  // Render course progress
+  const renderCourseProgress = (user, course) => {
+    const courseProgress = user.courseProgress?.[course.id]?.lessons || {};
+    console.log("Course Progress for", user.email, course.id, courseProgress); // Debug log
+    const completedLessons = Object.values(courseProgress).filter(
+      // @ts-ignore
+      (lesson) => lesson?.completed === true
+    ).length;
+    const totalLessons = course.lessons?.length || 0;
+
+    return (
+      <div key={course.id} className="space-y-2">
+        <div className="flex items-center justify-between">
+          <span className="font-medium">{course.title}</span>
+          <div className="flex items-center gap-2">
+            <div className="w-24 h-2 bg-gray-200 rounded-full overflow-hidden">
+              <div
+                className="h-full bg-blue-500 transition-all"
+                style={{
+                  width: `${
+                    totalLessons > 0
+                      ? (completedLessons / totalLessons) * 100
+                      : 0
+                  }%`,
+                }}
+              />
+            </div>
+            <span className="text-xs text-gray-600">
+              {completedLessons}/{totalLessons}
+            </span>
+          </div>
+        </div>
+
+        {expandedUser === user.id && (
+          <div className="pl-4 space-y-1 text-sm">
+            {course.lessons?.map((lesson) => {
+              const lessonProgress = courseProgress[lesson.id];
+              return (
+                <div key={lesson.id} className="flex items-center gap-2">
+                  <div
+                    className={`w-2 h-2 rounded-full ${
+                      lessonProgress?.completed ? "bg-green-500" : "bg-gray-300"
+                    }`}
+                  />
+                  <span className="truncate">{lesson.title}</span>
+                 
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </div>
+    );
   };
 
   return (
@@ -210,18 +372,43 @@ const Users = () => {
                 <TableHead>Username</TableHead>
                 <TableHead>Email</TableHead>
                 <TableHead>Ruolo</TableHead>
+                <TableHead>Progressi</TableHead>
                 <TableHead>Azioni</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {filteredUsers.map((user) => (
                 <TableRow key={user.id}>
+                  <TableCell>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() =>
+                        setExpandedUser(
+                          expandedUser === user.id ? null : user.id
+                        )
+                      }
+                    >
+                      {expandedUser === user.id ? (
+                        <ChevronDown className="h-4 w-4" />
+                      ) : (
+                        <ChevronRight className="h-4 w-4" />
+                      )}
+                    </Button>
+                  </TableCell>
                   <TableCell>{user.nome}</TableCell>
                   <TableCell>{user.dataNascita}</TableCell>
                   <TableCell>{user.luogoNascita}</TableCell>
                   <TableCell className="font-medium">{user.username}</TableCell>
                   <TableCell>{user.email}</TableCell>
                   <TableCell className="capitalize">{user.role}</TableCell>
+                  <TableCell>
+                    <div className="space-y-4">
+                      {courses.map((course) =>
+                        renderCourseProgress(user, course)
+                      )}
+                    </div>
+                  </TableCell>
                   <TableCell className="flex gap-2">
                     <Button
                       variant="outline"
@@ -254,6 +441,7 @@ const Users = () => {
         </CardContent>
       </Card>
 
+      {/* User Form Dialog */}
       <Dialog open={showForm} onOpenChange={setShowForm}>
         <DialogContent>
           <DialogHeader>
@@ -347,6 +535,7 @@ const Users = () => {
         </DialogContent>
       </Dialog>
 
+      {/* Delete Confirmation Dialog */}
       <Dialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
         <DialogContent>
           <DialogHeader>
