@@ -72,14 +72,7 @@ const Webinar = () => {
   const [uploadProgress, setUploadProgress] = useState(false);
   const [dragActive, setDragActive] = useState(false);
   const [dragActiveVideo, setDragActiveVideo] = useState(false);
-  const { status } = useSession();
-  const router = useRouter();
   
-  useEffect(() => {
-    if (status === "unauthenticated") {
-      router.push("/login");
-    }
-  }, [status, router]);
 
   useEffect(() => {
     fetchWebinars();
