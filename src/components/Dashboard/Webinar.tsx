@@ -27,7 +27,6 @@ import {
   FileVideo,
   FileText,
   Loader2,
-  Download,
 } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import {
@@ -49,8 +48,6 @@ import {
   serverTimestamp,
 } from "firebase/firestore";
 import { db } from "@/src/lib/firebase";
-import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
 
 const Webinar = () => {
   const [webinars, setWebinars] = useState([]);
@@ -68,11 +65,10 @@ const Webinar = () => {
   const [video, setVideo] = useState(null);
   const [videoUrl, setVideoUrl] = useState("");
   const [videoTitle, setVideoTitle] = useState("");
-  const [pdfs, setPdfs] = useState([]); // Array of {file, title, url}
+  const [pdfs, setPdfs] = useState([]);
   const [uploadProgress, setUploadProgress] = useState(false);
   const [dragActive, setDragActive] = useState(false);
   const [dragActiveVideo, setDragActiveVideo] = useState(false);
-  
 
   useEffect(() => {
     fetchWebinars();
@@ -118,16 +114,41 @@ const Webinar = () => {
     return url;
   };
 
+  const handleVideoDelete = async () => {
+    try {
+      if (selectedWebinar?.video?.url) {
+        const storage = getStorage();
+        const videoRef = ref(storage, selectedWebinar.video.url);
+        await deleteObject(videoRef);
+      }
+      setVideo(null);
+      setVideoUrl("");
+      setVideoTitle("");
+    } catch (error) {
+      console.error("Error deleting video:", error);
+      alert("Errore durante l'eliminazione del video");
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setUploadProgress(true);
 
     try {
       let videoData = null;
+
+      // Se c'è un nuovo video da caricare
       if (video) {
         const url = await handleVideoUpload(video);
         videoData = {
           url,
+          title: videoTitle,
+        };
+      }
+      // Se stiamo modificando e c'è un video esistente (non eliminato)
+      else if (selectedWebinar?.video?.url && videoTitle) {
+        videoData = {
+          url: selectedWebinar.video.url,
           title: videoTitle,
         };
       }
@@ -136,13 +157,21 @@ const Webinar = () => {
         title,
         date: new Date(date),
         description,
-        video: videoData || selectedWebinar?.video,
-        pdfs: [...pdfs],
+        video: videoData,
+        pdfs: pdfs.length > 0 ? [...pdfs] : [],
         updatedAt: serverTimestamp(),
         createdAt: selectedWebinar?.createdAt || serverTimestamp(),
       };
 
       if (selectedWebinar?.id) {
+        // Se stiamo modificando un webinar esistente e il video è stato rimosso
+        if (selectedWebinar.video?.url && !videoData) {
+          // Elimina il video da Firebase Storage
+          const storage = getStorage();
+          const videoRef = ref(storage, selectedWebinar.video.url);
+          await deleteObject(videoRef);
+        }
+
         const docRef = doc(db, "webinars", selectedWebinar.id);
         await updateDoc(docRef, data);
       } else {
@@ -451,7 +480,7 @@ const Webinar = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <Label>Video del Webinar</Label>
+                  <Label>Video del Webinar (opzionale)</Label>
                   <div
                     className={`
                       border-2 border-dashed rounded-lg p-6 
@@ -504,7 +533,6 @@ const Webinar = () => {
                                     setVideoTitle(e.target.value)
                                   }
                                   className="border-0 border-b focus:ring-0"
-                                  required
                                 />
                                 <p className="text-xs text-gray-500 mt-1">
                                   {video?.name || "Video caricato"}
@@ -514,11 +542,7 @@ const Webinar = () => {
                                 type="button"
                                 variant="ghost"
                                 size="icon"
-                                onClick={() => {
-                                  setVideo(null);
-                                  setVideoUrl("");
-                                  setVideoTitle("");
-                                }}
+                                onClick={handleVideoDelete}
                               >
                                 <Trash2 className="h-4 w-4 text-red-500" />
                               </Button>
@@ -554,7 +578,7 @@ const Webinar = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <Label>Materiali PDF</Label>
+                  <Label>Materiali PDF (opzionale)</Label>
                   <div
                     className={`
                       border-2 border-dashed rounded-lg p-6 
@@ -649,7 +673,6 @@ const Webinar = () => {
                     </div>
                   </div>
 
-                  {/* Lista dei PDF caricati */}
                   <div className="mt-4 space-y-2">
                     {pdfs.map((pdf, index) => (
                       <div
@@ -663,7 +686,6 @@ const Webinar = () => {
                           onChange={(e) =>
                             updatePdfTitle(index, e.target.value)
                           }
-                          required
                         />
                         <p className="text-xs text-gray-500 truncate flex-shrink-0">
                           {pdf.filename}

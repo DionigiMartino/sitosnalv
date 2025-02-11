@@ -29,7 +29,6 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
 const WebinarViewer = () => {
-  // Stati
   const [webinars, setWebinars] = useState([]);
   const [selectedWebinar, setSelectedWebinar] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -40,14 +39,12 @@ const WebinarViewer = () => {
   const { data: session, status } = useSession();
   const router = useRouter();
 
-  // Redirect se non autenticato
   useEffect(() => {
     if (status === "unauthenticated") {
       router.push("/login");
     }
   }, [status, router]);
 
-  // Fetch dei webinar
   useEffect(() => {
     fetchWebinars();
   }, []);
@@ -72,12 +69,10 @@ const WebinarViewer = () => {
     }
   };
 
-  // Filtro webinar per ricerca
   const filteredWebinars = webinars.filter((webinar) =>
     webinar.title.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  // Funzioni di formattazione data
   const formatDate = (date) => {
     if (!date) return "";
     return format(date, "d MMMM yyyy", { locale: it });
@@ -88,7 +83,6 @@ const WebinarViewer = () => {
     return format(date, "HH:mm", { locale: it });
   };
 
-  // Loading state
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-50">
@@ -100,16 +94,17 @@ const WebinarViewer = () => {
     );
   }
 
-  // Vista dettaglio webinar
   if (selectedWebinar) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-blue-50">
         <div className="max-w-7xl mx-auto px-4 py-8">
-          {/* Header */}
           <nav className="mb-8 flex items-center gap-4">
             <Button
               variant="ghost"
-              onClick={() => setSelectedWebinar(null)}
+              onClick={() => {
+                setSelectedWebinar(null);
+                setSelectedPDF(null);
+              }}
               className="hover:bg-white/50 transition-colors"
             >
               <ChevronLeft className="h-4 w-4 mr-2" />
@@ -133,11 +128,9 @@ const WebinarViewer = () => {
             {selectedWebinar.title}
           </h1>
 
-          {/* Main Content */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            {/* Video Section */}
             <div className="lg:col-span-2 space-y-8">
-              {selectedWebinar.video ? (
+              {selectedWebinar.video?.url ? (
                 <div className="relative rounded-2xl overflow-hidden bg-black shadow-2xl ring-1 ring-black/5">
                   <div className="aspect-video">
                     <video
@@ -152,9 +145,12 @@ const WebinarViewer = () => {
                 </div>
               ) : (
                 <div className="relative aspect-video rounded-2xl overflow-hidden bg-gradient-to-br from-gray-100 to-gray-50 flex items-center justify-center ring-1 ring-black/5">
-                  <div className="text-center text-gray-500">
+                  <div className="text-center text-gray-500 p-6">
                     <Play className="h-20 w-20 mx-auto mb-4 text-gray-400" />
-                    <p className="text-lg">Nessun video disponibile</p>
+                    <p className="text-lg">Nessuna registrazione disponibile</p>
+                    <p className="text-sm text-gray-400 mt-2">
+                      Questo webinar non include una registrazione video
+                    </p>
                   </div>
                 </div>
               )}
@@ -165,18 +161,17 @@ const WebinarViewer = () => {
                 </h3>
                 <div className="bg-white rounded-xl p-6 shadow-sm ring-1 ring-black/5">
                   <p className="text-gray-600 whitespace-pre-wrap leading-relaxed">
-                    {selectedWebinar.description}
+                    {selectedWebinar.description ||
+                      "Nessuna descrizione disponibile"}
                   </p>
                 </div>
               </div>
 
-              {/* PDF Section */}
               {selectedPDF && (
                 <PDFViewer url={selectedPDF.url} title={selectedPDF.title} />
               )}
             </div>
 
-            {/* Materials Section */}
             <div className="lg:col-span-1">
               <Card className="bg-white shadow-xl rounded-2xl border-0 overflow-hidden sticky top-8">
                 <div className="bg-gradient-to-r from-blue-600 to-indigo-600 p-6">
@@ -185,72 +180,75 @@ const WebinarViewer = () => {
                     Materiali didattici
                   </h3>
                   <p className="text-blue-100 mt-1">
-                    Accedi ai contenuti del corso
+                    {selectedWebinar.pdfs?.length > 0
+                      ? "Accedi ai contenuti del corso"
+                      : "Nessun materiale disponibile"}
                   </p>
                 </div>
                 <CardContent className="p-6">
                   <ScrollArea className="h-[calc(100vh-400px)]">
                     <div className="space-y-4">
-                      {selectedWebinar.pdfs?.map((pdf, index) => (
-                        <div
-                          key={index}
-                          className="group relative bg-white rounded-xl border cursor-pointer border-gray-100 hover:border-blue-200 hover:shadow-md transition-all duration-200"
-                          onClick={() => setSelectedPDF(pdf)}
-                        >
-                          <div className="absolute inset-0 bg-gradient-to-r from-blue-50 to-indigo-50 opacity-0 group-hover:opacity-100 transition-opacity rounded-xl"></div>
-                          <div className="relative p-4">
-                            <div className="flex items-start gap-4">
-                              <div className="bg-red-50 p-2 rounded-lg">
-                                <FileText className="h-6 w-6 text-red-500" />
-                              </div>
-                              <div className="flex-1 min-w-0">
-                                <h4 className="font-medium text-gray-900 truncate">
-                                  {pdf.title || "Documento PDF"}
-                                </h4>
-                                <p className="text-sm text-gray-500 truncate">
-                                  {pdf.filename}
-                                </p>
-                              </div>
-                              <div className="flex gap-2">
-                                <Button
-                                  variant="ghost"
-                                  size="icon"
-                                  onClick={() => setSelectedPDF(pdf)}
-                                  className={`text-blue-600 hover:text-blue-700 hover:bg-blue-50 ${
-                                    selectedPDF?.url === pdf.url
-                                      ? "bg-blue-50"
-                                      : ""
-                                  }`}
-                                >
-                                  <Eye className="h-4 w-4" />
-                                </Button>
-                                <a
-                                  href={pdf.url}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                >
+                      {selectedWebinar.pdfs?.length > 0 ? (
+                        selectedWebinar.pdfs.map((pdf, index) => (
+                          <div
+                            key={index}
+                            className="group relative bg-white rounded-xl border cursor-pointer border-gray-100 hover:border-blue-200 hover:shadow-md transition-all duration-200"
+                            onClick={() => setSelectedPDF(pdf)}
+                          >
+                            <div className="absolute inset-0 bg-gradient-to-r from-blue-50 to-indigo-50 opacity-0 group-hover:opacity-100 transition-opacity rounded-xl"></div>
+                            <div className="relative p-4">
+                              <div className="flex items-start gap-4">
+                                <div className="bg-red-50 p-2 rounded-lg">
+                                  <FileText className="h-6 w-6 text-red-500" />
+                                </div>
+                                <div className="flex-1 min-w-0">
+                                  <h4 className="font-medium text-gray-900 truncate">
+                                    {pdf.title || pdf.filename}
+                                  </h4>
+                                  <p className="text-sm text-gray-500 truncate">
+                                    {pdf.filename}
+                                  </p>
+                                </div>
+                                <div className="flex gap-2">
                                   <Button
                                     variant="ghost"
                                     size="icon"
-                                    className="text-blue-600 hover:text-blue-700 hover:bg-blue-50"
+                                    onClick={() => setSelectedPDF(pdf)}
+                                    className={`text-blue-600 hover:text-blue-700 hover:bg-blue-50 ${
+                                      selectedPDF?.url === pdf.url
+                                        ? "bg-blue-50"
+                                        : ""
+                                    }`}
                                   >
-                                    <Download className="h-4 w-4" />
+                                    <Eye className="h-4 w-4" />
                                   </Button>
-                                </a>
+                                  <a
+                                    href={pdf.url}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                  >
+                                    <Button
+                                      variant="ghost"
+                                      size="icon"
+                                      className="text-blue-600 hover:text-blue-700 hover:bg-blue-50"
+                                    >
+                                      <Download className="h-4 w-4" />
+                                    </Button>
+                                  </a>
+                                </div>
                               </div>
                             </div>
                           </div>
-                        </div>
-                      ))}
-                      {(!selectedWebinar.pdfs ||
-                        selectedWebinar.pdfs.length === 0) && (
+                        ))
+                      ) : (
                         <div className="text-center py-12 px-4">
                           <FileText className="h-12 w-12 mx-auto text-gray-400 mb-4" />
                           <p className="text-gray-600 font-medium">
                             Nessun materiale disponibile
                           </p>
                           <p className="text-sm text-gray-500 mt-1">
-                            Non sono stati caricati materiali per questo webinar
+                            Non sono presenti materiali didattici per questo
+                            webinar
                           </p>
                         </div>
                       )}
@@ -265,7 +263,6 @@ const WebinarViewer = () => {
     );
   }
 
-  // Vista lista webinar
   return (
     <>
       <Header />
@@ -320,11 +317,11 @@ const WebinarViewer = () => {
                     </h2>
 
                     <p className="text-gray-600 line-clamp-3 mb-4 flex-grow">
-                      {webinar.description}
+                      {webinar.description || "Nessuna descrizione disponibile"}
                     </p>
 
                     <div className="flex items-center gap-3 pt-4 border-t border-gray-100">
-                      {webinar.video && (
+                      {webinar.video?.url && (
                         <div className="flex items-center gap-1 bg-blue-50 text-blue-700 px-3 py-1.5 rounded-full">
                           <Play className="h-4 w-4" />
                           <span className="text-xs font-medium">Video</span>
@@ -335,6 +332,14 @@ const WebinarViewer = () => {
                           <FileText className="h-4 w-4" />
                           <span className="text-xs font-medium">
                             {webinar.pdfs.length} PDF
+                          </span>
+                        </div>
+                      )}
+                      {!webinar.video?.url && !webinar.pdfs?.length && (
+                        <div className="flex items-center gap-1 bg-gray-50 text-gray-600 px-3 py-1.5 rounded-full">
+                          <FileText className="h-4 w-4" />
+                          <span className="text-xs font-medium">
+                            Solo descrizione
                           </span>
                         </div>
                       )}
