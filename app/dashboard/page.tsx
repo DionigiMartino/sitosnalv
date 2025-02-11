@@ -104,7 +104,7 @@ const DashboardLayout = () => {
         return <Sedi />;
       case "utenti":
         return <Users />;
-      case "webinars":
+      case "webinar":
         return <Webinar />;
       case "corso":
         return <CourseManager />;
