@@ -279,13 +279,6 @@ const Sedi = () => {
     }
   };
 
-  // Reset provincia in form when regione changes
-  useEffect(() => {
-    if (formData.regione) {
-      setFormData((prev) => ({ ...prev, provincia: "" }));
-    }
-  }, [formData.regione]);
-
   const resetForm = () => {
     setFormData({
       tipo: "Ufficio Provinciale",
@@ -415,6 +408,14 @@ const Sedi = () => {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleRegioneChange = (value) => {
+    setFormData((prev) => ({
+      ...prev,
+      regione: value,
+      provincia: selectedSede?.regione === value ? prev.provincia : "",
+    }));
   };
 
   return (
@@ -584,9 +585,7 @@ const Sedi = () => {
                   <Label>Regione</Label>
                   <Select
                     value={formData.regione}
-                    onValueChange={(value) =>
-                      setFormData((prev) => ({ ...prev, regione: value }))
-                    }
+                    onValueChange={handleRegioneChange}
                   >
                     <SelectTrigger>
                       <SelectValue placeholder="Seleziona regione" />
