@@ -28,6 +28,20 @@ const LessonForm = React.memo(
       return () => clearTimeout(timer);
     }, [localLesson, lesson, onLessonChange]);
 
+    const formatDuration = (seconds) => {
+      const hours = Math.floor(seconds / 3600);
+      const minutes = Math.floor((seconds % 3600) / 60);
+
+      if (hours > 0) {
+        return `${hours} ${hours === 1 ? "ora" : "ore"}${
+          minutes > 0
+            ? ` e ${minutes} ${minutes === 1 ? "minuto" : "minuti"}`
+            : ""
+        }`;
+      }
+      return `${minutes} ${minutes === 1 ? "minuto" : "minuti"}`;
+    };
+
     useEffect(() => {
       setLocalLesson(lesson);
     }, [lesson]);
@@ -43,11 +57,22 @@ const LessonForm = React.memo(
       if (field === "video") {
         const file = files[0];
         if (file?.type.startsWith("video/")) {
-          onLessonChange(lesson.id, "video", {
-            file,
-            title: "",
-            filename: file.name,
-          });
+          // Creiamo un URL temporaneo per il video
+          const videoUrl = URL.createObjectURL(file);
+          const video = document.createElement("video");
+          video.src = videoUrl;
+
+          // Quando i metadata sono caricati, possiamo leggere la durata
+          video.onloadedmetadata = () => {
+            const duration = formatDuration(Math.floor(video.duration));
+            onLessonChange(lesson.id, "video", {
+              file,
+              title: "",
+              filename: file.name,
+              duration: duration, // Aggiungiamo la durata formattata
+            });
+            URL.revokeObjectURL(videoUrl); // Puliamo l'URL temporaneo
+          };
         } else {
           alert("Per favore, carica solo file video");
         }
@@ -200,7 +225,7 @@ const LessonForm = React.memo(
               {lesson.video ? (
                 <div className="flex items-center justify-center gap-4">
                   <FileVideo className="h-8 w-8 text-purple-500" />
-                  <div className="flex-1">
+                  <div className="flex-1 space-y-2">
                     <Input
                       placeholder="Titolo del video"
                       value={lesson.video.title || ""}
@@ -210,8 +235,19 @@ const LessonForm = React.memo(
                           title: e.target.value,
                         })
                       }
-                      className="mb-2"
                     />
+                    <div className="flex items-center gap-2">
+                      <Input
+                        placeholder="Durata (es: 1 ora e 30 minuti)"
+                        value={lesson.video.duration || ""}
+                        onChange={(e) =>
+                          onLessonChange(lesson.id, "video", {
+                            ...lesson.video,
+                            duration: e.target.value,
+                          })
+                        }
+                      />
+                    </div>
                     <p className="text-sm text-gray-500">
                       {lesson.video.filename}
                     </p>

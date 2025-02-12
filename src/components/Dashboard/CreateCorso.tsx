@@ -29,6 +29,7 @@ const CreateEditCourse = ({ existingCourse = null, onBack }) => {
     title: existingCourse?.title || "",
     description: existingCourse?.description || "",
     lessons: existingCourse?.lessons || [],
+    program: existingCourse?.program || null, // Aggiungiamo questo
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -87,6 +88,18 @@ const CreateEditCourse = ({ existingCourse = null, onBack }) => {
     setIsSubmitting(true);
 
     try {
+      let programData = course.program;
+      if (course.program?.file) {
+        const programUrl = await handleFileUpload(
+          course.program.file,
+          `programs/${Date.now()}`
+        );
+        programData = {
+          url: programUrl,
+          filename: course.program.filename,
+        };
+      }
+
       const processedLessons = await Promise.all(
         course.lessons.map(async (lesson) => {
           let videoData = lesson.video;
@@ -131,6 +144,7 @@ const CreateEditCourse = ({ existingCourse = null, onBack }) => {
         title: course.title,
         description: course.description,
         lessons: processedLessons,
+        program: programData,
         updatedAt: serverTimestamp(),
       };
 
@@ -196,6 +210,83 @@ const CreateEditCourse = ({ existingCourse = null, onBack }) => {
                 rows={4}
                 required
               />
+            </div>
+
+            <div className="space-y-2">
+              <Label>Programma del corso (PDF)</Label>
+              <div
+                className={`
+    border-2 border-dashed rounded-lg p-6 
+    ${course.program ? "border-green-500 bg-green-50" : "border-gray-300"}
+    transition-colors duration-200 text-center
+  `}
+                onDragOver={(e) => e.preventDefault()}
+                onDrop={(e) => {
+                  e.preventDefault();
+                  const file = e.dataTransfer.files[0];
+                  if (file?.type === "application/pdf") {
+                    setCourse((prev) => ({
+                      ...prev,
+                      program: {
+                        file,
+                        filename: file.name,
+                      },
+                    }));
+                  } else {
+                    alert("Per favore, carica solo file PDF");
+                  }
+                }}
+              >
+                {course.program ? (
+                  <div className="flex items-center justify-center gap-4">
+                    <FileText className="h-8 w-8 text-purple-500" />
+                    <div className="flex-1">
+                      <p className="text-sm text-gray-500">
+                        {course.program.filename}
+                      </p>
+                    </div>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      onClick={() =>
+                        setCourse((prev) => ({ ...prev, program: null }))
+                      }
+                    >
+                      <Trash2 className="h-4 w-4 text-red-500" />
+                    </Button>
+                  </div>
+                ) : (
+                  <div className="space-y-2">
+                    <FileText className="h-8 w-8 text-gray-400 mx-auto" />
+                    <div className="text-center">
+                      <label className="text-purple-500 hover:text-purple-700 cursor-pointer">
+                        Carica programma
+                        <input
+                          type="file"
+                          accept="application/pdf"
+                          className="hidden"
+                          onChange={(e) => {
+                            const file = e.target.files?.[0];
+                            if (file) {
+                              setCourse((prev) => ({
+                                ...prev,
+                                program: {
+                                  file,
+                                  filename: file.name,
+                                },
+                              }));
+                            }
+                          }}
+                        />
+                      </label>
+                      <p className="text-xs text-gray-500 mt-1">
+                        Solo file PDF (max 10MB)
+                      </p>
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
 
             <div className="space-y-4">

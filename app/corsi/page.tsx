@@ -88,6 +88,7 @@ interface Lesson {
   description: string;
   video?: {
     url: string;
+    duration?: string;
   };
   files?: {
     url: string;
@@ -105,6 +106,7 @@ interface Course {
   description: string;
   createdAt: any;
   updatedAt: any;
+  program: any;
   lessons: Lesson[];
   progress?: {
     [key: string]: LessonProgress;
@@ -798,8 +800,6 @@ const CourseViewer = () => {
     }
   };
 
-  // ... [Il resto del codice rimane invariato fino a renderLessonItem]
-
   const renderLessonItem = (lesson: Lesson, index: number) => {
     const isUnlocked = isLessonUnlocked(index);
     const isCompleted = selectedCourse?.progress?.[lesson.id]?.completed;
@@ -837,21 +837,17 @@ const CourseViewer = () => {
           <div className="flex flex-col gap-3">
             {lesson.video && (
               <div className="relative aspect-video w-full rounded-lg overflow-hidden bg-black">
-                <video
-                  src={lesson.video.url}
-                  className="w-full h-full object-cover"
-                  muted
-                  preload="metadata"
-                >
-                  <div className="absolute inset-0 flex items-center justify-center bg-gray-900">
-                    <Play className="h-8 w-8 text-white opacity-75" />
-                  </div>
-                </video>
-                {selectedLesson?.id !== lesson.id && (
-                  <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50">
-                    <Play className="h-8 w-8 text-white" />
-                  </div>
-                )}
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <video
+                    src={lesson.video.url}
+                    className="absolute w-full h-full object-contain"
+                    muted
+                    preload="metadata"
+                  />
+                </div>
+                <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50">
+                  <Play className="h-8 w-8 text-white" />
+                </div>
               </div>
             )}
 
@@ -870,7 +866,7 @@ const CourseViewer = () => {
               </div>
               <div className="flex-1 min-w-0">
                 <h4
-                  className={`font-medium truncate ${
+                  className={`font-medium break-words whitespace-normal ${
                     selectedLesson?.id === lesson.id
                       ? "text-blue-900"
                       : "text-gray-900"
@@ -878,13 +874,23 @@ const CourseViewer = () => {
                 >
                   {lesson.title}
                 </h4>
-                <div className="flex items-center gap-3 mt-2">
+                <div className="flex flex-wrap items-center gap-4 mt-2">
                   {lesson.video && (
                     <div className="flex items-center gap-1 text-xs">
                       <Play className="h-3 w-3 text-blue-500" />
                       <span className="text-gray-600">Video</span>
                     </div>
                   )}
+
+                  {lesson.video?.duration && (
+                    <div className="flex items-center gap-1 text-xs">
+                      <Clock className="h-3 w-3 text-gray-400" />
+                      <span className="text-gray-600">
+                        {lesson.video.duration}
+                      </span>
+                    </div>
+                  )}
+
                   {lesson.files?.length > 0 && (
                     <div className="flex items-center gap-1 text-xs">
                       <FileText className="h-3 w-3 text-red-500" />
@@ -893,6 +899,7 @@ const CourseViewer = () => {
                       </span>
                     </div>
                   )}
+
                   {lesson.test && (
                     <div className="flex items-center gap-1 text-xs">
                       <GraduationCap className="h-3 w-3 text-purple-500" />
@@ -1112,6 +1119,11 @@ const CourseViewer = () => {
 
                               <span className="text-white text-sm">
                                 {formatTime(currentTime)}
+                                {selectedLesson.video.duration && (
+                                  <span className="ml-2 text-gray-300">
+                                    • {selectedLesson.video.duration}
+                                  </span>
+                                )}
                               </span>
                             </div>
                           </div>
@@ -1365,6 +1377,34 @@ const CourseViewer = () => {
                   <CardContent className="p-6">
                     <ScrollArea className="h-[calc(100vh-400px)]">
                       <div className="space-y-4">
+                        {selectedCourse.program && (
+                          <div
+                            className="group relative bg-white rounded-xl border transition-all duration-200 cursor-pointer border-purple-100 hover:border-purple-200 hover:shadow-md"
+                            onClick={() =>
+                              window.open(selectedCourse.program.url, "_blank")
+                            }
+                          >
+                            <div className="relative p-4">
+                              <div className="flex items-center gap-4">
+                                <div className="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium bg-purple-100 text-purple-700">
+                                  <FileText className="h-4 w-4" />
+                                </div>
+                                <div className="flex-1 min-w-0">
+                                  <h4 className="font-medium text-purple-900">
+                                    Programma del corso
+                                  </h4>
+                                  <div className="flex items-center gap-3 mt-2">
+                                    <div className="flex items-center gap-1 text-xs">
+                                      <Download className="h-3 w-3 text-purple-500" />
+                                      <span className="text-gray-600">PDF</span>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        )}
+
                         {selectedCourse.lessons.map((lesson, index) =>
                           renderLessonItem(lesson, index)
                         )}
@@ -1462,6 +1502,18 @@ const CourseViewer = () => {
                     </p>
 
                     <div className="flex items-center gap-3 pt-4 border-t border-gray-100">
+                      {course.program && (
+                        <div
+                          className="flex items-center gap-1 bg-purple-50 text-purple-700 px-3 py-1.5 rounded-full cursor-pointer hover:bg-purple-100"
+                          onClick={(e) => {
+                            e.stopPropagation(); 
+                            window.open(course.program.url, "_blank");
+                          }}
+                        >
+                          <FileText className="h-4 w-4" />
+                          <span className="text-xs font-medium">Programma</span>
+                        </div>
+                      )}
                       {course.lessons.some((lesson) => lesson.video) && (
                         <div className="flex items-center gap-1 bg-blue-50 text-blue-700 px-3 py-1.5 rounded-full">
                           <Play className="h-4 w-4" />
