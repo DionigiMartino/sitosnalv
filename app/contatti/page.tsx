@@ -8,6 +8,9 @@ import Footer from "@/src/components/Footer";
 import HeroSection from "@/src/components/Hero";
 import Link from "next/link";
 import { Phone, Mail, MapPin, Building2, ChevronRight } from "lucide-react";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+
+const BREVO_API_KEY = process.env.NEXT_PUBLIC_BREVO_API_KEY;
 
 const ContactSection = () => {
   const contactInfo = [
@@ -133,7 +136,8 @@ const ContattiPage = () => {
     mail: "",
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [newsletter, setNewsletter] = useState("");
+  const [status, setStatus] = useState({ type: "", message: "" });
+  const [email, setEmail] = useState("");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -179,41 +183,87 @@ const ContattiPage = () => {
     }
   };
 
-  const handleNewsletterSubmit = async (e: React.FormEvent) => {
+  const handleNewsletterSubmit = async (e) => {
     e.preventDefault();
 
-    if (!newsletter) {
-      alert("Inserisci un indirizzo email valido");
+    if (!email.trim()) {
+      setStatus({
+        type: "error",
+        message: "Inserisci un indirizzo email valido",
+      });
+      return;
+    }
+
+    setIsSubmitting(true);
+    setStatus({ type: "", message: "" });
+
+    if (!BREVO_API_KEY) {
+      console.error("Brevo API key is not defined");
+      setStatus({
+        type: "error",
+        message: "Configurazione non valida. Contatta l'amministratore.",
+      });
+      setIsSubmitting(false);
       return;
     }
 
     try {
-      const response = await fetch("/api/sendContatto", {
+      const response = await fetch("https://api.brevo.com/v3/contacts", {
         method: "POST",
         headers: {
+          Accept: "application/json",
           "Content-Type": "application/json",
+          "api-key": BREVO_API_KEY,
         },
         body: JSON.stringify({
-          type: "newsletter",
-          email: newsletter,
+          email: email.trim(),
+          updateEnabled: true,
         }),
       });
 
-      const result = await response.json();
+      // Prima controlla se c'è del contenuto nella risposta
+      const responseText = await response.text();
+      let data;
+      try {
+        data = responseText ? JSON.parse(responseText) : {};
+      } catch (e) {
+        console.error("Error parsing response:", responseText);
+        throw new Error("Errore nella risposta dal server");
+      }
+
+      if (response.status === 401) {
+        throw new Error("API key non valida");
+      }
 
       if (!response.ok) {
-        throw new Error(result.error || "Errore durante l'iscrizione");
+        throw new Error(
+          data.message || "Si è verificato un errore durante l'iscrizione"
+        );
       }
 
-      if (result.success) {
-        alert("Iscrizione alla newsletter completata con successo!");
-        setNewsletter("");
-      }
+      // Success
+      setStatus({
+        type: "success",
+        message: "Iscrizione completata con successo!",
+      });
+      setEmail("");
     } catch (error) {
-      console.error("Errore nell'iscrizione alla newsletter:", error);
-      alert(
-        "Si è verificato un errore durante l'iscrizione. Per favore riprova più tardi."
-      );
+      console.error("Error:", error);
+      setStatus({
+        type: "error",
+        message:
+          error.message ||
+          "Si è verificato un errore durante l'iscrizione. Riprova più tardi.",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleEmailChange = (e) => {
+    setEmail(e.target.value);
+    if (status.type === "error") {
+      setStatus({ type: "", message: "" });
     }
   };
 
@@ -299,28 +349,45 @@ const ContattiPage = () => {
               UN NOSTRO OPERATORE TI CHIAMERÀ IL PRIMA POSSIBILE!
             </p>
 
-            {/* Newsletter */}
             <div className="bg-gray-50 p-8 rounded-xl space-y-6 border-t-4 border-red-500">
               <p className="text-center text-[#1a365d]">
                 Nel frattempo, registrati alla nostra{" "}
                 <span className="font-bold">Newsletter</span> per ricevere
                 mensilmente notizie e aggiornamenti dal mondo del lavoro!
               </p>
-              <form onSubmit={handleNewsletterSubmit} className="flex gap-4">
-                <Input
-                  value={newsletter}
-                  onChange={(e) => setNewsletter(e.target.value)}
-                  placeholder="Inserisci la tua email"
-                  type="email"
-                  className="bg-white"
-                  required
-                />
-                <Button
-                  type="submit"
-                  className="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold whitespace-nowrap"
-                >
-                  ISCRIVITI
-                </Button>
+
+              <form
+                onSubmit={handleNewsletterSubmit}
+                className="flex flex-col gap-4"
+              >
+                <div className="flex gap-4">
+                  <Input
+                    value={email}
+                    onChange={handleEmailChange}
+                    placeholder="Inserisci la tua email"
+                    type="email"
+                    className="bg-white"
+                    required
+                    disabled={isSubmitting}
+                  />
+                  <Button
+                    type="submit"
+                    className="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold whitespace-nowrap"
+                    disabled={isSubmitting || !email.trim()}
+                  >
+                    {isSubmitting ? "INVIO..." : "ISCRIVITI"}
+                  </Button>
+                </div>
+
+                {status.message && (
+                  <Alert
+                    className={
+                      status.type === "error" ? "bg-red-50" : "bg-green-50"
+                    }
+                  >
+                    <AlertDescription>{status.message}</AlertDescription>
+                  </Alert>
+                )}
               </form>
             </div>
           </div>
