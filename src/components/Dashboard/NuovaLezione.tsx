@@ -57,21 +57,19 @@ const LessonForm = React.memo(
       if (field === "video") {
         const file = files[0];
         if (file?.type.startsWith("video/")) {
-          // Creiamo un URL temporaneo per il video
           const videoUrl = URL.createObjectURL(file);
           const video = document.createElement("video");
           video.src = videoUrl;
 
-          // Quando i metadata sono caricati, possiamo leggere la durata
           video.onloadedmetadata = () => {
             const duration = formatDuration(Math.floor(video.duration));
             onLessonChange(lesson.id, "video", {
               file,
               title: "",
               filename: file.name,
-              duration: duration, // Aggiungiamo la durata formattata
+              duration: duration, 
             });
-            URL.revokeObjectURL(videoUrl); // Puliamo l'URL temporaneo
+            URL.revokeObjectURL(videoUrl); 
           };
         } else {
           alert("Per favore, carica solo file video");

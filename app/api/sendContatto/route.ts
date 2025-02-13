@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import nodemailer from "nodemailer";
 
 const createTransporter = async () => {
-  const cleanEmail = process.env.EMAIL_USER?.replace(/[",\s]/g, "");
+  const cleanEmail = process.env.EMAIL_USER_CONTATTI?.replace(/[",\s]/g, "");
 
   const config = {
     host: "smtps.aruba.it",
@@ -10,7 +10,7 @@ const createTransporter = async () => {
     secure: true,
     auth: {
       user: cleanEmail,
-      pass: process.env.EMAIL_PASSWORD,
+      pass: process.env.EMAIL_PASSWORD_CONTATTI,
     },
     tls: {
       rejectUnauthorized: false,
@@ -54,8 +54,8 @@ export async function POST(request: Request) {
       `;
 
       const contactMailOptions = {
-        from: process.env.EMAIL_FROM,
-        to: process.env.EMAIL_TO,
+        from: process.env.EMAIL_TO_CONTATTI,
+        to: process.env.EMAIL_TO_CONTATTI,
         subject: `Nuova richiesta di contatto - ${nome} ${cognome}`,
         text: contactEmailContent,
         headers: {
@@ -68,7 +68,7 @@ export async function POST(request: Request) {
       await transporter.sendMail(contactMailOptions);
 
       const userConfirmationEmail = {
-        from: process.env.EMAIL_FROM,
+        from: process.env.EMAIL_TO_CONTATTI,
         to: mail,
         subject: "Abbiamo ricevuto la tua richiesta - SNALV Confsal",
         text: `
@@ -94,8 +94,8 @@ export async function POST(request: Request) {
       `;
 
       const newsletterMailOptions = {
-        from: process.env.EMAIL_FROM,
-        to: process.env.EMAIL_TO,
+        from: process.env.EMAIL_TO_CONTATTI,
+        to: process.env.EMAIL_TO_CONTATTI,
         subject: "Nuova iscrizione alla newsletter",
         text: newsletterEmailContent,
         headers: {

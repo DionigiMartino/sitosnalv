@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import nodemailer from "nodemailer";
 
 const createTransporter = async () => {
-  const cleanEmail = process.env.EMAIL_USER?.replace(/[",\s]/g, "");
+  const cleanEmail = process.env.EMAIL_USER_CONTEGGI?.replace(/[",\s]/g, "");
 
   const config = {
     host: "smtps.aruba.it",
@@ -10,7 +10,7 @@ const createTransporter = async () => {
     secure: true,
     auth: {
       user: cleanEmail,
-      pass: process.env.EMAIL_PASSWORD,
+      pass: process.env.EMAIL_PASSWORD_CONTEGGI,
     },
     tls: {
       rejectUnauthorized: false,
@@ -97,8 +97,8 @@ export async function POST(request: Request) {
     transporter = await createTransporter();
 
     const mailOptions = {
-      from: process.env.EMAIL_FROM,
-      to: process.env.EMAIL_TO,
+      from: process.env.EMAIL_TO_CONTEGGI,
+      to: process.env.EMAIL_TO_CONTEGGI,
       subject: `Nuova richiesta di conteggi - ${formFields.lavoratore}`,
       text: emailContent,
       attachments: attachments,
