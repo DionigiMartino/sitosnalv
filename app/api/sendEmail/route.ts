@@ -22,13 +22,6 @@ const createTransporter = async () => {
     logger: true,
   };
 
-  console.log("Configurazione SMTP:", {
-    host: config.host,
-    port: config.port,
-    user: cleanEmail,
-    authMethod: config.authMethod,
-  });
-
   const transporter = nodemailer.createTransport(config);
 
   try {
