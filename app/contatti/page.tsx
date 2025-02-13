@@ -185,83 +185,38 @@ const ContattiPage = () => {
 
   const handleNewsletterSubmit = async (e) => {
     e.preventDefault();
-
-    if (!email.trim()) {
-      setStatus({
-        type: "error",
-        message: "Inserisci un indirizzo email valido",
-      });
-      return;
-    }
-
     setIsSubmitting(true);
-    setStatus({ type: "", message: "" });
-
-    if (!BREVO_API_KEY) {
-      console.error("Brevo API key is not defined");
-      setStatus({
-        type: "error",
-        message: "Configurazione non valida. Contatta l'amministratore.",
-      });
-      setIsSubmitting(false);
-      return;
-    }
 
     try {
-      const response = await fetch("https://api.brevo.com/v3/contacts", {
+      const res = await fetch("/api/newsletter", {
         method: "POST",
         headers: {
-          Accept: "application/json",
           "Content-Type": "application/json",
-          "api-key": BREVO_API_KEY,
         },
-        body: JSON.stringify({
-          email: email.trim(),
-          updateEnabled: true,
-        }),
+        body: JSON.stringify({ email }),
       });
 
-      const responseText = await response.text();
-      let data;
-      try {
-        data = responseText ? JSON.parse(responseText) : {};
-      } catch (e) {
-        console.error("Error parsing response:", responseText);
-        throw new Error("Errore nella risposta dal server");
-      }
+      const data = await res.json();
 
-      if (response.status === 401) {
-        throw new Error("API key non valida");
+      if (res.ok) {
+        setStatus({
+          type: "success",
+          message: "Iscrizione completata con successo!",
+        });
+        setEmail("");
+      } else {
+        setStatus({
+          type: "error",
+          message: data.error || "Errore durante l'iscrizione",
+        });
       }
-
-      if (!response.ok) {
-        throw new Error(
-          data.message || "Si è verificato un errore durante l'iscrizione"
-        );
-      }
-
-      setStatus({
-        type: "success",
-        message: "Iscrizione completata con successo!",
-      });
-      setEmail("");
     } catch (error) {
-      console.error("Error:", error);
       setStatus({
         type: "error",
-        message:
-          error.message ||
-          "Si è verificato un errore durante l'iscrizione. Riprova più tardi.",
+        message: "Errore di connessione",
       });
     } finally {
       setIsSubmitting(false);
-    }
-  };
-
-  const handleEmailChange = (e) => {
-    setEmail(e.target.value);
-    if (status.type === "error") {
-      setStatus({ type: "", message: "" });
     }
   };
 
@@ -361,7 +316,7 @@ const ContattiPage = () => {
                 <div className="flex gap-4">
                   <Input
                     value={email}
-                    onChange={handleEmailChange}
+                    onChange={(e) => setEmail(e.target.value)}
                     placeholder="Inserisci la tua email"
                     type="email"
                     className="bg-white"
@@ -371,7 +326,7 @@ const ContattiPage = () => {
                   <Button
                     type="submit"
                     className="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold whitespace-nowrap"
-                    disabled={isSubmitting || !email.trim()}
+                    disabled={isSubmitting}
                   >
                     {isSubmitting ? "INVIO..." : "ISCRIVITI"}
                   </Button>

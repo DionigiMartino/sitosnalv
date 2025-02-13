@@ -27,7 +27,8 @@ module.exports = {
         EMAIL_TO_CONTEGGI: "conteggi@snalv.it",
         EMAIL_TO_CONTATTI: "info@snalv.it",
         EMAIL_TO_ORGANIZZAZIONE: "organizzazione@snalv.it",
-        NEXT_PUBLIC_BREVO_API_KEY: "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",
+        BREVO_API_KEY:
+          "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",
       },
     },
   ],
