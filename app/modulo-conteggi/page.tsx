@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -63,32 +63,66 @@ const ConteggiPage = () => {
     setIsSubmitting(true);
 
     try {
-      // Qui andrebbe la logica di invio dei dati al backend
-      console.log("Form data:", formData);
+      const formDataToSend = new FormData();
 
-      // Simula una chiamata API
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-
-      alert("Richiesta inviata con successo!");
-      // Reset form
-      setFormData({
-        ragioneSociale: "",
-        cellulare: "",
-        dataInizio: "",
-        ccnl: "",
-        tipologiaContratto: "",
-        straordinari: "",
-        lavoratore: "",
-        email: "",
-        dataFine: "",
-        retribuzione: "",
-        orarioLavoro: "",
-        oreSettimanali: "",
-        files: null,
+      Object.entries(formData).forEach(([key, value]) => {
+        if (key !== "files") {
+          formDataToSend.append(key, value);
+        }
       });
+
+      if (formData.files) {
+        Array.from(formData.files).forEach((file) => {
+          formDataToSend.append("files", file);
+        });
+      }
+
+      const response = await fetch("/api/sendConteggi", {
+        method: "POST",
+        body: formDataToSend,
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(
+          result.error || "Errore durante l'invio della richiesta"
+        );
+      }
+
+      if (result.success) {
+        alert("Richiesta inviata con successo! Verrai contattato a breve.");
+
+        setFormData({
+          ragioneSociale: "",
+          cellulare: "",
+          dataInizio: "",
+          ccnl: "",
+          tipologiaContratto: "",
+          straordinari: "",
+          lavoratore: "",
+          email: "",
+          dataFine: "",
+          retribuzione: "",
+          orarioLavoro: "",
+          oreSettimanali: "",
+          files: null,
+        });
+
+        const fileInput = document.querySelector(
+          'input[type="file"]'
+        ) as HTMLInputElement;
+        if (fileInput) {
+          fileInput.value = "";
+        }
+      }
     } catch (error) {
-      console.error("Error submitting form:", error);
-      alert("Errore durante l'invio della richiesta. Riprova più tardi.");
+      console.error("Errore nell'invio del form:", error);
+      alert(
+        error instanceof Error
+          ? error.message
+          : "Si è verificato un errore durante l'invio. Per favore riprova più tardi."
+      );
     } finally {
       setIsSubmitting(false);
     }

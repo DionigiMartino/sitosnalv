@@ -17,6 +17,8 @@ interface CertificatoFormData {
   qualificaProfessionale: string;
   datoreLavoro: string;
   indirizzoLavoro: string;
+  email?: string;
+  telefono?: string;
 }
 
 const CertificatoPage = () => {
@@ -30,6 +32,8 @@ const CertificatoPage = () => {
     qualificaProfessionale: "",
     datoreLavoro: "",
     indirizzoLavoro: "",
+    email: "",
+    telefono: "",
   });
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -45,27 +49,52 @@ const CertificatoPage = () => {
     setIsSubmitting(true);
 
     try {
-      // Qui andrebbe la logica di invio dei dati al backend
-      console.log("Form data:", formData);
+      if (!formData.nome || !formData.cognome || !formData.email) {
+        throw new Error("Per favore, compila tutti i campi obbligatori");
+      }
 
-      // Simula una chiamata API
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-
-      alert("Richiesta inviata con successo!");
-      // Reset form
-      setFormData({
-        nome: "",
-        cognome: "",
-        luogoNascita: "",
-        dataNascita: "",
-        codiceFiscale: "",
-        qualificaProfessionale: "",
-        datoreLavoro: "",
-        indirizzoLavoro: "",
+      const response = await fetch("/api/sendEmail", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
       });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(
+          result.error || "Errore durante l'invio della richiesta"
+        );
+      }
+
+      if (result.success) {
+        // Feedback positivo all'utente
+        alert("Richiesta inviata con successo! Ti contatteremo presto.");
+
+        // Reset del form
+        setFormData({
+          nome: "",
+          cognome: "",
+          luogoNascita: "",
+          dataNascita: "",
+          codiceFiscale: "",
+          qualificaProfessionale: "",
+          datoreLavoro: "",
+          indirizzoLavoro: "",
+          email: "",
+          telefono: "",
+        });
+      }
     } catch (error) {
-      console.error("Error submitting form:", error);
-      alert("Errore durante l'invio della richiesta. Riprova più tardi.");
+      console.error("Errore nell'invio del form:", error);
+      // Mostra un messaggio di errore appropriato all'utente
+      alert(
+        error instanceof Error
+          ? error.message
+          : "Si è verificato un errore durante l'invio. Per favore riprova più tardi."
+      );
     } finally {
       setIsSubmitting(false);
     }
@@ -202,6 +231,32 @@ const CertificatoPage = () => {
                       <Input
                         name="indirizzoLavoro"
                         value={formData.indirizzoLavoro}
+                        onChange={handleInputChange}
+                        className="w-full bg-white"
+                        required
+                      />
+                    </div>
+
+                    <div>
+                      <label className="text-blue-600 block text-sm font-bold mb-1">
+                        Email di contatto
+                      </label>
+                      <Input
+                        name="email"
+                        value={formData.email}
+                        onChange={handleInputChange}
+                        className="w-full bg-white"
+                        required
+                      />
+                    </div>
+
+                    <div>
+                      <label className="text-blue-600 block text-sm font-bold mb-1">
+                        Telefono/Cellulare
+                      </label>
+                      <Input
+                        name="telefono"
+                        value={formData.telefono}
                         onChange={handleInputChange}
                         className="w-full bg-white"
                         required

@@ -37,7 +37,6 @@ const ContactSection = () => {
     {
       title: "Ufficio Vertenze e Conteggi",
       details: [
-    
         {
           label: "Mobile & Whatsapp",
           value: "345.0511636",
@@ -136,14 +135,86 @@ const ContattiPage = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [newsletter, setNewsletter] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    // Aggiungi qui la logica di invio
-    setTimeout(() => {
+
+    try {
+      const response = await fetch("/api/sendContatto", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          type: "contact",
+          ...formData,
+        }),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(
+          result.error || "Errore durante l'invio della richiesta"
+        );
+      }
+
+      if (result.success) {
+        alert("Richiesta inviata con successo! Ti contatteremo presto.");
+        // Reset del form
+        setFormData({
+          nome: "",
+          cognome: "",
+          tel: "",
+          mail: "",
+        });
+      }
+    } catch (error) {
+      console.error("Errore nell'invio del form:", error);
+      alert(
+        "Si è verificato un errore durante l'invio. Per favore riprova più tardi."
+      );
+    } finally {
       setIsSubmitting(false);
-      // Reset form o mostra messaggio di successo
-    }, 2000);
+    }
+  };
+
+  const handleNewsletterSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!newsletter) {
+      alert("Inserisci un indirizzo email valido");
+      return;
+    }
+
+    try {
+      const response = await fetch("/api/sendContatto", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          type: "newsletter",
+          email: newsletter,
+        }),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.error || "Errore durante l'iscrizione");
+      }
+
+      if (result.success) {
+        alert("Iscrizione alla newsletter completata con successo!");
+        setNewsletter("");
+      }
+    } catch (error) {
+      console.error("Errore nell'iscrizione alla newsletter:", error);
+      alert(
+        "Si è verificato un errore durante l'iscrizione. Per favore riprova più tardi."
+      );
+    }
   };
 
   return (
@@ -235,18 +306,22 @@ const ContattiPage = () => {
                 <span className="font-bold">Newsletter</span> per ricevere
                 mensilmente notizie e aggiornamenti dal mondo del lavoro!
               </p>
-              <div className="flex gap-4">
+              <form onSubmit={handleNewsletterSubmit} className="flex gap-4">
                 <Input
                   value={newsletter}
                   onChange={(e) => setNewsletter(e.target.value)}
                   placeholder="Inserisci la tua email"
                   type="email"
                   className="bg-white"
+                  required
                 />
-                <Button className="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold whitespace-nowrap">
+                <Button
+                  type="submit"
+                  className="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold whitespace-nowrap"
+                >
                   ISCRIVITI
                 </Button>
-              </div>
+              </form>
             </div>
           </div>
         </div>
