@@ -221,7 +221,6 @@ const ContattiPage = () => {
         }),
       });
 
-      // Prima controlla se c'è del contenuto nella risposta
       const responseText = await response.text();
       let data;
       try {
@@ -241,7 +240,6 @@ const ContattiPage = () => {
         );
       }
 
-      // Success
       setStatus({
         type: "success",
         message: "Iscrizione completata con successo!",
