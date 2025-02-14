@@ -4,7 +4,14 @@ import Image from "next/image";
 import { Card, CardContent } from "@/components/ui/card";
 import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
-import { collection, getDocs, query, orderBy, limit } from "firebase/firestore";
+import {
+  collection,
+  getDocs,
+  query,
+  orderBy,
+  where,
+  limit,
+} from "firebase/firestore";
 import { db } from "@/src/lib/firebase";
 import Link from "next/link";
 
@@ -15,11 +22,16 @@ const RecentNews = () => {
   useEffect(() => {
     const fetchNews = async () => {
       try {
+        const now = new Date();
+
+        // Creiamo una query che prende solo le notizie con data minore o uguale a now
         const newsQuery = query(
           collection(db, "notizie"),
+          where("createdAt", "<=", now),
           orderBy("createdAt", "desc"),
-          limit(3) // Limitiamo a 3 risultati
+          limit(3)
         );
+
         const querySnapshot = await getDocs(newsQuery);
         const newsData = querySnapshot.docs.map((doc) => ({
           id: doc.id,
@@ -27,7 +39,7 @@ const RecentNews = () => {
           createdAt: doc.data().createdAt?.toDate(),
         }));
 
-        setNews(newsData.slice(0, 3)); // Prendiamo solo i primi 3 anche dopo il filtro
+        setNews(newsData);
       } catch (error) {
         console.error("Error fetching news:", error);
       } finally {
