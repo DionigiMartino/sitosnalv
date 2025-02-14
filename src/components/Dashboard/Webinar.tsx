@@ -50,8 +50,6 @@ import {
   serverTimestamp,
 } from "firebase/firestore";
 import { db } from "@/src/lib/firebase";
-import { renderAsync } from "docx-preview";
-import { PDFDocument } from "pdf-lib";
 
 const Webinar = () => {
   const [webinars, setWebinars] = useState([]);
@@ -61,7 +59,6 @@ const Webinar = () => {
   const [webinarToDelete, setWebinarToDelete] = useState(null);
   const [selectedWebinar, setSelectedWebinar] = useState(null);
   const [isViewMode, setIsViewMode] = useState(false);
-  const [isConverting, setIsConverting] = useState(false);
 
   // Form states
   const [title, setTitle] = useState("");
@@ -78,55 +75,6 @@ const Webinar = () => {
   useEffect(() => {
     fetchWebinars();
   }, []);
-
-  const convertDocxToPdf = async (file) => {
-    setIsConverting(true);
-    try {
-      // Leggi il file DOCX
-      const arrayBuffer = await file.arrayBuffer();
-
-      // Crea un container per il rendering
-      const container = document.createElement("div");
-      container.style.position = "absolute";
-      container.style.left = "-9999px";
-      document.body.appendChild(container);
-
-      // Usa renderAsync invece di Document.load
-      await renderAsync(arrayBuffer, container, container);
-      const canvas = container.querySelector("canvas");
-
-      // Il resto del codice rimane uguale
-      const pdfDoc = await PDFDocument.create();
-      const page = pdfDoc.addPage([canvas.width, canvas.height]);
-
-      const pngImage = await canvas.toDataURL("image/png");
-      const pngImageBytes = await fetch(pngImage).then((res) =>
-        res.arrayBuffer()
-      );
-      const image = await pdfDoc.embedPng(pngImageBytes);
-
-      page.drawImage(image, {
-        x: 0,
-        y: 0,
-        width: canvas.width,
-        height: canvas.height,
-      });
-
-      const pdfBytes = await pdfDoc.save();
-      document.body.removeChild(container);
-
-      const pdfFile = new File([pdfBytes], file.name.replace(".docx", ".pdf"), {
-        type: "application/pdf",
-      });
-
-      return pdfFile;
-    } catch (error) {
-      console.error("Error converting DOCX to PDF:", error);
-      throw new Error("Errore durante la conversione del file DOCX in PDF");
-    } finally {
-      setIsConverting(false);
-    }
-  };
 
   const fetchWebinars = async () => {
     try {
@@ -152,17 +100,17 @@ const Webinar = () => {
     if (!file) return null;
 
     const storage = getStorage();
-    const fileRef = ref(storage, `webinars/videos/${file.name}`);
+    const fileRef = ref(storage, `webinars/${file.name}`);
     await uploadBytes(fileRef, file);
     const url = await getDownloadURL(fileRef);
     return url;
   };
 
-  const handlePdfUpload = async (file) => {
+  const handleFileUpload = async (file) => {
     if (!file) return null;
 
     const storage = getStorage();
-    const fileRef = ref(storage, `webinars/pdfs/${file.name}`);
+    const fileRef = ref(storage, `webinars/${file.name}`);
     await uploadBytes(fileRef, file);
     const url = await getDownloadURL(fileRef);
     return url;
@@ -184,47 +132,22 @@ const Webinar = () => {
     }
   };
 
-  const handleFileUpload = async (files) => {
-    setUploadProgress(true);
-    try {
-      for (const file of files) {
-        if (file.type === "application/pdf") {
-          // Se è già un PDF, caricalo direttamente
-          await handlePdfAdd(file);
-        } else if (
-          file.type ===
-          "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-        ) {
-          // Se è un DOCX, convertilo prima in PDF
-          const pdfFile = await convertDocxToPdf(file);
-          await handlePdfAdd(pdfFile);
-        } else {
-          throw new Error("Formato file non supportato");
-        }
-      }
-    } catch (error) {
-      console.error("Error processing files:", error);
-      alert(error.message);
-    } finally {
-      setUploadProgress(false);
-    }
-  };
-
   const handlePdfAdd = async (file) => {
     try {
       setUploadProgress(true);
-      const url = await handlePdfUpload(file);
+      const url = await handleFileUpload(file);
       setPdfs((prev) => [
         ...prev,
         {
           url,
           title: "",
           filename: file.name,
+          type: file.type,
         },
       ]);
     } catch (error) {
-      console.error("Error uploading PDF:", error);
-      alert("Errore durante il caricamento del PDF");
+      console.error("Error uploading file:", error);
+      alert("Errore durante il caricamento del file");
     } finally {
       setUploadProgress(false);
     }
@@ -247,16 +170,13 @@ const Webinar = () => {
     try {
       let videoData = null;
 
-      // Se c'è un nuovo video da caricare
       if (video) {
         const url = await handleVideoUpload(video);
         videoData = {
           url,
           title: videoTitle,
         };
-      }
-      // Se stiamo modificando e c'è un video esistente (non eliminato)
-      else if (selectedWebinar?.video?.url && videoTitle) {
+      } else if (selectedWebinar?.video?.url && videoTitle) {
         videoData = {
           url: selectedWebinar.video.url,
           title: videoTitle,
@@ -274,9 +194,7 @@ const Webinar = () => {
       };
 
       if (selectedWebinar?.id) {
-        // Se stiamo modificando un webinar esistente e il video è stato rimosso
         if (selectedWebinar.video?.url && !videoData) {
-          // Elimina il video da Firebase Storage
           const storage = getStorage();
           const videoRef = ref(storage, selectedWebinar.video.url);
           await deleteObject(videoRef);
@@ -321,14 +239,12 @@ const Webinar = () => {
 
     setIsLoading(true);
     try {
-      // Delete video if exists
       if (webinarToDelete.video?.url) {
         const storage = getStorage();
         const videoRef = ref(storage, webinarToDelete.video.url);
         await deleteObject(videoRef);
       }
 
-      // Delete PDFs if exist
       if (webinarToDelete.pdfs?.length > 0) {
         const storage = getStorage();
         await Promise.all(
@@ -369,7 +285,15 @@ const Webinar = () => {
       return;
     }
 
-    await handleFileUpload(files);
+    setUploadProgress(true);
+    try {
+      await Promise.all(files.map(handlePdfAdd));
+    } catch (error) {
+      console.error("Error uploading files:", error);
+      alert("Errore durante il caricamento dei file");
+    } finally {
+      setUploadProgress(false);
+    }
   };
 
   const formatDate = (date) => {
@@ -525,11 +449,17 @@ const Webinar = () => {
 
                 {selectedWebinar?.pdfs?.length > 0 && (
                   <div className="space-y-2">
-                    <h4 className="font-medium">Materiali PDF</h4>
+                    <h4 className="font-medium">Materiali</h4>
                     <div className="space-y-2">
                       {selectedWebinar.pdfs.map((pdf, index) => (
                         <div key={index} className="flex items-center gap-2">
-                          <FileText className="h-4 w-4 text-red-500" />
+                          <FileText
+                            className={`h-4 w-4 ${
+                              pdf.type === "application/pdf"
+                                ? "text-red-500"
+                                : "text-blue-500"
+                            }`}
+                          />
                           <span>{pdf.title || pdf.filename}</span>
                           <a
                             href={pdf.url}
@@ -719,7 +649,20 @@ const Webinar = () => {
                               className="hidden"
                               onChange={async (e) => {
                                 const files = Array.from(e.target.files);
-                                await handleFileUpload(files);
+                                setUploadProgress(true);
+                                try {
+                                  await Promise.all(files.map(handlePdfAdd));
+                                } catch (error) {
+                                  console.error(
+                                    "Error uploading files:",
+                                    error
+                                  );
+                                  alert(
+                                    "Errore durante il caricamento dei file"
+                                  );
+                                } finally {
+                                  setUploadProgress(false);
+                                }
                               }}
                             />
                           </label>
@@ -729,13 +672,11 @@ const Webinar = () => {
                         </p>
                       </div>
 
-                      {(uploadProgress || isConverting) && (
+                      {uploadProgress && (
                         <div className="flex items-center justify-center">
                           <Loader2 className="h-5 w-5 animate-spin text-blue-500" />
                           <span className="ml-2 text-sm text-gray-600">
-                            {isConverting
-                              ? "Conversione DOCX in PDF..."
-                              : "Caricamento in corso..."}
+                            Caricamento in corso...
                           </span>
                         </div>
                       )}
@@ -748,9 +689,17 @@ const Webinar = () => {
                         key={index}
                         className="flex items-center gap-2 bg-gray-50 p-2 rounded-lg"
                       >
-                        <FileText className="h-4 w-4 text-red-500 flex-shrink-0" />
+                        <FileText
+                          className={`h-4 w-4 ${
+                            pdf.type === "application/pdf"
+                              ? "text-red-500"
+                              : "text-blue-500"
+                          }`}
+                        />
                         <Input
-                          placeholder="Titolo del PDF"
+                          placeholder={`Titolo del ${
+                            pdf.type === "application/pdf" ? "PDF" : "DOCX"
+                          }`}
                           value={pdf.title}
                           onChange={(e) =>
                             updatePdfTitle(index, e.target.value)
@@ -774,14 +723,11 @@ const Webinar = () => {
                 </div>
 
                 <DialogFooter>
-                  <Button
-                    type="submit"
-                    disabled={uploadProgress || isConverting}
-                  >
-                    {(uploadProgress || isConverting) && (
+                  <Button type="submit" disabled={uploadProgress}>
+                    {uploadProgress && (
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                     )}
-                    {uploadProgress || isConverting
+                    {uploadProgress
                       ? "Caricamento..."
                       : selectedWebinar
                       ? "Aggiorna"
