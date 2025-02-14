@@ -5,7 +5,15 @@ import { Card } from "@/components/ui/card";
 import Image from "next/image";
 import Link from "next/link";
 import { useState, useEffect } from "react";
-import { collection, getDocs, query, orderBy, limit } from "firebase/firestore";
+import {
+  collection,
+  getDocs,
+  query,
+  orderBy,
+  limit,
+  where,
+  Timestamp,
+} from "firebase/firestore";
 import { db } from "@/src/lib/firebase";
 
 interface Props {
@@ -25,11 +33,17 @@ const ComunicatiStampa = ({
   useEffect(() => {
     const fetchComunicati = async () => {
       try {
+        // Creiamo un timestamp per la data corrente
+        const now = Timestamp.fromDate(new Date());
+
+        // Query modificata per prendere solo i comunicati con data <= now
         const comunicatiQuery = query(
           collection(db, "comunicati"),
+          where("createdAt", "<=", now), // Filtro per data
           orderBy("createdAt", "desc"),
-          limit(3) // Limitiamo a 3 risultati
+          limit(3)
         );
+
         const querySnapshot = await getDocs(comunicatiQuery);
         const comunicatiData = querySnapshot.docs
           .map((doc) => ({
@@ -38,7 +52,14 @@ const ComunicatiStampa = ({
             createdAt: doc.data().createdAt?.toDate(),
             tipo: "comunicati",
           }))
-          .slice(0, 3); // Prendiamo solo i primi 3 anche dopo il filtro
+          .filter((comunicato) => {
+            // Doppio controllo sulle date per sicurezza
+            if (!comunicato.createdAt) return true;
+            const comunicatoDate = new Date(comunicato.createdAt);
+            const currentDate = new Date();
+            return comunicatoDate <= currentDate;
+          })
+          .slice(0, 3);
 
         setComunicati(comunicatiData);
       } catch (error) {
@@ -70,7 +91,7 @@ const ComunicatiStampa = ({
     return null;
   }
 
-  // Manteniamo la variante sidebar come era prima
+  // Variante sidebar
   if (variant === "sidebar") {
     return (
       <div className="space-y-4">
