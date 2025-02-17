@@ -11,7 +11,7 @@ import Footer from "@/src/components/Footer";
 const LoginForm = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const callbackUrl = searchParams.get("callbackUrl") || "/area-riservata";
+  const callbackUrl = searchParams.get("callbackUrl") || "/elearning";
 
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({

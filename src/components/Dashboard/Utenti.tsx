@@ -24,6 +24,7 @@ import {
   Edit,
   Trash2,
   ChevronDown,
+  BookOpen,
   ChevronRight,
 } from "lucide-react";
 import {
@@ -49,6 +50,75 @@ import {
 import { toast } from "@/hooks/use-toast";
 import { it } from "date-fns/locale";
 
+const ProgressDialog = ({ isOpen, onClose, user, courses }: any) => {
+  return (
+    <Dialog open={isOpen} onOpenChange={onClose}>
+      <DialogContent className="max-w-3xl">
+        <DialogHeader>
+          <DialogTitle>Progressi Corsi - {user?.username}</DialogTitle>
+        </DialogHeader>
+        <div className="space-y-6 max-h-[60vh] overflow-y-auto">
+          {courses.map((course) => {
+            const courseProgress =
+              user?.courseProgress?.[course.id]?.lessons || {};
+            const completedLessons = Object.values(courseProgress).filter(
+              // @ts-ignore
+              (lesson) => lesson?.completed === true
+            ).length;
+            const totalLessons = course.lessons?.length || 0;
+
+            return (
+              <div key={course.id} className="space-y-4 border-b pb-4">
+                <div className="flex items-center justify-between">
+                  <h3 className="font-medium text-lg">{course.title}</h3>
+                  <div className="flex items-center gap-2">
+                    <div className="w-32 h-2 bg-gray-200 rounded-full overflow-hidden">
+                      <div
+                        className="h-full bg-blue-500 transition-all"
+                        style={{
+                          width: `${
+                            totalLessons > 0
+                              ? (completedLessons / totalLessons) * 100
+                              : 0
+                          }%`,
+                        }}
+                      />
+                    </div>
+                    <span className="text-sm text-gray-600">
+                      {completedLessons}/{totalLessons}
+                    </span>
+                  </div>
+                </div>
+
+                <div className="pl-4 space-y-2">
+                  {course.lessons?.map((lesson) => {
+                    const lessonProgress = courseProgress[lesson.id];
+                    return (
+                      <div key={lesson.id} className="flex items-center gap-2">
+                        <div
+                          className={`w-2 h-2 rounded-full ${
+                            lessonProgress?.completed
+                              ? "bg-green-500"
+                              : "bg-gray-300"
+                          }`}
+                        />
+                        <span className="text-sm">{lesson.title}</span>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+        <DialogFooter>
+          <Button onClick={onClose}>Chiudi</Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+};
+
 const Users = () => {
   // State declarations
   const [users, setUsers] = useState([]);
@@ -68,6 +138,8 @@ const Users = () => {
   const [nome, setNome] = useState("");
   const [dataNascita, setDataNascita] = useState("");
   const [luogoNascita, setLuogoNascita] = useState("");
+  const [showProgressDialog, setShowProgressDialog] = useState(false);
+  const [selectedUserProgress, setSelectedUserProgress] = useState(null);
 
   const roles = ["Responsabile Sindacale", "Amministratore"];
 
@@ -329,7 +401,6 @@ const Users = () => {
                     }`}
                   />
                   <span className="truncate">{lesson.title}</span>
-                 
                 </div>
               );
             })}
@@ -379,23 +450,6 @@ const Users = () => {
             <TableBody>
               {filteredUsers.map((user) => (
                 <TableRow key={user.id}>
-                  <TableCell>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() =>
-                        setExpandedUser(
-                          expandedUser === user.id ? null : user.id
-                        )
-                      }
-                    >
-                      {expandedUser === user.id ? (
-                        <ChevronDown className="h-4 w-4" />
-                      ) : (
-                        <ChevronRight className="h-4 w-4" />
-                      )}
-                    </Button>
-                  </TableCell>
                   <TableCell>{user.nome}</TableCell>
                   <TableCell>{user.dataNascita}</TableCell>
                   <TableCell>{user.luogoNascita}</TableCell>
@@ -403,11 +457,17 @@ const Users = () => {
                   <TableCell>{user.email}</TableCell>
                   <TableCell className="capitalize">{user.role}</TableCell>
                   <TableCell>
-                    <div className="space-y-4">
-                      {courses.map((course) =>
-                        renderCourseProgress(user, course)
-                      )}
-                    </div>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        setSelectedUserProgress(user);
+                        setShowProgressDialog(true);
+                      }}
+                    >
+                      <BookOpen className="h-4 w-4 mr-2" />
+                      Visualizza Progressi
+                    </Button>
                   </TableCell>
                   <TableCell className="flex gap-2">
                     <Button
@@ -440,6 +500,16 @@ const Users = () => {
           </Table>
         </CardContent>
       </Card>
+
+      <ProgressDialog
+        isOpen={showProgressDialog}
+        onClose={() => {
+          setShowProgressDialog(false);
+          setSelectedUserProgress(null);
+        }}
+        user={selectedUserProgress}
+        courses={courses}
+      />
 
       {/* User Form Dialog */}
       <Dialog open={showForm} onOpenChange={setShowForm}>
