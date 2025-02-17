@@ -1,127 +1,146 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
-import { Mail } from "lucide-react";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Video, BookOpen, ArrowRight, GraduationCap } from "lucide-react";
 import Header from "@/src/components/Header";
 import Footer from "@/src/components/Footer";
+import Link from "next/link";
 
-const ComingSoonPage = () => {
-  const [mounted, setMounted] = useState(false);
+const FormazionePage = () => {
+  const { data: session, status } = useSession();
+  const router = useRouter();
 
   useEffect(() => {
-    setMounted(true);
-  });
+    if (status === "unauthenticated") {
+      router.push("/login");
+    }
+  }, [status, router]);
+
+  if (status === "loading") {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="w-16 h-16 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+      </div>
+    );
+  }
+
+  if (!session) {
+    return null;
+  }
 
   return (
-    <>
+    <div className="min-h-screen flex flex-col bg-gradient-to-b from-blue-50 to-white">
       <Header />
-      <div className="min-h-screen bg-white relative overflow-hidden flex items-center justify-center">
-        {/* Subtle grid background */}
-        <div
-          className="absolute inset-0 opacity-[0.03]"
-          style={{
-            backgroundImage: "radial-gradient(#000 1px, transparent 1px)",
-            backgroundSize: "50px 50px",
-          }}
-        />
 
-        <div
-          className={`max-w-2xl mx-auto px-6 py-16 relative ${
-            mounted ? "animate-fade-in" : "opacity-0"
-          }`}
-        >
-          {/* Top accent line */}
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-24 h-px bg-gradient-to-r from-transparent via-gray-300 to-transparent" />
-
-          <div className="text-center space-y-12">
-            {/* Elegant heading */}
-            <div className="space-y-4">
-              <h1 className="text-4xl font-extralight text-gray-900 tracking-[0.2em] uppercase">
-                Coming Soon
-              </h1>
-              <div className="w-12 h-px bg-gray-200 mx-auto" />
-            </div>
-
-            {/* Main content with refined typography */}
-            <div className="space-y-8">
-              <p className="text-xl leading-relaxed text-gray-600 font-light tracking-wide">
-                Stiamo creando la nuova piattaforma e&#8209;learning
-                <br />
-                riservata a lavoratori e responsabili sindacali.
-              </p>
-              <p className="text-xl leading-relaxed text-gray-600 font-light tracking-wide">
-                Nel frattempo, per fruire dei nostri corsi,
-                <br />
-                puoi inviare una mail a:
-              </p>
-            </div>
-
-            {/* Sophisticated email button */}
-            <div className="relative inline-block group">
-              <div className="absolute -inset-0.5 bg-gradient-to-r from-gray-200 to-gray-100 rounded-lg blur opacity-75 group-hover:opacity-100 transition duration-1000 group-hover:duration-200" />
-              <a
-                href="mailto:formazione@snalv.it"
-                className="relative flex items-center px-8 py-4 bg-white rounded-lg leading-none"
-              >
-                <span className="flex items-center gap-3">
-                  <Mail className="w-5 h-5 text-gray-400 group-hover:text-gray-600 transition-colors duration-200" />
-                  <span className="text-gray-700 tracking-wide group-hover:text-gray-900 transition-colors duration-200">
-                    formazione@snalv.it
-                  </span>
-                </span>
-              </a>
-            </div>
-          </div>
-
-          {/* Decorative elements */}
-          <div className="absolute inset-0 -z-10 overflow-hidden">
-            <div className="absolute top-1/4 -left-4 w-72 h-72 bg-gray-50 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob" />
-            <div className="absolute -bottom-8 -right-4 w-72 h-72 bg-gray-50 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-4000" />
-          </div>
-
-          {/* Bottom accent line */}
-          <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-24 h-px bg-gradient-to-r from-transparent via-gray-300 to-transparent" />
+      <main className="flex-grow container mx-auto px-4 py-12">
+        <div className="text-center mb-16">
+          <h1 className="text-4xl md:text-5xl font-bold text-blue-900 mb-4">
+            Area Formazione
+          </h1>
+          <p className="text-xl text-gray-600 max-w-2xl mx-auto mt-2">
+            Benvenuto nella piattaforma e-learning dello SNALV Confsal
+          </p>
         </div>
 
-        <style jsx>{`
-          @keyframes fade-in {
-            from {
-              opacity: 0;
-              transform: translateY(20px);
-            }
-            to {
-              opacity: 1;
-              transform: translateY(0);
-            }
-          }
-          @keyframes blob {
-            0% {
-              transform: translate(0px, 0px) scale(1);
-            }
-            33% {
-              transform: translate(20px, -20px) scale(1.1);
-            }
-            66% {
-              transform: translate(-20px, 20px) scale(0.9);
-            }
-            100% {
-              transform: translate(0px, 0px) scale(1);
-            }
-          }
-          .animate-fade-in {
-            animation: fade-in 1.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-          }
-          .animate-blob {
-            animation: blob 15s infinite;
-          }
-          .animation-delay-4000 {
-            animation-delay: 4s;
-          }
-        `}</style>
-      </div>
+        <div className="grid md:grid-cols-2 gap-8 max-w-6xl mx-auto">
+          {/* Card Webinar */}
+          <Link href="/webinar" className="block">
+            <Card className="group cursor-pointer overflow-hidden bg-white hover:shadow-2xl transition-shadow duration-300">
+              <CardContent className="p-8">
+                <div className="flex flex-col items-center text-center space-y-6">
+                  <div className="w-20 h-20 rounded-full bg-blue-100 flex items-center justify-center">
+                    <Video className="w-10 h-10 text-blue-600" />
+                  </div>
+
+                  <div>
+                    <h2 className="text-3xl font-bold text-blue-900 mb-4">
+                      Webinar
+                    </h2>
+                    <p className="text-gray-600 mb-6">
+                      Partecipa ai nostri webinar interattivi o scaricare le
+                      guide formative redatte dall'ufficio legislativo Snalv
+                      Confsal.
+                    </p>
+                  </div>
+
+                  <div className="flex items-center text-blue-600 font-semibold group-hover:translate-x-2 transition-transform duration-300">
+                    Scopri i webinar
+                    <ArrowRight className="ml-2 w-5 h-5" />
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </Link>
+
+          {/* Card Corsi */}
+          <Link href="/corsi" className="block">
+            <Card className="group cursor-pointer overflow-hidden bg-white hover:shadow-2xl transition-shadow duration-300">
+              <CardContent className="p-8">
+                <div className="flex flex-col items-center text-center space-y-6">
+                  <div className="w-20 h-20 rounded-full bg-red-100 flex items-center justify-center">
+                    <BookOpen className="w-10 h-10 text-red-600" />
+                  </div>
+
+                  <div>
+                    <h2 className="text-3xl font-bold text-red-900 mb-4">
+                      Corsi
+                    </h2>
+                    <p className="text-gray-600 mb-6">
+                      Accedi ai nostri corsi strutturati: video lezioni,
+                      materiale didattico completo e certificazioni
+                      automatizzate.
+                    </p>
+                  </div>
+
+                  <div className="flex items-center text-red-600 font-semibold group-hover:translate-x-2 transition-transform duration-300">
+                    Esplora i corsi
+                    <ArrowRight className="ml-2 w-5 h-5" />
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </Link>
+
+          <Link
+            href="https://snalv.confsalformazione.com/"
+            target="_blank"
+            className="block md:col-span-2"
+          >
+            <Card className="group cursor-pointer overflow-hidden bg-white hover:shadow-2xl transition-shadow duration-300">
+              <CardContent className="p-8">
+                <div className="flex flex-col items-center text-center space-y-6">
+                  <div className="w-20 h-20 rounded-full bg-purple-100 flex items-center justify-center">
+                    <GraduationCap className="w-10 h-10 text-purple-600" />
+                  </div>
+
+                  <div>
+                    <h2 className="text-3xl font-bold text-purple-900 mb-4">
+                      Formazione Scuola
+                    </h2>
+                    <p className="text-gray-600 mb-6">
+                      Corsi riservati a docenti, personale ATA, responsabili
+                      SNALV del comparto Scuola. Accedi alla piattaforma
+                      e-learning creata in collaborazione con lo SNALS Confsal
+                    </p>
+                  </div>
+
+                  <div className="flex items-center text-purple-600 font-semibold group-hover:translate-x-2 transition-transform duration-300">
+                    Accedi alla piattaforma
+                    <ArrowRight className="ml-2 w-5 h-5" />
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </Link>
+        </div>
+      </main>
+
       <Footer />
-    </>
+    </div>
   );
 };
 
-export default ComingSoonPage;
+export default FormazionePage;

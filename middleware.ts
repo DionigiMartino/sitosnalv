@@ -37,7 +37,7 @@ export default withAuth(
     callbacks: {
       authorized: ({ req, token }) => {
         if (
-          req.nextUrl.pathname.startsWith("/area-riservata") ||
+          req.nextUrl.pathname.startsWith("/elearning") ||
           req.nextUrl.pathname.startsWith("/webinar") ||
           req.nextUrl.pathname.startsWith("/corsi")
         ) {
@@ -52,7 +52,7 @@ export default withAuth(
 export const config = {
   matcher: [
     "/docs/:path*",
-    "/area-riservata/:path*",
+    "/elearning/:path*",
     "/webinar/:path*",
     "/corsi/:path*",
   ],
