@@ -108,6 +108,7 @@ interface Course {
   updatedAt: any;
   program: any;
   lessons: Lesson[];
+  instructions?: any;
   progress?: {
     [key: string]: LessonProgress;
   };
@@ -1392,6 +1393,37 @@ const CourseViewer = () => {
                                 <div className="flex-1 min-w-0">
                                   <h4 className="font-medium text-purple-900">
                                     Programma del corso
+                                  </h4>
+                                  <div className="flex items-center gap-3 mt-2">
+                                    <div className="flex items-center gap-1 text-xs">
+                                      <Download className="h-3 w-3 text-purple-500" />
+                                      <span className="text-gray-600">PDF</span>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        )}
+
+                        {selectedCourse.instructions && (
+                          <div
+                            className="group relative bg-white rounded-xl border transition-all duration-200 cursor-pointer border-purple-100 hover:border-purple-200 hover:shadow-md"
+                            onClick={() =>
+                              window.open(
+                                selectedCourse.instructions.url,
+                                "_blank"
+                              )
+                            }
+                          >
+                            <div className="relative p-4">
+                              <div className="flex items-center gap-4">
+                                <div className="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium bg-purple-100 text-purple-700">
+                                  <FileText className="h-4 w-4" />
+                                </div>
+                                <div className="flex-1 min-w-0">
+                                  <h4 className="font-medium text-purple-900">
+                                    Istruzioni del corso
                                   </h4>
                                   <div className="flex items-center gap-3 mt-2">
                                     <div className="flex items-center gap-1 text-xs">

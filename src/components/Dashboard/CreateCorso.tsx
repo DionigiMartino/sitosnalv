@@ -29,7 +29,8 @@ const CreateEditCourse = ({ existingCourse = null, onBack }) => {
     title: existingCourse?.title || "",
     description: existingCourse?.description || "",
     lessons: existingCourse?.lessons || [],
-    program: existingCourse?.program || null, // Aggiungiamo questo
+    program: existingCourse?.program || null,
+    instructions: existingCourse?.instructions || null, // Aggiunto il campo instructions
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -100,6 +101,19 @@ const CreateEditCourse = ({ existingCourse = null, onBack }) => {
         };
       }
 
+      // Gestione del caricamento delle istruzioni
+      let instructionsData = course.instructions;
+      if (course.instructions?.file) {
+        const instructionsUrl = await handleFileUpload(
+          course.instructions.file,
+          `instructions/${Date.now()}`
+        );
+        instructionsData = {
+          url: instructionsUrl,
+          filename: course.instructions.filename,
+        };
+      }
+
       const processedLessons = await Promise.all(
         course.lessons.map(async (lesson) => {
           let videoData = lesson.video;
@@ -145,6 +159,7 @@ const CreateEditCourse = ({ existingCourse = null, onBack }) => {
         description: course.description,
         lessons: processedLessons,
         program: programData,
+        instructions: instructionsData, // Aggiunto al courseData
         updatedAt: serverTimestamp(),
       };
 
@@ -216,10 +231,14 @@ const CreateEditCourse = ({ existingCourse = null, onBack }) => {
               <Label>Programma del corso (PDF)</Label>
               <div
                 className={`
-    border-2 border-dashed rounded-lg p-6 
-    ${course.program ? "border-green-500 bg-green-50" : "border-gray-300"}
-    transition-colors duration-200 text-center
-  `}
+                  border-2 border-dashed rounded-lg p-6 
+                  ${
+                    course.program
+                      ? "border-green-500 bg-green-50"
+                      : "border-gray-300"
+                  }
+                  transition-colors duration-200 text-center
+                `}
                 onDragOver={(e) => e.preventDefault()}
                 onDrop={(e) => {
                   e.preventDefault();
@@ -272,6 +291,88 @@ const CreateEditCourse = ({ existingCourse = null, onBack }) => {
                               setCourse((prev) => ({
                                 ...prev,
                                 program: {
+                                  file,
+                                  filename: file.name,
+                                },
+                              }));
+                            }
+                          }}
+                        />
+                      </label>
+                      <p className="text-xs text-gray-500 mt-1">
+                        Solo file PDF (max 10MB)
+                      </p>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Nuovo campo per le istruzioni del corso */}
+            <div className="space-y-2">
+              <Label>Istruzioni del corso (PDF)</Label>
+              <div
+                className={`
+                  border-2 border-dashed rounded-lg p-6 
+                  ${
+                    course.instructions
+                      ? "border-green-500 bg-green-50"
+                      : "border-gray-300"
+                  }
+                  transition-colors duration-200 text-center
+                `}
+                onDragOver={(e) => e.preventDefault()}
+                onDrop={(e) => {
+                  e.preventDefault();
+                  const file = e.dataTransfer.files[0];
+                  if (file?.type === "application/pdf") {
+                    setCourse((prev) => ({
+                      ...prev,
+                      instructions: {
+                        file,
+                        filename: file.name,
+                      },
+                    }));
+                  } else {
+                    alert("Per favore, carica solo file PDF");
+                  }
+                }}
+              >
+                {course.instructions ? (
+                  <div className="flex items-center justify-center gap-4">
+                    <FileText className="h-8 w-8 text-purple-500" />
+                    <div className="flex-1">
+                      <p className="text-sm text-gray-500">
+                        {course.instructions.filename}
+                      </p>
+                    </div>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      onClick={() =>
+                        setCourse((prev) => ({ ...prev, instructions: null }))
+                      }
+                    >
+                      <Trash2 className="h-4 w-4 text-red-500" />
+                    </Button>
+                  </div>
+                ) : (
+                  <div className="space-y-2">
+                    <FileText className="h-8 w-8 text-gray-400 mx-auto" />
+                    <div className="text-center">
+                      <label className="text-purple-500 hover:text-purple-700 cursor-pointer">
+                        Carica istruzioni
+                        <input
+                          type="file"
+                          accept="application/pdf"
+                          className="hidden"
+                          onChange={(e) => {
+                            const file = e.target.files?.[0];
+                            if (file) {
+                              setCourse((prev) => ({
+                                ...prev,
+                                instructions: {
                                   file,
                                   filename: file.name,
                                 },
