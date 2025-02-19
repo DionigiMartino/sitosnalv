@@ -48,17 +48,12 @@ export async function POST(request: Request) {
       host: "smtps.aruba.it",
       port: 465,
       secure: true,
-      connectionTimeout: 10000, // 10 secondi per la connessione
-      greetingTimeout: 5000, // 5 secondi per il saluto
-      socketTimeout: 15000, // 15 secondi per operazioni socket
-      debug: true, // abilita il debug
-      logger: true, // log dettagliati
       auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASSWORD,
+        user: "socioassistenziale@snalv.it", // Usa direttamente questo account
+        pass: process.env.EMAIL_PASSWORD, // Mantieni la password dall'env
       },
       tls: {
-        rejectUnauthorized: false, // accetta certificati autofirmati
+        rejectUnauthorized: false,
       },
     });
 
