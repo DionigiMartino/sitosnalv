@@ -5,7 +5,7 @@ import { Resend } from "resend";
 export async function POST(request: Request) {
   try {
     // Inizializza Resend
-    const resend = new Resend(process.env.RESEND_API_KEY);
+    const resend = new Resend("re_iajxEGhh_Evm1kP9vhB9RPeiL53r6VDgY");
 
     // Ottieni i dati dalla richiesta
     const data = await request.json();
