@@ -1,40 +1,16 @@
+// app/api/send-conteggi/route.ts
 import { NextResponse } from "next/server";
-import nodemailer from "nodemailer";
-
-const createTransporter = async () => {
-  const cleanEmail = process.env.EMAIL_USER_CONTEGGI?.replace(/[",\s]/g, "");
-
-  const config = {
-    host: "smtps.aruba.it",
-    port: 465,
-    secure: true,
-    auth: {
-      user: cleanEmail,
-      pass: process.env.EMAIL_PASSWORD_CONTEGGI,
-    },
-    tls: {
-      rejectUnauthorized: false,
-    },
-  };
-
-  const transporter = nodemailer.createTransport(config);
-
-  try {
-    await transporter.verify();
-    console.log("Connessione al server SMTP verificata con successo");
-    return transporter;
-  } catch (error) {
-    console.error("Errore nella verifica della connessione SMTP:", error);
-    throw error;
-  }
-};
+import { Resend } from "resend";
 
 export async function POST(request: Request) {
-  let transporter;
-
   try {
+    // Inizializza Resend
+    const resend = new Resend(process.env.RESEND_API_KEY);
+
+    // Estrai i dati dal form
     const formData = await request.formData();
 
+    // Gestione dei file allegati
     const files = formData.getAll("files");
     const attachments = [];
 
@@ -50,6 +26,7 @@ export async function POST(request: Request) {
       }
     }
 
+    // Estrai i campi del form
     const formFields = {
       ragioneSociale: formData.get("ragioneSociale"),
       cellulare: formData.get("cellulare"),
@@ -65,6 +42,7 @@ export async function POST(request: Request) {
       oreSettimanali: formData.get("oreSettimanali"),
     };
 
+    // Prepara il contenuto dell'email
     const emailContent = `
       Nuova richiesta di conteggi:
 
@@ -87,35 +65,62 @@ export async function POST(request: Request) {
       Straordinari: ${formFields.straordinari || "Non specificati"}
     `;
 
-    const jsonAttachment = {
-      filename: "dati-richiesta.json",
-      content: Buffer.from(JSON.stringify(formFields, null, 2)),
-      contentType: "application/json",
-    };
-    attachments.push(jsonAttachment);
+    // Crea un allegato JSON con tutti i dati
+    const jsonData = JSON.stringify(formFields, null, 2);
 
-    transporter = await createTransporter();
-
-    const mailOptions = {
-      from: process.env.EMAIL_TO_CONTEGGI,
-      to: process.env.EMAIL_TO_CONTEGGI,
+    // Invia email con Resend
+    const result = await resend.emails.send({
+      from: "onboarding@resend.dev",
+      to: ["sitosnalv@gmail.com"],
       subject: `Nuova richiesta di conteggi - ${formFields.lavoratore}`,
       text: emailContent,
-      attachments: attachments,
-
+      attachments: [
+        {
+          filename: "dati-richiesta.json",
+          content: jsonData,
+        },
+        // Aggiungi tutti gli altri allegati
+        ...attachments,
+      ],
       headers: {
         "X-Request-Type": "conteggi",
-        "X-Lavoratore": formFields.lavoratore,
+        "X-Lavoratore": String(formFields.lavoratore),
         "X-Data-Richiesta": new Date().toISOString(),
       },
-    };
+    });
 
-    const info = await transporter.sendMail(mailOptions);
-    console.log("Email inviata con successo:", info.messageId);
+    console.log("Email inviata con successo:", result);
+
+    // Invia conferma all'utente se è stata fornita un'email
+    if (formFields.email) {
+      try {
+        const confirmationText = `
+          Gentile ${formFields.lavoratore},
+          
+          Abbiamo ricevuto la tua richiesta di conteggi.
+          I nostri esperti la esamineranno e ti contatteranno al più presto.
+          
+          Cordiali saluti,
+          SNALV Confsal
+        `;
+
+        await resend.emails.send({
+          from: "onboarding@resend.dev",
+          to: [String(formFields.email)],
+          subject: "Richiesta di conteggi ricevuta - SNALV Confsal",
+          text: confirmationText,
+        });
+      } catch (confirmError) {
+        console.warn(
+          "Non è stato possibile inviare l'email di conferma:",
+          confirmError
+        );
+      }
+    }
 
     return NextResponse.json({
       success: true,
-      messageId: info.messageId,
+      data: result.data,
     });
   } catch (error) {
     console.error("Errore nell'elaborazione della richiesta:", error);
@@ -126,13 +131,5 @@ export async function POST(request: Request) {
       },
       { status: 500 }
     );
-  } finally {
-    if (transporter) {
-      try {
-        await transporter.close();
-      } catch (closeError) {
-        console.error("Errore nella chiusura della connessione:", closeError);
-      }
-    }
   }
 }

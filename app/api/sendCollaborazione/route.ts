@@ -1,55 +1,33 @@
+// app/api/send-collaborazione/route.ts
 import { NextResponse } from "next/server";
-import nodemailer from "nodemailer";
-
-const createTransporter = async () => {
-  const cleanEmail = process.env.EMAIL_USER_ORGANIZZAZIONE?.replace(
-    /[",\s]/g,
-    ""
-  );
-
-  const config = {
-    host: "smtps.aruba.it",
-    port: 465,
-    secure: true,
-    auth: {
-      user: cleanEmail,
-      pass: process.env.EMAIL_PASSWORD_ORGANIZZAZIONE,
-    },
-    tls: {
-      rejectUnauthorized: false,
-    },
-  };
-
-  const transporter = nodemailer.createTransport(config);
-
-  try {
-    await transporter.verify();
-    console.log("Connessione al server SMTP verificata con successo");
-    return transporter;
-  } catch (error) {
-    console.error("Errore nella verifica della connessione SMTP:", error);
-    throw error;
-  }
-};
+import { Resend } from "resend";
 
 export async function POST(request: Request) {
-  let transporter;
-
   try {
+    // Inizializza Resend
+    const resend = new Resend(process.env.RESEND_API_KEY);
+
+    // Ottieni i dati dalla richiesta
     const data = await request.json();
     const { nome, cognome, professione, domicilio, cellulare, email } = data;
 
-    transporter = await createTransporter();
+    // Validazione basilare
+    if (!nome || !cognome || !email || !cellulare) {
+      return NextResponse.json(
+        { error: "Dati obbligatori mancanti" },
+        { status: 400 }
+      );
+    }
 
-    // Email per lo staff
+    // Contenuto email per lo staff
     const staffEmailContent = `
       Nuova richiesta di collaborazione:
 
       Dati Personali:
       Nome: ${nome}
       Cognome: ${cognome}
-      Professione attuale: ${professione}
-      Domicilio: ${domicilio}
+      Professione attuale: ${professione || "Non specificata"}
+      Domicilio: ${domicilio || "Non specificato"}
 
       Contatti:
       Cellulare: ${cellulare}
@@ -58,19 +36,20 @@ export async function POST(request: Request) {
       Data richiesta: ${new Date().toLocaleString("it-IT")}
     `;
 
-    const staffMailOptions = {
-      from: process.env.EMAIL_TO_ORGANIZZAZIONE,
-      to: process.env.EMAIL_TO_ORGANIZZAZIONE,
+    // Invia email allo staff
+    const staffResult = await resend.emails.send({
+      from: "onboarding@resend.dev",
+      to: ["sitosnalv@gmail.com"],
       subject: `Nuova richiesta di collaborazione - ${nome} ${cognome}`,
       text: staffEmailContent,
       headers: {
         "X-Request-Type": "collaboration",
         "X-Applicant-Name": `${nome} ${cognome}`,
-        "X-Applicant-Location": domicilio,
+        "X-Applicant-Location": domicilio || "Non specificato",
       },
-    };
+    });
 
-    await transporter.sendMail(staffMailOptions);
+    console.log("Email di notifica inviata:", staffResult);
 
     // Email di conferma al candidato
     const candidateEmailContent = `
@@ -79,11 +58,13 @@ export async function POST(request: Request) {
       Grazie per il tuo interesse a collaborare con SNALV Confsal.
 
       Abbiamo ricevuto la tua richiesta di collaborazione e la valuteremo con attenzione.
-      Ti contatteremo presto al numero ${cellulare} per discutere delle opportunità disponibili nella tua zona (${domicilio}).
+      Ti contatteremo presto al numero ${cellulare} per discutere delle opportunità disponibili nella tua zona (${
+      domicilio || "specificata"
+    }).
 
       Ecco un riepilogo dei dati che ci hai fornito:
-      - Professione attuale: ${professione}
-      - Domicilio: ${domicilio}
+      - Professione attuale: ${professione || "Non specificata"}
+      - Domicilio: ${domicilio || "Non specificato"}
       - Contatti: ${cellulare}, ${email}
 
       Se nel frattempo hai domande, non esitare a contattarci.
@@ -92,15 +73,21 @@ export async function POST(request: Request) {
       SNALV Confsal
     `;
 
-    const candidateMailOptions = {
-      from: process.env.EMAIL_TO_ORGANIZZAZIONE,
-      to: email,
-      subject:
-        "Abbiamo ricevuto la tua richiesta di collaborazione - SNALV Confsal",
-      text: candidateEmailContent,
-    };
-
-    await transporter.sendMail(candidateMailOptions);
+    try {
+      await resend.emails.send({
+        from: "onboarding@resend.dev",
+        to: [email],
+        subject:
+          "Abbiamo ricevuto la tua richiesta di collaborazione - SNALV Confsal",
+        text: candidateEmailContent,
+      });
+    } catch (confirmError) {
+      console.warn(
+        "Non è stato possibile inviare l'email di conferma al candidato:",
+        confirmError
+      );
+      // Continuiamo comunque, l'email allo staff è stata inviata
+    }
 
     return NextResponse.json({
       success: true,
@@ -109,16 +96,11 @@ export async function POST(request: Request) {
   } catch (error) {
     console.error("Errore nell'elaborazione della richiesta:", error);
     return NextResponse.json(
-      { error: "Errore durante l'invio della richiesta" },
+      {
+        error: "Errore durante l'invio della richiesta",
+        details: error instanceof Error ? error.message : "Errore sconosciuto",
+      },
       { status: 500 }
     );
-  } finally {
-    if (transporter) {
-      try {
-        await transporter.close();
-      } catch (closeError) {
-        console.error("Errore nella chiusura della connessione:", closeError);
-      }
-    }
   }
 }
