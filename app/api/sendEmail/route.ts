@@ -1,118 +1,91 @@
+// app/api/sendEmail/route.ts
 import { NextResponse } from "next/server";
 import nodemailer from "nodemailer";
 
-const createTransporter = async () => {
-  const cleanEmail = process.env.EMAIL_USER?.replace(/[",\s]/g, "");
-
-  const config = {
-    host: "smtps.aruba.it",
-    port: 465,
-    secure: true,
-    auth: {
-      user: cleanEmail,
-      pass: process.env.EMAIL_PASSWORD,
-      type: "LOGIN",
-    },
-    authMethod: "LOGIN",
-    tls: {
-      rejectUnauthorized: false,
-      minVersion: "TLSv1",
-    },
-    debug: true,
-    logger: true,
-  };
-
-  const transporter = nodemailer.createTransport(config);
-
-  try {
-    await transporter.verify();
-    console.log("Connessione al server SMTP verificata con successo");
-    return transporter;
-  } catch (error) {
-    console.error("Errore nella verifica della connessione SMTP:", error);
-
-    if (error.code === "EAUTH") {
-      console.log("Dettagli autenticazione:", {
-        user: cleanEmail,
-        authMethod: config.authMethod,
-        errorResponse: error.response,
-      });
-    }
-    throw error;
-  }
-};
+// Configurazione per estendere il timeout della risposta API
+export const maxDuration = 60; // estendi a 60 secondi
 
 export async function POST(request: Request) {
   let transporter;
 
   try {
-    transporter = await createTransporter();
     const data = await request.json();
 
-    if (!data.nome || !data.cognome || !data.email) {
+    // Validazione base
+    if (!data.nome || !data.cognome) {
       return NextResponse.json(
         { error: "Dati obbligatori mancanti" },
         { status: 400 }
       );
     }
 
+    // Configurazione email con timeout esteso
+    transporter = nodemailer.createTransport({
+      host: "smtps.aruba.it",
+      port: 465,
+      secure: true,
+      connectionTimeout: 15000, // 15 secondi di timeout per la connessione
+      socketTimeout: 30000, // 30 secondi di timeout per il socket
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASSWORD,
+      },
+    });
+
+    // Preparazione contenuto email
     const emailContent = `
       Nuova richiesta di certificato:
-
-      Dati Anagrafici: 
       Nome: ${data.nome || "Non specificato"}
       Cognome: ${data.cognome || "Non specificato"}
+      Email: ${data.email || "Non specificato"}
+      Telefono: ${data.telefono || "Non specificato"}
+      
+      Altri dettagli:
       Luogo di nascita: ${data.luogoNascita || "Non specificato"}
       Data di nascita: ${data.dataNascita || "Non specificato"}
       Codice Fiscale: ${data.codiceFiscale || "Non specificato"}
-
-      Dati di Lavoro:
-      Qualifica professionale: ${
-        data.qualificaProfessionale || "Non specificato"
-      }
-      Datore di Lavoro: ${data.datoreLavoro || "Non specificato"}
-      Indirizzo sede di lavoro: ${data.indirizzoLavoro || "Non specificato"}
-
-      Dati di contatto:
-      Email: ${data.email || "Non specificato"}
-      Telefono: ${data.telefono || "Non specificato"}
+      Qualifica: ${data.qualificaProfessionale || "Non specificato"}
+      Datore di lavoro: ${data.datoreLavoro || "Non specificato"}
+      Indirizzo lavoro: ${data.indirizzoLavoro || "Non specificato"}
     `;
 
-    const cleanEmail = process.env.EMAIL_USER?.replace(/[",\s]/g, "");
-
+    // Opzioni email
     const mailOptions = {
-      from: cleanEmail,
-      to: process.env.EMAIL_TO?.replace(/[",\s]/g, ""),
-      subject: "Richiesta di certificato assicurativo",
+      from: process.env.EMAIL_USER,
+      to: process.env.EMAIL_TO,
+      subject: `Richiesta certificato da ${data.nome} ${data.cognome}`,
       text: emailContent,
     };
 
+    // Invio con gestione errori migliorata
     try {
       const info = await transporter.sendMail(mailOptions);
       console.log("Email inviata con successo:", info.messageId);
-      return NextResponse.json({
-        success: true,
-        messageId: info.messageId,
-      });
+      return NextResponse.json({ success: true });
     } catch (sendError) {
       console.error("Errore specifico nell'invio dell'email:", sendError);
+
+      // Restituisci un errore specifico in base al tipo di problema
+      if (sendError.code === "ETIMEDOUT") {
+        return NextResponse.json(
+          { error: "Timeout nella connessione al server email" },
+          { status: 504 }
+        );
+      } else if (sendError.code === "EAUTH") {
+        return NextResponse.json(
+          { error: "Errore di autenticazione con il server email" },
+          { status: 401 }
+        );
+      }
+
       throw sendError;
     }
   } catch (error) {
-    console.error("Errore generale nell'elaborazione della richiesta:", error);
-    let errorMessage = "Errore durante l'invio dell'email";
-    let statusCode = 500;
-
-    if (error instanceof Error) {
-      console.log("Dettagli errore:", error.message);
-      if (error.message.includes("EAUTH")) {
-        errorMessage =
-          "Errore di autenticazione. Verifica che le credenziali siano corrette e che l'account sia configurato per l'accesso SMTP.";
-        console.log("Risposta completa del server:", error);
-      }
-    }
-
-    return NextResponse.json({ error: errorMessage }, { status: statusCode });
+    console.error("Errore generale:", error);
+    return NextResponse.json(
+      { error: "Errore durante l'elaborazione della richiesta" },
+      { status: 500 }
+    );
   } finally {
     if (transporter) {
       try {
