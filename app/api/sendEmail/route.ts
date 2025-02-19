@@ -2,8 +2,11 @@
 import { NextResponse } from "next/server";
 import nodemailer from "nodemailer";
 
-// Estendi il timeout per le API route di Next.js
+// Estendi il timeout per permettere più tentativi
 export const maxDuration = 60;
+
+// Numero massimo di tentativi per l'invio email
+const MAX_RETRIES = 3;
 
 export async function POST(request: Request) {
   let transporter;
@@ -11,17 +14,13 @@ export async function POST(request: Request) {
   try {
     console.log("Inizio elaborazione richiesta email");
 
-    // Parsing dei dati
+    // Parsing dei dati con gestione errori
     let data;
     try {
       data = await request.json();
-      console.log("Dati ricevuti:", {
-        nome: data.nome,
-        cognome: data.cognome,
-        email: data.email,
-      });
+      console.log("Dati ricevuti correttamente");
     } catch (parseError) {
-      console.error("Errore nel parsing dei dati:", parseError);
+      console.error("Errore nel parsing JSON:", parseError);
       return NextResponse.json(
         { error: "Formato dati non valido" },
         { status: 400 }
@@ -30,44 +29,31 @@ export async function POST(request: Request) {
 
     // Validazione basilare
     if (!data.nome || !data.cognome || !data.email) {
-      console.error("Validazione fallita: dati mancanti");
       return NextResponse.json(
         { error: "Dati obbligatori mancanti" },
         { status: 400 }
       );
     }
 
-    // Creazione transporter con configurazione ottimizzata
-    console.log("Creazione transporter con:", {
-      host: "smtps.aruba.it",
-      port: 465,
-      user: process.env.EMAIL_USER ? "impostato" : "mancante",
-    });
-
+    // Configurazione per la porta 587 (alternativa a 465 che potrebbe essere bloccata)
     transporter = nodemailer.createTransport({
-      host: "smtps.aruba.it",
-      port: 465,
-      secure: true,
+      host: "smtp.aruba.it",
+      port: 587,
+      secure: false, // false per TLS - STARTTLS
+      requireTLS: true, // forza l'uso di TLS
       auth: {
-        user: "socioassistenziale@snalv.it", // Usa direttamente questo account
-        pass: "anaste18", // Mantieni la password dall'env
+        user: "socioassistenziale@snalv.it",
+        pass: "anaste18",
       },
+      connectionTimeout: 10000,
+      greetingTimeout: 5000,
+      socketTimeout: 15000,
       tls: {
         rejectUnauthorized: false,
+        minVersion: "TLSv1",
       },
     });
 
-    // Test di connessione SMTP
-    console.log("Verifica connessione SMTP...");
-    try {
-      await transporter.verify();
-      console.log("✅ Connessione SMTP verificata con successo");
-    } catch (verifyError) {
-      console.error("❌ Errore verifica SMTP:", verifyError);
-      // Continuiamo comunque con il tentativo di invio
-    }
-
-    // Preparazione contenuto email
     const emailContent = `
       Nuova richiesta di certificato:
 
@@ -92,83 +78,100 @@ export async function POST(request: Request) {
 
     // Configura le opzioni dell'email
     const mailOptions = {
-      from: process.env.EMAIL_USER,
-      to: process.env.EMAIL_TO,
+      from: "socioassistenziale@snalv.it",
+      to: process.env.EMAIL_TO || "socioassistenziale@snalv.it",
       subject: `Richiesta certificato - ${data.nome} ${data.cognome}`,
       text: emailContent,
-      // Imposta priorità alta
-      priority: "high",
-      headers: {
-        "X-Priority": "1",
-        "X-MSMail-Priority": "High",
-      },
     };
 
-    console.log("Tentativo invio email...");
-
-    // Tentativo di invio con gestione errori migliorata
-    try {
-      const info = await transporter.sendMail(mailOptions);
-      console.log("✅ Email inviata con successo:", {
-        messageId: info.messageId,
-        response: info.response,
-      });
-
-      return NextResponse.json({
-        success: true,
-        messageId: info.messageId,
-      });
-    } catch (sendError) {
-      console.error("❌ Errore specifico nell'invio dell'email:", sendError);
-
-      if (sendError.code === "ETIMEDOUT") {
-        return NextResponse.json(
-          { error: "Timeout di connessione al server email" },
-          { status: 408 }
+    // Funzione per ritentare l'invio in caso di timeout
+    async function attemptSendMail(retry = 0) {
+      try {
+        console.log(`Tentativo di invio email: ${retry + 1}/${MAX_RETRIES}`);
+        const info = await transporter.sendMail(mailOptions);
+        console.log("Email inviata con successo:", info.messageId);
+        return info;
+      } catch (error) {
+        console.error(
+          `Errore nel tentativo ${retry + 1}:`,
+          error.code,
+          error.message
         );
-      }
 
-      if (sendError.code === "EAUTH") {
-        return NextResponse.json(
-          { error: "Errore di autenticazione email" },
-          { status: 401 }
-        );
+        if (
+          retry < MAX_RETRIES - 1 &&
+          (error.code === "ETIMEDOUT" ||
+            error.code === "ESOCKET" ||
+            error.code === "ECONNECTION" ||
+            error.code === "ECONNRESET")
+        ) {
+          // Attendi un po' prima di riprovare (backoff esponenziale)
+          const delay = Math.pow(2, retry) * 1000; // 1s, 2s, 4s, ...
+          console.log(`Riprovo tra ${delay}ms...`);
+          await new Promise((r) => setTimeout(r, delay));
+          return attemptSendMail(retry + 1);
+        }
+        throw error;
       }
-
-      if (sendError.code === "ESOCKET") {
-        return NextResponse.json(
-          { error: "Errore di connessione al server email" },
-          { status: 503 }
-        );
-      }
-
-      throw sendError;
     }
+
+    // Esegui l'invio con tentativi multipli
+    const info = await attemptSendMail();
+
+    // Invia anche una conferma all'utente se possibile
+    try {
+      if (data.email) {
+        const confirmationText = `
+          Gentile ${data.nome} ${data.cognome},
+          
+          Abbiamo ricevuto la tua richiesta di certificato assicurativo.
+          Un nostro operatore la elaborerà al più presto.
+          
+          Cordiali saluti,
+          SNALV Confsal
+        `;
+
+        await transporter.sendMail({
+          from: "socioassistenziale@snalv.it",
+          to: data.email,
+          subject: "Richiesta certificato ricevuta - SNALV Confsal",
+          text: confirmationText,
+        });
+      }
+    } catch (confirmError) {
+      // Se l'email di conferma fallisce, ignoriamo l'errore
+      console.warn(
+        "Non è stato possibile inviare l'email di conferma:",
+        confirmError.message
+      );
+    }
+
+    return NextResponse.json({
+      success: true,
+      messageId: info.messageId,
+    });
   } catch (error) {
-    console.error("❌ Errore generale nell'elaborazione:", error);
+    console.error("Errore generale:", error);
 
-    // Tenta di estrarre informazioni dettagliate
-    const errorDetails = {
-      message: error.message || "Errore sconosciuto",
-      code: error.code || "UNKNOWN",
-      command: error.command || null,
-      responseCode: error.responseCode || null,
-    };
+    let errorMessage = "Errore durante l'invio dell'email";
+    let statusCode = 500;
 
-    console.error("Dettagli errore:", errorDetails);
+    if (error.code === "EAUTH") {
+      errorMessage = "Errore di autenticazione con il server email";
+      statusCode = 401;
+    } else if (error.code === "EENVELOPE") {
+      errorMessage = "Errore con gli indirizzi email (mittente o destinatario)";
+      statusCode = 400;
+    } else if (error.code === "ETIMEDOUT" || error.code === "ESOCKET") {
+      errorMessage = "Timeout nella connessione al server email";
+      statusCode = 504;
+    }
 
-    return NextResponse.json(
-      {
-        error: "Errore durante l'invio dell'email",
-        details: errorDetails,
-      },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: errorMessage }, { status: statusCode });
   } finally {
     if (transporter) {
       try {
         await transporter.close();
-        console.log("Connessione transporter chiusa");
       } catch (closeError) {
         console.error("Errore nella chiusura della connessione:", closeError);
       }
