@@ -50,7 +50,7 @@ export async function POST(request: Request) {
       secure: true,
       auth: {
         user: "socioassistenziale@snalv.it", // Usa direttamente questo account
-        pass: process.env.EMAIL_PASSWORD, // Mantieni la password dall'env
+        pass: "anaste18", // Mantieni la password dall'env
       },
       tls: {
         rejectUnauthorized: false,
