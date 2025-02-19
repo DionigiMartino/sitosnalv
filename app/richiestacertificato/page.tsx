@@ -53,43 +53,83 @@ const CertificatoPage = () => {
         throw new Error("Per favore, compila tutti i campi obbligatori");
       }
 
-      const response = await fetch("/api/sendEmail", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
+      // Aggiungiamo un timeout di 30 secondi per evitare attese infinite
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 30000);
 
-      const result = await response.json();
-
-      if (!response.ok) {
-        throw new Error(
-          result.error || "Errore durante l'invio della richiesta"
-        );
-      }
-
-      if (result.success) {
-        // Feedback positivo all'utente
-        alert("Richiesta inviata con successo! Ti contatteremo presto.");
-
-        // Reset del form
-        setFormData({
-          nome: "",
-          cognome: "",
-          luogoNascita: "",
-          dataNascita: "",
-          codiceFiscale: "",
-          qualificaProfessionale: "",
-          datoreLavoro: "",
-          indirizzoLavoro: "",
-          email: "",
-          telefono: "",
+      try {
+        const response = await fetch("/api/sendEmail", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(formData),
+          signal: controller.signal,
         });
+
+        clearTimeout(timeoutId);
+
+        // Gestione specifica per errori del server
+        if (!response.ok) {
+          if (response.status === 504) {
+            throw new Error("Il server non risponde. Riprova più tardi.");
+          }
+
+          // Tentativo di leggere la risposta come JSON
+          let errorData;
+          try {
+            errorData = await response.json();
+          } catch (jsonError) {
+            // Se non è JSON, leggiamo come testo
+            const textError = await response.text();
+            throw new Error(
+              `Errore del server: ${response.status} - ${textError.substring(
+                0,
+                100
+              )}...`
+            );
+          }
+
+          throw new Error(
+            errorData.error ||
+              `Errore ${response.status}: ${response.statusText}`
+          );
+        }
+
+        // Gestione della risposta se tutto va bene
+        let result;
+        try {
+          result = await response.json();
+        } catch (parseError) {
+          throw new Error("Impossibile leggere la risposta dal server");
+        }
+
+        if (result.success) {
+          alert("Richiesta inviata con successo! Ti contatteremo presto.");
+          // Reset del form
+          setFormData({
+            nome: "",
+            cognome: "",
+            luogoNascita: "",
+            dataNascita: "",
+            codiceFiscale: "",
+            qualificaProfessionale: "",
+            datoreLavoro: "",
+            indirizzoLavoro: "",
+            email: "",
+            telefono: "",
+          });
+        }
+      } catch (fetchError) {
+        if (fetchError.name === "AbortError") {
+          throw new Error(
+            "La richiesta ha impiegato troppo tempo. Verifica la tua connessione e riprova."
+          );
+        }
+        throw fetchError;
       }
     } catch (error) {
       console.error("Errore nell'invio del form:", error);
-      // Mostra un messaggio di errore appropriato all'utente
       alert(
         error instanceof Error
           ? error.message
