@@ -287,6 +287,7 @@ const CertificatoPage = () => {
                         onChange={handleInputChange}
                         className="w-full bg-white"
                         required
+                        type="email"
                       />
                     </div>
 
