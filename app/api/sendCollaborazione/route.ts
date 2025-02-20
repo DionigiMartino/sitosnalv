@@ -52,43 +52,7 @@ export async function POST(request: Request) {
     console.log("Email di notifica inviata:", staffResult);
 
     // Email di conferma al candidato
-    const candidateEmailContent = `
-      Gentile ${nome} ${cognome},
-
-      Grazie per il tuo interesse a collaborare con SNALV Confsal.
-
-      Abbiamo ricevuto la tua richiesta di collaborazione e la valuteremo con attenzione.
-      Ti contatteremo presto al numero ${cellulare} per discutere delle opportunità disponibili nella tua zona (${
-      domicilio || "specificata"
-    }).
-
-      Ecco un riepilogo dei dati che ci hai fornito:
-      - Professione attuale: ${professione || "Non specificata"}
-      - Domicilio: ${domicilio || "Non specificato"}
-      - Contatti: ${cellulare}, ${email}
-
-      Se nel frattempo hai domande, non esitare a contattarci.
-
-      Cordiali saluti,
-      SNALV Confsal
-    `;
-
-    try {
-      await resend.emails.send({
-        from: "onboarding@resend.dev",
-        to: [email],
-        subject:
-          "Abbiamo ricevuto la tua richiesta di collaborazione - SNALV Confsal",
-        text: candidateEmailContent,
-      });
-    } catch (confirmError) {
-      console.warn(
-        "Non è stato possibile inviare l'email di conferma al candidato:",
-        confirmError
-      );
-      // Continuiamo comunque, l'email allo staff è stata inviata
-    }
-
+    
     return NextResponse.json({
       success: true,
       message: "Richiesta inviata con successo",

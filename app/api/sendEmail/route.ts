@@ -53,31 +53,6 @@ export async function POST(request: Request) {
     console.log("Email inviata:", result);
 
     // Invia email di conferma all'utente
-    if (data.email) {
-      try {
-        const confirmationText = `
-          Gentile ${data.nome} ${data.cognome},
-          
-          Abbiamo ricevuto la tua richiesta di certificato assicurativo.
-          Un nostro operatore la elaborerà al più presto.
-          
-          Cordiali saluti,
-          SNALV Confsal
-        `;
-
-        await resend.emails.send({
-          from: "onboarding@resend.dev",
-          to: [data.email],
-          subject: "Richiesta certificato ricevuta - SNALV Confsal",
-          text: confirmationText,
-        });
-      } catch (confirmError) {
-        console.warn(
-          "Non è stato possibile inviare l'email di conferma:",
-          confirmError
-        );
-      }
-    }
 
     return NextResponse.json({
       success: true,
