@@ -3,7 +3,14 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { ChevronDown, Menu, X, PenLine, UserCircle2 } from "lucide-react";
+import {
+  ChevronDown,
+  Menu,
+  X,
+  PenLine,
+  UserCircle2,
+  LayoutDashboard,
+} from "lucide-react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useSession, signOut } from "next-auth/react";
@@ -86,6 +93,11 @@ const Header = () => {
             >
               <UserCircle2 size={24} />
               <span className="hidden sm:inline">E-Learning</span>
+            </Link>
+            <div className="w-px h-4 bg-blue-700" />
+            <Link href="https://crm.snalv.it">
+              <LayoutDashboard size={24} />
+              CRM in Cloud
             </Link>
           </div>
         </div>
