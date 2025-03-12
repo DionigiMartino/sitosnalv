@@ -95,9 +95,12 @@ const Header = () => {
               <span className="hidden sm:inline">E-Learning</span>
             </Link>
             <div className="w-px h-4 bg-blue-700" />
-            <Link href="https://crm.snalv.it">
+            <Link
+              href="https://crm.snalv.it"
+              className="flex items-center gap-2 text-sm hover:text-blue-200 transition-colors"
+            >
               <LayoutDashboard size={24} />
-              CRM in Cloud
+              <span className="hidden sm:inline">CRM in Cloud</span>
             </Link>
           </div>
         </div>
