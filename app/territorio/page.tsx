@@ -58,7 +58,7 @@ const TerritorioPage = () => {
       const allSedi = querySnapshot.docs.map((doc) => {
         const data = doc.data();
         return {
-          name: data.tipo + " " + data.regione, // es: "Ufficio Provinciale Pisa"
+          name: data.tipo + " " + data.citta, // es: "Ufficio Provinciale Pisa"
           address: data.indirizzo,
           cap: data.cap || "",
           position: data.coordinate
@@ -92,7 +92,7 @@ const TerritorioPage = () => {
             acc[data.regione][data.provincia] = [];
 
           acc[data.regione][data.provincia].push({
-            nome: data.tipo + " " + data.regione,
+            nome: data.tipo + " " + data.citta,
             indirizzo: data.indirizzo,
             telefono: data.tel || "",
             cellulare: data.cel || "",
@@ -119,7 +119,7 @@ const TerritorioPage = () => {
             acc[data.regione][data.provincia] = [];
 
           acc[data.regione][data.provincia].push({
-            nome: data.tipo + " " + data.regione,
+            nome: data.tipo + " " + data.citta,
             indirizzo: data.indirizzo,
             telefono: data.tel || "",
             cellulare: data.cel || "",
