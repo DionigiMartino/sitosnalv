@@ -23,178 +23,6 @@ const MapComponent = dynamic(() => import("@/src/components/Map"), {
   loading: () => <div className="w-full h-[500px] bg-gray-100" />,
 });
 
-const regioni = [
-  "Abruzzo",
-  "Basilicata",
-  "Calabria",
-  "Campania",
-  "Emilia-Romagna",
-  "Friuli-Venezia Giulia",
-  "Lazio",
-  "Liguria",
-  "Lombardia",
-  "Marche",
-  "Molise",
-  "Piemonte",
-  "Puglia",
-  "Sardegna",
-  "Sicilia",
-  "Toscana",
-  "Trentino-Alto Adige",
-  "Umbria",
-  "Valle d'Aosta",
-  "Veneto",
-];
-
-const province: { [key: string]: string[] } = {
-  Abruzzo: ["Chieti", "L'Aquila", "Pescara", "Teramo"],
-  Basilicata: ["Matera", "Potenza"],
-  Calabria: [
-    "Catanzaro",
-    "Cosenza",
-    "Crotone",
-    "Reggio Calabria",
-    "Vibo Valentia",
-  ],
-  Campania: ["Avellino", "Benevento", "Caserta", "Napoli", "Salerno"],
-  "Emilia-Romagna": [
-    "Bologna",
-    "Ferrara",
-    "Forlì-Cesena",
-    "Modena",
-    "Parma",
-    "Piacenza",
-    "Ravenna",
-    "Reggio Emilia",
-    "Rimini",
-  ],
-  "Friuli-Venezia Giulia": ["Gorizia", "Pordenone", "Trieste", "Udine"],
-  Lazio: ["Frosinone", "Latina", "Rieti", "Roma", "Viterbo"],
-  Liguria: ["Genova", "Imperia", "La Spezia", "Savona"],
-  Lombardia: [
-    "Bergamo",
-    "Brescia",
-    "Como",
-    "Cremona",
-    "Lecco",
-    "Lodi",
-    "Mantova",
-    "Milano",
-    "Monza e Brianza",
-    "Pavia",
-    "Sondrio",
-    "Varese",
-  ],
-  Marche: ["Ancona", "Ascoli Piceno", "Fermo", "Macerata", "Pesaro e Urbino"],
-  Molise: ["Campobasso", "Isernia"],
-  Piemonte: [
-    "Alessandria",
-    "Asti",
-    "Biella",
-    "Cuneo",
-    "Novara",
-    "Torino",
-    "Verbano-Cusio-Ossola",
-    "Vercelli",
-  ],
-  Puglia: [
-    "Bari",
-    "Barletta-Andria-Trani",
-    "Brindisi",
-    "Foggia",
-    "Lecce",
-    "Taranto",
-  ],
-  Sardegna: ["Cagliari", "Nuoro", "Oristano", "Sassari", "Sud Sardegna"],
-  Sicilia: [
-    "Agrigento",
-    "Caltanissetta",
-    "Catania",
-    "Enna",
-    "Messina",
-    "Palermo",
-    "Ragusa",
-    "Siracusa",
-    "Trapani",
-  ],
-  Toscana: [
-    "Arezzo",
-    "Firenze",
-    "Grosseto",
-    "Livorno",
-    "Lucca",
-    "Massa-Carrara",
-    "Pisa",
-    "Pistoia",
-    "Prato",
-    "Siena",
-  ],
-  "Trentino-Alto Adige": ["Bolzano", "Trento"],
-  Umbria: ["Perugia", "Terni"],
-  "Valle d'Aosta": ["Aosta"],
-  Veneto: [
-    "Belluno",
-    "Padova",
-    "Rovigo",
-    "Treviso",
-    "Venezia",
-    "Verona",
-    "Vicenza",
-  ],
-};
-
-const segreterieSedi: any = {
-  Campania: {
-    Napoli: [
-      {
-        nome: "Segreteria Regionale Campania",
-        indirizzo: "Via Toledo 156",
-        telefono: "081 1234567",
-        email: "campania@snalv.it",
-      },
-      {
-        nome: "Segreteria Provinciale Napoli",
-        indirizzo: "Via Medina 40",
-        telefono: "081 7654321",
-        email: "napoli@snalv.it",
-      },
-    ],
-    Salerno: [
-      {
-        nome: "Segreteria Provinciale Salerno",
-        indirizzo: "Corso Vittorio Emanuele 45",
-        telefono: "089 1234567",
-        email: "salerno@snalv.it",
-      },
-    ],
-  },
-  Lazio: {
-    Roma: [
-      {
-        nome: "Segreteria Nazionale",
-        indirizzo: "Via di Porta Maggiore, 9",
-        telefono: "06 70492451",
-        email: "info@snalv.it",
-      },
-      {
-        nome: "Segreteria Regionale Lazio",
-        indirizzo: "Via Cavour 108",
-        telefono: "06 9876543",
-        email: "lazio@snalv.it",
-      },
-    ],
-    Frosinone: [
-      {
-        nome: "Segreteria Provinciale Frosinone",
-        indirizzo: "Via Roma 67",
-        telefono: "0775 123456",
-        email: "frosinone@snalv.it",
-      },
-    ],
-  },
-};
-
-
 // Componente principale TerritorioPage
 const TerritorioPage = () => {
   const [activeSection, setActiveSection] = useState("cerca-sede");
@@ -230,7 +58,7 @@ const TerritorioPage = () => {
       const allSedi = querySnapshot.docs.map((doc) => {
         const data = doc.data();
         return {
-          name: data.tipo + " " + data.citta, // es: "Ufficio Provinciale Pisa"
+          name: data.tipo + " " + data.regione, // es: "Ufficio Provinciale Pisa"
           address: data.indirizzo,
           cap: data.cap || "",
           position: data.coordinate
@@ -264,7 +92,7 @@ const TerritorioPage = () => {
             acc[data.regione][data.provincia] = [];
 
           acc[data.regione][data.provincia].push({
-            nome: data.tipo + " " + data.citta,
+            nome: data.tipo + " " + data.regione,
             indirizzo: data.indirizzo,
             telefono: data.tel || "",
             cellulare: data.cel || "",
@@ -291,7 +119,7 @@ const TerritorioPage = () => {
             acc[data.regione][data.provincia] = [];
 
           acc[data.regione][data.provincia].push({
-            nome: data.tipo + " " + data.citta,
+            nome: data.tipo + " " + data.regione,
             indirizzo: data.indirizzo,
             telefono: data.tel || "",
             cellulare: data.cel || "",

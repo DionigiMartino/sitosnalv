@@ -275,7 +275,7 @@ export default function TerritorioPage() {
                         {sede.tipo.includes("Ufficio Regionale")
                           ? "Segreteria Regionale"
                           : "Segreteria Provinciale"}{" "}
-                        {sede.citta}
+                        {sede.regione}
                       </h3>
                       <div className="space-y-1 text-gray-600">
                         <p>📍 {sede.indirizzo}</p>
