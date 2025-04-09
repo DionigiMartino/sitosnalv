@@ -68,7 +68,7 @@ const LoginForm = () => {
                 <Lock className="w-10 h-10 text-white" />
               </div>
               <h2 className="text-3xl font-extrabold text-gray-900">
-                Area Riservata
+                Piattaforma di E-Learning
               </h2>
               <p className="mt-2 text-sm text-gray-600">
                 Inserisci le tue credenziali per accedere
