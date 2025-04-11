@@ -57,8 +57,15 @@ const TerritorioPage = () => {
       // Lista completa per la mappa
       const allSedi = querySnapshot.docs.map((doc) => {
         const data = doc.data();
+
+        // Nome specifico per gli Uffici Regionali
+        const name =
+          data.tipo === "Ufficio Regionale"
+            ? data.tipo + " " + data.regione
+            : data.tipo + " " + data.citta;
+
         return {
-          name: data.tipo + " " + data.citta, // es: "Ufficio Provinciale Pisa"
+          name: name, // Ora usa la logica modificata
           address: data.indirizzo,
           cap: data.cap || "",
           position: data.coordinate
@@ -77,7 +84,6 @@ const TerritorioPage = () => {
       });
       setSediList(allSedi);
 
-      // Organizza segreterie per regione/provincia
       const segreterie = querySnapshot.docs
         .filter((doc) => {
           const data = doc.data();
