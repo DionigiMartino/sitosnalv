@@ -36,27 +36,30 @@ export default function ChiSiamoPage() {
   ];
 
   const allMembers = [
-    "MARIA MAMONE",
-    "COSIMO NESCI",
-    "GIULIA PUDDU",
-    "GIUSEPPINA ADAMO",
-    "BELINDA PESCOSOLIDO",
-    "DANIELE PACE",
-    "PASQUALE PELLEGRINO",
-    "ISABELLA MAMONE",
-    "VINCENZO PALDINO",
-    "VALERIA SMURRA",
-    "CLAUDIO ZUCCHELLI",
-    "FRANCESCO FLORIO",
-    "STANISLAO AULETTA",
-    "FARA MANZI",
-    "ANTONIO LENTO",
-    "PEPPINO RUBERTO",
-    "ANTONIO SANTONOCITO",
-    "DANIELA MAZZOLA",
-    "MARTINA DONINI",
-    "FABIO LAROCCA",
-    "DANIELA MARIA SERVETTI",
+    { name: "MARIA MAMONE", image: "/img/team/Mamone.jpg" },
+    { name: "COSIMO NESCI", image: "/img/team/Nesci.jpg" },
+    { name: "GIULIA PUDDU", image: "/img/team/Puddu.jpg" },
+    { name: "GIUSEPPINA ADAMO", image: "/img/team/giusy.jpg" },
+    { name: "BELINDA PESCOSOLIDO", image: "/img/team/Belinda.jpg" },
+    { name: "DANIELE PACE", image: "/img/team/Daniele.jpg" },
+    { name: "PASQUALE PELLEGRINO", image: "/img/team/Pasquale.jpg" },
+    { name: "ISABELLA MAMONE", image: "/img/team/mamone2.jpeg" },
+    { name: "VINCENZO PALDINO", image: "" },
+    { name: "VALERIA SMURRA", image: "" },
+    { name: "CLAUDIO ZUCCHELLI", image: "" },
+    { name: "FRANCESCO FLORIO", image: "/img/team/florio.jpeg" },
+    { name: "STANISLAO AULETTA", image: "/img/team/auletta.jpeg" },
+    { name: "FARA MANZI", image: "/img/team/manzi.jpeg" },
+    { name: "ANTONIO LENTO", image: "/img/team/lento.jpeg" },
+    { name: "PEPPINO RUBERTO", image: "/img/team/ruberto.jpeg" },
+    { name: "ANTONIO SANTONOCITO", image: "/img/team/santonocito.jpeg" },
+    { name: "DANIELA MAZZOLA", image: "/img/team/mazzola2.jpeg" },
+    { name: "MARTINA DONINI", image: "/img/team/donini.jpeg" },
+    { name: "FABIO LAROCCA", image: "/img/team/rocca.jpeg" },
+    {
+      name: "DANIELA MARIA SERVETTI",
+      image: "",
+    },
   ];
 
   const getMemberImage = (name) => {
@@ -78,8 +81,7 @@ export default function ChiSiamoPage() {
       subtitle: "Consigliere CNEL",
       imageSrc: "/img/team/Nesci.jpg",
       alt: "Cosimo Nesci",
-      additionalInfo:
-        null,
+      additionalInfo: null,
     },
   ];
 
@@ -184,38 +186,35 @@ export default function ChiSiamoPage() {
               Congresso Nazionale SNALV/Confsal
             </p>
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-6">
-              {allMembers.map((name) => {
-                const imageSrc = getMemberImage(name);
-                return (
-                  <div
-                    key={name}
-                    className="bg-white shadow-md rounded-lg overflow-hidden transform transition-all duration-300 hover:scale-105"
-                  >
-                    {imageSrc ? (
-                      <img
-                        src={imageSrc}
-                        alt={name}
-                        className="w-full h-64 object-cover object-top"
-                      />
-                    ) : (
-                      <div className="w-full h-64 bg-[#1a365d] bg-opacity-10 flex items-center justify-center">
-                        <span className="text-[#1a365d] font-bold text-center px-4">
-                          {name}
-                        </span>
-                      </div>
-                    )}
-                    <div
-                      className={`p-4 ${
-                        imageSrc
-                          ? "bg-[#1a365d] text-white"
-                          : "bg-white text-[#1a365d]"
-                      } text-center`}
-                    >
-                      <h3 className="font-bold">{name}</h3>
+              {allMembers.map((member) => (
+                <div
+                  key={member.name}
+                  className="bg-white shadow-md rounded-lg overflow-hidden transform transition-all duration-300 hover:scale-105"
+                >
+                  {member.image ? (
+                    <img
+                      src={member.image}
+                      alt={member.name}
+                      className="w-full h-64 object-cover object-top"
+                    />
+                  ) : (
+                    <div className="w-full h-64 bg-[#1a365d] bg-opacity-10 flex items-center justify-center">
+                      <span className="text-[#1a365d] font-bold text-center px-4">
+                        {member.name}
+                      </span>
                     </div>
+                  )}
+                  <div
+                    className={`p-4 ${
+                      member.image
+                        ? "bg-[#1a365d] text-white"
+                        : "bg-white text-[#1a365d]"
+                    } text-center`}
+                  >
+                    <h3 className="font-bold">{member.name}</h3>
                   </div>
-                );
-              })}
+                </div>
+              ))}
             </div>
           </div>
         );
