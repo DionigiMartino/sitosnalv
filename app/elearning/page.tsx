@@ -4,7 +4,13 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
-import { Video, BookOpen, ArrowRight, GraduationCap } from "lucide-react";
+import {
+  Video,
+  BookOpen,
+  ArrowRight,
+  GraduationCap,
+  Calendar,
+} from "lucide-react";
 import Header from "@/src/components/Header";
 import Footer from "@/src/components/Footer";
 import Link from "next/link";
@@ -46,6 +52,7 @@ const FormazionePage = () => {
         </div>
 
         <div className="grid md:grid-cols-2 gap-8 max-w-6xl mx-auto">
+          {/* Prima riga */}
           {/* Card Webinar */}
           <Link href="/webinar" className="block">
             <Card className="group cursor-pointer overflow-hidden bg-white hover:shadow-2xl transition-shadow duration-300">
@@ -104,10 +111,41 @@ const FormazionePage = () => {
             </Card>
           </Link>
 
+          {/* Seconda riga */}
+          {/* Card Eventi - NUOVA */}
+          <Link href="/eventi" className="block">
+            <Card className="group cursor-pointer overflow-hidden bg-white hover:shadow-2xl transition-shadow duration-300">
+              <CardContent className="p-8">
+                <div className="flex flex-col items-center text-center space-y-6">
+                  <div className="w-20 h-20 rounded-full bg-green-100 flex items-center justify-center">
+                    <Calendar className="w-10 h-10 text-green-600" />
+                  </div>
+
+                  <div>
+                    <h2 className="text-3xl font-bold text-green-900 mb-4">
+                      Eventi
+                    </h2>
+                    <p className="text-gray-600 mb-6">
+                      Rivivi i nostri eventi passati attraverso video,
+                      presentazioni e materiali informativi. Accedi a tutti i
+                      contenuti esclusivi.
+                    </p>
+                  </div>
+
+                  <div className="flex items-center text-green-600 font-semibold group-hover:translate-x-2 transition-transform duration-300">
+                    Visualizza gli eventi
+                    <ArrowRight className="ml-2 w-5 h-5" />
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </Link>
+
+          {/* Card Formazione Scuola - Modificata per occupare una sola colonna */}
           <Link
             href="https://snalv.confsalformazione.com/"
             target="_blank"
-            className="block md:col-span-2"
+            className="block"
           >
             <Card className="group cursor-pointer overflow-hidden bg-white hover:shadow-2xl transition-shadow duration-300">
               <CardContent className="p-8">
@@ -121,9 +159,9 @@ const FormazionePage = () => {
                       Formazione Scuola
                     </h2>
                     <p className="text-gray-600 mb-6">
-                      Corsi riservati a docenti, personale ATA, responsabili
-                      SNALV del comparto Scuola. Accedi alla piattaforma
-                      e-learning creata in collaborazione con lo SNALS Confsal
+                      Corsi riservati a docenti, personale ATA e responsabili
+                      SNALV del comparto Scuola, in collaborazione con SNALS
+                      Confsal.
                     </p>
                   </div>
 

@@ -25,6 +25,7 @@ import Comunicati from "@/src/components/Dashboard/Comunicati";
 import Sedi from "@/src/components/Dashboard/Sedi";
 import Users from "@/src/components/Dashboard/Utenti";
 import Webinar from "@/src/components/Dashboard/Webinar";
+import Eventi from "@/src/components/Dashboard/EventViewer";
 import CourseManager from "@/src/components/Dashboard/Corso";
 
 const DashboardLayout = () => {
@@ -75,6 +76,11 @@ const DashboardLayout = () => {
           label: "Corsi",
           id: "corso",
         },
+        {
+          icon: <BookOpen className="w-4 h-4" />,
+          label: "Eventi",
+          id: "eventi",
+        },
       ],
     },
   };
@@ -108,6 +114,8 @@ const DashboardLayout = () => {
         return <Webinar />;
       case "corso":
         return <CourseManager />;
+      case "eventi":
+        return <Eventi />;
       default:
         return <News />;
     }
