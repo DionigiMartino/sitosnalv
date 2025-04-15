@@ -17,12 +17,15 @@ interface Location {
   telefono?: string;
   email?: string;
   pec?: string;
+  distance?: number; // Nuova proprietà per la distanza
 }
 
 interface MapProps {
   center?: [number, number];
   zoom?: number;
   locations?: Location[];
+  geocodedLocation?: [number, number] | null; // Nuova proprietà per la posizione cercata
+  addressInput?: string; // Indirizzo inserito dall'utente
 }
 
 const DEFAULT_CENTER: [number, number] = [41.9028, 12.4964];
@@ -65,6 +68,8 @@ const MapComponent = ({
   center = DEFAULT_CENTER,
   zoom = DEFAULT_ZOOM,
   locations = [],
+  geocodedLocation = null,
+  addressInput = "",
 }: MapProps) => {
   const [isClient, setIsClient] = useState(false);
   const [validCenter, setValidCenter] =
@@ -97,10 +102,19 @@ const MapComponent = ({
     );
   }
 
+  // Marker per le sedi
   const customIcon = new Icon({
     iconUrl: "/img/marker.jpg",
     iconSize: [15, 20],
     iconAnchor: [12, 41],
+  });
+
+  // Marker per la posizione dell'utente (diverso)
+  const userLocationIcon = new Icon({
+    iconUrl: "/img/user-marker.png", // Crea un marker di colore diverso per la posizione dell'utente
+    // Se il file non esiste, puoi usare temporaneamente un altro marker con dimensioni diverse
+    iconSize: [25, 25],
+    iconAnchor: [12, 25],
   });
 
   const validLocations = locations.filter(
@@ -121,6 +135,22 @@ const MapComponent = ({
       />
       <MapController center={validCenter} zoom={zoom} />
 
+      {/* Marker per la posizione cercata dall'utente */}
+      {geocodedLocation && (
+        <Marker position={geocodedLocation} icon={userLocationIcon}>
+          <Popup>
+            <div className="space-y-2 text-center">
+              <h3 className="font-bold text-lg text-blue-700">
+                La tua posizione
+              </h3>
+              <p className="text-sm text-gray-600">Indirizzo cercato</p>
+              <p className="text-xs mt-1">{addressInput}</p>
+            </div>
+          </Popup>
+        </Marker>
+      )}
+
+      {/* Marker per le sedi */}
       {validLocations.map((location, index) => (
         <Marker
           key={`${location.name}-${index}`}
@@ -141,6 +171,11 @@ const MapComponent = ({
                 {location.telefono && <p>Telefono: {location.telefono}</p>}
                 {location.email && <p>Email: {location.email}</p>}
                 {location.pec && <p>PEC: {location.pec}</p>}
+                {location.distance !== undefined && (
+                  <p className="font-semibold text-blue-600">
+                    Distanza: {location.distance.toFixed(1)} km
+                  </p>
+                )}
               </div>
               <button
                 onClick={() =>
