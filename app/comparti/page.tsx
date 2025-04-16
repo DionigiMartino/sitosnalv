@@ -16,6 +16,7 @@ import {
   Briefcase,
   Shield,
   ChevronRight,
+  GraduationCap,
 } from "lucide-react";
 import HeroSection from "@/src/components/Hero";
 import { useRouter } from "next/navigation";
@@ -55,6 +56,14 @@ export default function CompartiPage() {
       image: "/img/confsal_banner.jpg",
       route: "/confsal-sud",
       icon: MapPin,
+    },
+    {
+      title: "ISTRUZIONE E RICERCA",
+      description:
+        "La scuola è un settore essenziale per la crescita del nostro Paese. Entra a far parte del comparto SNALV dedicato a docenti e personale ATA",
+      image: "/img/istruzione_banner.jpg",
+      route: "/scuola",
+      icon: GraduationCap,
     },
   ];
 

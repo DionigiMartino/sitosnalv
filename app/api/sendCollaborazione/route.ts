@@ -51,8 +51,6 @@ export async function POST(request: Request) {
 
     console.log("Email di notifica inviata:", staffResult);
 
-    // Email di conferma al candidato
-    
     return NextResponse.json({
       success: true,
       message: "Richiesta inviata con successo",
