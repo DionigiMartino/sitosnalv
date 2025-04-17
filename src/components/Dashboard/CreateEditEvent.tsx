@@ -14,6 +14,9 @@ import {
   Loader2,
   Calendar,
   MapPin,
+  Youtube,
+  Link,
+  AlertCircle,
 } from "lucide-react";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import {
@@ -25,6 +28,7 @@ import {
 } from "firebase/firestore";
 import { db } from "@/src/lib/firebase";
 import { format } from "date-fns";
+import { toast } from "@/hooks/use-toast";
 
 const CreateEditEvent = ({ existingEvent = null, onBack }) => {
   const [event, setEvent] = useState({
@@ -39,8 +43,8 @@ const CreateEditEvent = ({ existingEvent = null, onBack }) => {
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [videoUploads, setVideoUploads] = useState({});
   const [fileUploads, setFileUploads] = useState({});
+  const [urlError, setUrlError] = useState({});
 
   const handleEventChange = (field) => (e) => {
     const value = e.target.value;
@@ -56,23 +60,63 @@ const CreateEditEvent = ({ existingEvent = null, onBack }) => {
       videos: [
         ...prev.videos,
         {
-          id: Date.now(),
+          id: Date.now().toString(),
           title: "",
           description: "",
-          file: null,
-          filename: "",
-          url: "",
+          youtubeUrl: "",
+          videoId: "",
         },
       ],
     }));
   };
 
+  const extractYoutubeId = (url) => {
+    if (!url) return "";
+
+    // Regex per estrarre l'ID da vari formati di URL YouTube
+    const regExp = /^.*(youtu.be\/|v\/|e\/|u\/\w+\/|embed\/|v=)([^#\&\?]*).*/;
+    const match = url.match(regExp);
+
+    if (match && match[2].length === 11) {
+      return match[2];
+    }
+
+    return "";
+  };
+
+  const validateYoutubeUrl = (url) => {
+    if (!url) return false;
+
+    const videoId = extractYoutubeId(url);
+    if (!videoId) return false;
+
+    return true;
+  };
+
   const handleVideoChange = (videoId, field, value) => {
     setEvent((prev) => ({
       ...prev,
-      videos: prev.videos.map((video) =>
-        video.id === videoId ? { ...video, [field]: value } : video
-      ),
+      videos: prev.videos.map((video) => {
+        if (video.id === videoId) {
+          if (field === "youtubeUrl") {
+            const isValid = validateYoutubeUrl(value);
+            setUrlError((prev) => ({
+              ...prev,
+              [videoId]: !isValid && value !== "",
+            }));
+
+            // Estrai e aggiorna l'ID del video YouTube
+            const extractedVideoId = extractYoutubeId(value);
+            return {
+              ...video,
+              [field]: value,
+              videoId: extractedVideoId,
+            };
+          }
+          return { ...video, [field]: value };
+        }
+        return video;
+      }),
     }));
   };
 
@@ -81,6 +125,11 @@ const CreateEditEvent = ({ existingEvent = null, onBack }) => {
       ...prev,
       videos: prev.videos.filter((video) => video.id !== videoId),
     }));
+    setUrlError((prev) => {
+      const newErrors = { ...prev };
+      delete newErrors[videoId];
+      return newErrors;
+    });
   };
 
   const handleAddFile = () => {
@@ -89,7 +138,7 @@ const CreateEditEvent = ({ existingEvent = null, onBack }) => {
       files: [
         ...prev.files,
         {
-          id: Date.now(),
+          id: Date.now().toString(),
           title: "",
           file: null,
           filename: "",
@@ -113,32 +162,6 @@ const CreateEditEvent = ({ existingEvent = null, onBack }) => {
       ...prev,
       files: prev.files.filter((file) => file.id !== fileId),
     }));
-  };
-
-  const handleVideoFileChange = (videoId, file) => {
-    if (!file) return;
-
-    // Accept only video files
-    if (!file.type.includes("video/")) {
-      alert("Per favore, carica solo file video");
-      return;
-    }
-
-    handleVideoChange(videoId, "file", file);
-    handleVideoChange(videoId, "filename", file.name);
-
-    // Set upload progress tracking
-    setVideoUploads((prev) => ({
-      ...prev,
-      [videoId]: {
-        progress: 0,
-        status: "pending",
-      },
-    }));
-
-    // Show thumbnail preview if possible
-    const videoUrl = URL.createObjectURL(file);
-    handleVideoChange(videoId, "previewUrl", videoUrl);
   };
 
   const handleFileFileChange = (fileId, file) => {
@@ -167,28 +190,21 @@ const CreateEditEvent = ({ existingEvent = null, onBack }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // Controllo validità URL YouTube
+    const hasInvalidUrls = event.videos.some((video) => urlError[video.id]);
+    if (hasInvalidUrls) {
+      toast({
+        title: "Errore di validazione",
+        description: "Uno o più URL di YouTube non sono validi",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setIsSubmitting(true);
 
     try {
-      // Process videos
-      const processedVideos = await Promise.all(
-        event.videos.map(async (video) => {
-          let videoData = { ...video };
-          delete videoData.file; // Remove File object from data to store
-          delete videoData.previewUrl; // Remove preview URL
-
-          if (video.file) {
-            const videoUrl = await handleFileUpload(
-              video.file,
-              `${video.id}/videos`
-            );
-            videoData.url = videoUrl;
-          }
-
-          return videoData;
-        })
-      );
-
       // Process files
       const processedFiles = await Promise.all(
         event.files.map(async (file) => {
@@ -212,7 +228,7 @@ const CreateEditEvent = ({ existingEvent = null, onBack }) => {
         description: event.description,
         date: event.date ? new Date(event.date) : null,
         location: event.location,
-        videos: processedVideos,
+        videos: event.videos,
         files: processedFiles,
         updatedAt: serverTimestamp(),
       };
@@ -225,14 +241,26 @@ const CreateEditEvent = ({ existingEvent = null, onBack }) => {
         await addDoc(collection(db, "events"), eventData);
       }
 
-      alert(existingEvent ? "Evento aggiornato!" : "Evento creato!");
+      toast({
+        title: existingEvent ? "Evento aggiornato!" : "Evento creato!",
+        description: "L'operazione è stata completata con successo.",
+      });
       onBack();
     } catch (error) {
       console.error("Error saving event:", error);
-      alert("Errore durante il salvataggio");
+      toast({
+        title: "Errore",
+        description: "Impossibile salvare l'evento",
+        variant: "destructive",
+      });
     } finally {
       setIsSubmitting(false);
     }
+  };
+
+  const getYouTubeThumbnail = (videoId) => {
+    if (!videoId) return null;
+    return `https://img.youtube.com/vi/${videoId}/mqdefault.jpg`;
   };
 
   return (
@@ -311,7 +339,7 @@ const CreateEditEvent = ({ existingEvent = null, onBack }) => {
               </div>
             </div>
 
-            {/* Videos Section */}
+            {/* Videos Section - Modificato per YouTube */}
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <Label>Video dell'evento</Label>
@@ -327,7 +355,7 @@ const CreateEditEvent = ({ existingEvent = null, onBack }) => {
 
               {event.videos.length === 0 ? (
                 <div className="text-center py-8 bg-gray-50 rounded-lg border-2 border-dashed border-gray-200">
-                  <FileVideo className="h-8 w-8 mx-auto text-gray-400" />
+                  <Youtube className="h-8 w-8 mx-auto text-gray-400" />
                   <p className="mt-2 text-sm text-gray-500">
                     Nessun video presente
                   </p>
@@ -349,7 +377,7 @@ const CreateEditEvent = ({ existingEvent = null, onBack }) => {
                     >
                       <div className="flex justify-between items-center mb-4">
                         <h4 className="font-medium flex items-center gap-2">
-                          <FileVideo className="h-5 w-5 text-blue-500" />
+                          <Youtube className="h-5 w-5 text-red-500" />
                           Video {index + 1}
                         </h4>
                         <Button
@@ -403,96 +431,52 @@ const CreateEditEvent = ({ existingEvent = null, onBack }) => {
                         </div>
 
                         <div>
-                          <Label>File video</Label>
-                          {video.url || video.previewUrl ? (
-                            <div className="mt-2 p-4 bg-gray-50 rounded-lg border">
-                              <div className="flex items-start gap-4">
-                                <div className="flex-shrink-0 w-32 h-20 bg-black rounded overflow-hidden">
-                                  <video
-                                    src={video.previewUrl || video.url}
-                                    className="w-full h-full object-cover"
-                                    muted
-                                  />
-                                </div>
-                                <div className="flex-1">
-                                  <p className="font-medium text-gray-900">
-                                    {video.filename}
-                                  </p>
-                                  <p className="text-sm text-gray-500 mt-1">
-                                    {video.file
-                                      ? "Video in attesa di caricamento"
-                                      : "Video già caricato"}
-                                  </p>
-                                  <div className="flex gap-2 mt-2">
-                                    <Button
-                                      type="button"
-                                      variant="outline"
-                                      size="sm"
-                                      onClick={() => {
-                                        if (video.previewUrl) {
-                                          URL.revokeObjectURL(video.previewUrl);
-                                        }
-                                        handleVideoChange(
-                                          video.id,
-                                          "file",
-                                          null
-                                        );
-                                        handleVideoChange(
-                                          video.id,
-                                          "filename",
-                                          ""
-                                        );
-                                        handleVideoChange(
-                                          video.id,
-                                          "previewUrl",
-                                          ""
-                                        );
-                                        if (!video.url) {
-                                          handleVideoChange(
-                                            video.id,
-                                            "url",
-                                            ""
-                                          );
-                                        }
-                                      }}
-                                      className="text-red-500 hover:bg-red-50"
-                                    >
-                                      <Trash2 className="h-3.5 w-3.5 mr-1" />
-                                      Rimuovi
-                                    </Button>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          ) : (
-                            <div
-                              className="mt-2 border-2 border-dashed rounded-lg p-6 bg-gray-50 hover:bg-gray-100 transition-colors cursor-pointer"
-                              onClick={() =>
-                                document
-                                  .getElementById(`video-file-${video.id}`)
-                                  ?.click()
+                          <Label
+                            htmlFor={`video-url-${video.id}`}
+                            className="flex items-center"
+                          >
+                            <Link className="h-4 w-4 mr-2" />
+                            URL YouTube
+                          </Label>
+                          <div className="mt-1 relative">
+                            <Input
+                              id={`video-url-${video.id}`}
+                              value={video.youtubeUrl}
+                              onChange={(e) =>
+                                handleVideoChange(
+                                  video.id,
+                                  "youtubeUrl",
+                                  e.target.value
+                                )
                               }
-                            >
-                              <div className="text-center">
-                                <FileVideo className="h-8 w-8 mx-auto text-gray-400" />
-                                <p className="mt-2 text-sm font-medium text-blue-500">
-                                  Carica video
+                              placeholder="https://www.youtube.com/watch?v=..."
+                              className={
+                                urlError[video.id] ? "border-red-500 pr-10" : ""
+                              }
+                            />
+                            {urlError[video.id] && (
+                              <div className="absolute right-2 top-1/2 transform -translate-y-1/2 text-red-500">
+                                <AlertCircle className="h-5 w-5" />
+                              </div>
+                            )}
+                          </div>
+                          {urlError[video.id] && (
+                            <p className="text-sm text-red-500 mt-1">
+                              URL YouTube non valido
+                            </p>
+                          )}
+
+                          {video.videoId && !urlError[video.id] && (
+                            <div className="mt-3 border rounded-lg overflow-hidden">
+                              <img
+                                src={getYouTubeThumbnail(video.videoId)}
+                                alt="Anteprima YouTube"
+                                className="w-full h-40 object-cover"
+                              />
+                              <div className="p-3 bg-gray-50">
+                                <p className="text-sm text-gray-600">
+                                  Video ID: {video.videoId}
                                 </p>
-                                <p className="mt-1 text-xs text-gray-500">
-                                  MP4, WebM o altri formati video (max 500MB)
-                                </p>
-                                <input
-                                  id={`video-file-${video.id}`}
-                                  type="file"
-                                  accept="video/*"
-                                  className="hidden"
-                                  onChange={(e) =>
-                                    handleVideoFileChange(
-                                      video.id,
-                                      e.target.files?.[0]
-                                    )
-                                  }
-                                />
                               </div>
                             </div>
                           )}

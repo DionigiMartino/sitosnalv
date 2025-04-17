@@ -416,7 +416,7 @@ const TerritorioPage = () => {
                   {/* RICERCA TRADIZIONALE */}
                   <div className="p-4 bg-gray-50 rounded-lg border border-gray-200">
                     <h3 className="text-lg font-semibold text-gray-800 mb-3">
-                      Ricerca per nome
+                      Ricerca per Località
                     </h3>
                     <div className="flex gap-4 max-w-md">
                       <Input

@@ -18,6 +18,9 @@ import {
   MapPin,
   Info,
   X,
+  Youtube,
+  AlertCircle,
+  AlertTriangle,
 } from "lucide-react";
 import { format } from "date-fns";
 import { it } from "date-fns/locale";
@@ -55,8 +58,9 @@ interface EventVideo {
   id: string;
   title: string;
   description: string;
-  url: string;
-  filename?: string;
+  youtubeUrl?: string;
+  videoId?: string;
+  url?: string; // per compatibilità con eventi esistenti
 }
 
 interface EventFile {
@@ -87,52 +91,14 @@ const EventViewer = () => {
   const [selectedPDF, setSelectedPDF] = useState<EventFile | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
-  const videoRef = useRef<HTMLVideoElement | null>(null);
-  const [currentTime, setCurrentTime] = useState(0);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [videoDuration, setVideoDuration] = useState(0);
-
-  const togglePlay = () => {
-    if (videoRef.current) {
-      if (videoRef.current.paused) {
-        videoRef.current.play();
-        setIsPlaying(true);
-      } else {
-        videoRef.current.pause();
-        setIsPlaying(false);
-      }
-    }
-  };
-
-  const handleRewind = () => {
-    if (videoRef.current) {
-      const newTime = Math.max(0, videoRef.current.currentTime - 5);
-      videoRef.current.currentTime = newTime;
-    }
-  };
-
-  const handleRestart = () => {
-    if (videoRef.current) {
-      videoRef.current.currentTime = 0;
-      if (!videoRef.current.paused) {
-        videoRef.current.play();
-      }
-    }
-  };
+  const youtubePlayerRef = useRef<HTMLIFrameElement | null>(null);
+  const [youtubeError, setYoutubeError] = useState(false);
 
   useEffect(() => {
     if (status === "unauthenticated") {
       router.push("/login");
     }
   }, [status, router]);
-
-  const formatTime = (timeInSeconds: number): string => {
-    const minutes = Math.floor(timeInSeconds / 60);
-    const seconds = Math.floor(timeInSeconds % 60);
-    return `${minutes.toString().padStart(2, "0")}:${seconds
-      .toString()
-      .padStart(2, "0")}`;
-  };
 
   const formatDate = (date: any): string => {
     if (!date) return "";
@@ -145,14 +111,20 @@ const EventViewer = () => {
     return format(date, "d MMMM yyyy", { locale: it });
   };
 
-  const handleTimeUpdate = (e: React.SyntheticEvent<HTMLVideoElement>) => {
-    const video = e.currentTarget;
-    setCurrentTime(video.currentTime);
+  // Funzione per generare l'URL di incorporamento di YouTube
+  const getYoutubeEmbedUrl = (videoId: string) => {
+    return `https://www.youtube.com/embed/${videoId}?enablejsapi=1`;
   };
 
-  const handleLoadedMetadata = (e: React.SyntheticEvent<HTMLVideoElement>) => {
-    const video = e.currentTarget;
-    setVideoDuration(video.duration);
+  // Funzione per controllare se un video è di YouTube o caricato direttamente
+  const isYoutubeVideo = (video: EventVideo) => {
+    return !!video.videoId;
+  };
+
+  // Funzione per generare la miniatura di YouTube
+  const getYouTubeThumbnail = (videoId: string) => {
+    if (!videoId) return null;
+    return `https://img.youtube.com/vi/${videoId}/mqdefault.jpg`;
   };
 
   useEffect(() => {
@@ -184,6 +156,15 @@ const EventViewer = () => {
 
     fetchEvents();
   }, [session]);
+
+  const handleVideoError = () => {
+    setYoutubeError(true);
+    toast({
+      title: "Errore di caricamento",
+      description: "Il video di YouTube non è disponibile o è privato",
+      variant: "destructive",
+    });
+  };
 
   const filteredEvents = events.filter((event) =>
     event.title.toLowerCase().includes(searchTerm.toLowerCase())
@@ -218,6 +199,7 @@ const EventViewer = () => {
                   setSelectedEvent(null);
                   setSelectedVideo(null);
                   setSelectedPDF(null);
+                  setYoutubeError(false);
                 }}
                 className="hover:bg-white/50 transition-colors"
               >
@@ -243,7 +225,7 @@ const EventViewer = () => {
                 )}
                 <div className="h-4 w-px bg-gray-200"></div>
                 <div className="flex items-center gap-1">
-                  <Play className="h-4 w-4" />
+                  <Youtube className="h-4 w-4" />
                   {selectedEvent.videos.length} video
                 </div>
                 {selectedEvent.files.length > 0 && (
@@ -282,15 +264,18 @@ const EventViewer = () => {
                       <div className="space-y-4">
                         <div>
                           <h3 className="font-semibold text-gray-900 mb-2">
-                            Controlli Video:
+                            Visualizzazione Video:
                           </h3>
                           <ul className="list-disc pl-5 space-y-2">
-                            <li>Play/Pausa: Avvia o mette in pausa il video</li>
+                            <li>I video sono incorporati da YouTube</li>
                             <li>
-                              Indietro di 5 secondi: Riavvolge il video di 5
-                              secondi
+                              Puoi utilizzare i controlli standard di YouTube
+                              per la riproduzione
                             </li>
-                            <li>Riavvia: Riporta il video all'inizio</li>
+                            <li>
+                              Alcuni video potrebbero essere privati e non
+                              disponibili
+                            </li>
                           </ul>
                         </div>
                         <div>
@@ -326,59 +311,43 @@ const EventViewer = () => {
                   <>
                     <div className="relative rounded-2xl overflow-hidden bg-black shadow-2xl ring-1 ring-black/5">
                       <div className="relative aspect-video bg-black">
-                        <video
-                          ref={videoRef}
-                          className="absolute inset-0 w-full h-full object-cover"
-                          src={selectedVideo?.url}
-                          onTimeUpdate={handleTimeUpdate}
-                          onLoadedMetadata={handleLoadedMetadata}
-                          controls={false}
-                          muted={false}
-                          preload="metadata"
-                        >
-                          Il tuo browser non supporta il tag video.
-                        </video>
-
-                        <div className="absolute bottom-0 left-0 right-0 bg-black/50 p-4">
-                          <div className="flex items-center gap-4">
-                            <button
-                              onClick={handleRestart}
-                              className="text-white hover:text-gray-200"
-                              title="Ricomincia da capo"
-                            >
-                              <RotateCcw size={24} />
-                            </button>
-
-                            <button
-                              onClick={handleRewind}
-                              className="text-white hover:text-gray-200"
-                              title="Indietro di 5 secondi"
-                            >
-                              <Rewind size={24} />
-                            </button>
-
-                            <button
-                              onClick={togglePlay}
-                              className="text-white hover:text-gray-200"
-                              title={isPlaying ? "Pausa" : "Play"}
-                            >
-                              {isPlaying ? (
-                                <Pause size={24} />
-                              ) : (
-                                <Play size={24} />
-                              )}
-                            </button>
-
-                            <span className="text-white text-sm">
-                              {formatTime(currentTime)}
-                              {videoDuration > 0 && (
-                                <span className="ml-1 text-gray-300">
-                                  / {formatTime(videoDuration)}
-                                </span>
-                              )}
-                            </span>
+                        {isYoutubeVideo(selectedVideo) ? (
+                          <>
+                            {youtubeError ? (
+                              <div className="absolute inset-0 flex flex-col items-center justify-center bg-gray-100 p-4 text-center">
+                                <AlertTriangle className="h-12 w-12 text-amber-500 mb-2" />
+                                <h3 className="text-lg font-medium text-gray-900">
+                                  Impossibile caricare il video
+                                </h3>
+                                <p className="text-gray-600 max-w-md mx-auto mt-2">
+                                  Il video potrebbe essere privato, rimosso o
+                                  non disponibile.
+                                </p>
+                              </div>
+                            ) : (
+                              <iframe
+                                ref={youtubePlayerRef}
+                                src={getYoutubeEmbedUrl(selectedVideo.videoId)}
+                                className="absolute inset-0 w-full h-full"
+                                frameBorder="0"
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                allowFullScreen
+                                onError={handleVideoError}
+                              ></iframe>
+                            )}
+                          </>
+                        ) : (
+                          <div className="absolute inset-0 flex flex-col items-center justify-center bg-gray-100 p-4 text-center">
+                            <AlertCircle className="h-12 w-12 text-gray-400 mb-2" />
+                            <h3 className="text-lg font-medium text-gray-900">
+                              Formato video non supportato
+                            </h3>
+                            <p className="text-gray-600 max-w-md mx-auto mt-2">
+                              Questo video è in un formato obsoleto e non può
+                              essere visualizzato.
+                            </p>
                           </div>
-                        </div>
+                        )}
                       </div>
                     </div>
 
@@ -490,7 +459,7 @@ const EventViewer = () => {
                         {selectedEvent.videos.length > 0 && (
                           <div className="space-y-4">
                             <h4 className="font-medium text-gray-900 flex items-center gap-2">
-                              <Play className="h-4 w-4 text-blue-500" />
+                              <Youtube className="h-4 w-4 text-red-500" />
                               Video
                             </h4>
                             <div className="space-y-3">
@@ -506,21 +475,27 @@ const EventViewer = () => {
                                   onClick={() => {
                                     setSelectedVideo(video);
                                     setSelectedPDF(null);
+                                    setYoutubeError(false);
                                   }}
                                 >
                                   <div className="relative p-4">
                                     <div className="flex flex-col gap-3">
                                       <div className="relative aspect-video w-full rounded-lg overflow-hidden bg-black">
-                                        <div className="absolute inset-0 flex items-center justify-center">
-                                          <video
-                                            src={video.url}
-                                            className="absolute w-full h-full object-contain"
-                                            muted
-                                            preload="metadata"
+                                        {isYoutubeVideo(video) ? (
+                                          <img
+                                            src={getYouTubeThumbnail(
+                                              video.videoId
+                                            )}
+                                            alt={video.title}
+                                            className="absolute w-full h-full object-cover"
                                           />
-                                        </div>
-                                        <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50">
-                                          <Play className="h-8 w-8 text-white" />
+                                        ) : (
+                                          <div className="absolute inset-0 bg-gray-100 flex items-center justify-center">
+                                            <Youtube className="h-10 w-10 text-gray-400" />
+                                          </div>
+                                        )}
+                                        <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-30">
+                                          <Play className="h-10 w-10 text-white" />
                                         </div>
                                       </div>
 
@@ -691,15 +666,15 @@ const EventViewer = () => {
 
                     <div className="flex items-center gap-3 pt-4 border-t border-gray-100">
                       {event.videos.length > 0 && (
-                        <div className="flex items-center gap-1 bg-blue-50 text-blue-700 px-3 py-1.5 rounded-full">
-                          <Play className="h-4 w-4" />
+                        <div className="flex items-center gap-1 bg-red-50 text-red-700 px-3 py-1.5 rounded-full">
+                          <Youtube className="h-4 w-4" />
                           <span className="text-xs font-medium">
                             {event.videos.length} video
                           </span>
                         </div>
                       )}
                       {event.files.length > 0 && (
-                        <div className="flex items-center gap-1 bg-red-50 text-red-700 px-3 py-1.5 rounded-full">
+                        <div className="flex items-center gap-1 bg-blue-50 text-blue-700 px-3 py-1.5 rounded-full">
                           <FileText className="h-4 w-4" />
                           <span className="text-xs font-medium">
                             {event.files.length} file
