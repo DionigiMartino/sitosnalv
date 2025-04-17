@@ -300,38 +300,6 @@ export default function ScuolaPage() {
                       </div>
                     </div>
                   </div>
-
-                  {/* Contatti Section */}
-                  <div className="bg-white p-6 rounded-lg shadow">
-                    <div className="flex gap-4 mb-8">
-                      <div className="w-1 bg-red-600 flex-shrink-0"></div>
-                      <h2 className="text-xl font-bold text-[#1a365d]">
-                        CONTATTI
-                      </h2>
-                    </div>
-
-                    <div className="space-y-4">
-                      <div className="text-gray-900">
-                        <a
-                          href="mailto:ata@snalv.it"
-                          className="flex items-center hover:text-blue-600 transition-colors duration-75"
-                        >
-                          <Mail className="h-4 w-4 mr-2" />
-                          Personale ATA: ata@snalv.it
-                        </a>
-                      </div>
-                      <div className="border-b border-dashed border-gray-300"></div>
-                      <div className="text-gray-900">
-                        <a
-                          href="mailto:docenti@snalv.it"
-                          className="flex items-center hover:text-blue-600 transition-colors duration-75"
-                        >
-                          <Mail className="h-4 w-4 mr-2" />
-                          Personale DOCENTI: docenti@snalv.it
-                        </a>
-                      </div>
-                    </div>
-                  </div>
                 </div>
               </div>
 

@@ -50,20 +50,20 @@ export default function CompartiPage() {
       icon: Home,
     },
     {
-      title: "CONFSAL SUD",
-      description:
-        "Il Segretario Generale SNALV Confsal ricopre il ruolo di Coordinatore Nazionale del Dipartimento Confsal dedicato al Sud Italia.",
-      image: "/img/confsal_banner.jpg",
-      route: "/confsal-sud",
-      icon: MapPin,
-    },
-    {
       title: "ISTRUZIONE E RICERCA",
       description:
         "La scuola è un settore essenziale per la crescita del nostro Paese. Entra a far parte del comparto SNALV dedicato a docenti e personale ATA",
       image: "/img/istruzione_banner.jpg",
       route: "/scuola",
       icon: GraduationCap,
+    },
+    {
+      title: "CONFSAL SUD",
+      description:
+        "Il Segretario Generale SNALV Confsal ricopre il ruolo di Coordinatore Nazionale del Dipartimento Confsal dedicato al Sud Italia.",
+      image: "/img/confsal_banner.jpg",
+      route: "/confsal-sud",
+      icon: MapPin,
     },
   ];
 
