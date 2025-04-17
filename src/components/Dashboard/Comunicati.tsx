@@ -96,6 +96,7 @@ const News = () => {
     "Servizi",
     "Varie",
     "Territorio",
+    "Scuola"
   ];
 
   useEffect(() => {

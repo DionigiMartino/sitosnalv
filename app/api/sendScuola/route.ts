@@ -48,11 +48,11 @@ export async function POST(request: Request) {
     // Crea l'oggetto dell'email in base all'area
     let subject = "Nuovo contatto dal sito SNALV";
     if (area === "ATA") {
-      subject = `Contatto dal sito - Area ATA - ${name}`;
+      subject = `Contatto dal sito - Comparto Scuola - ATA - ${name}`;
     } else if (area === "DOCENTI") {
-      subject = `Contatto dal sito - Area DOCENTI - ${name}`;
+      subject = `Contatto dal sito - Comparto Scuola - DOCENTI - ${name}`;
     } else if (area === "ALTRO") {
-      subject = `Contatto dal sito - Area ALTRO - ${name}`;
+      subject = `Contatto dal sito - Comparto Scuola - ALTRO - ${name}`;
     }
 
     // Prepara il contenuto HTML dell'email
