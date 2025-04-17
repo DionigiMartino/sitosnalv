@@ -63,16 +63,27 @@ const NewsComponent = ({
           tipo: "comunicato" as const,
         }));
 
+        // Data e ora attuali per filtrare per data di pubblicazione
+        const now = new Date();
+
         // Combine and filter both arrays
         const allItems = [...newsData, ...comunicatiData]
           .filter((item) => {
+            // Filtro per categoria
             const hasMatchingCategory = categories.some((category) =>
               // @ts-ignore
               item.categories?.includes(category)
             );
+
+            // Filtro per evitare di mostrare l'elemento corrente
             // @ts-ignore
             const isNotCurrent = !currentLink || item.linkNews !== currentLink;
-            return hasMatchingCategory && isNotCurrent;
+
+            // Filtro per mostrare solo elementi con data <= data attuale
+            const isPublishable =
+              !item.createdAt || item.createdAt.getTime() <= now.getTime();
+
+            return hasMatchingCategory && isNotCurrent && isPublishable;
           })
           // Sort combined results by date
           .sort((a, b) => {
