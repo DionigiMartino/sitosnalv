@@ -33,6 +33,7 @@ const ComunicatiPage = () => {
     { id: "Servizi", label: "Servizi" },
     { id: "In Evidenza", label: "In Evidenza" },
     { id: "Territorio", label: "Territorio" },
+    { id: "Scuola", label: "Scuola" },
   ];
 
   // Modifica la funzione processContent per gestire i video di YouTube
