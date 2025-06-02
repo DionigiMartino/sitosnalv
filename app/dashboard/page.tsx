@@ -12,6 +12,7 @@ import {
   ChevronDown,
   Blocks,
   BookOpen,
+  Mail,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
@@ -27,6 +28,7 @@ import Users from "@/src/components/Dashboard/Utenti";
 import Webinar from "@/src/components/Dashboard/Webinar";
 import Eventi from "@/src/components/Dashboard/EventViewer";
 import CourseManager from "@/src/components/Dashboard/Corso";
+import NewsletterGenerator from "@/src/components/Dashboard/Newsletter";
 
 const DashboardLayout = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -54,6 +56,11 @@ const DashboardLayout = () => {
           icon: <Building2 className="w-4 h-4" />,
           label: "Sedi",
           id: "locations",
+        },
+        {
+          icon: <Mail className="w-4 h-4" />,
+          label: "Newsletter",
+          id: "newsletter",
         },
       ],
     },
@@ -116,6 +123,8 @@ const DashboardLayout = () => {
         return <CourseManager />;
       case "eventi":
         return <Eventi />;
+      case "newsletter":
+        return <NewsletterGenerator />;
       default:
         return <News />;
     }

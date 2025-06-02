@@ -37,7 +37,6 @@ const NewsComponent = ({
   useEffect(() => {
     const fetchItems = async () => {
       try {
-        // Fetch notizie
         const newsQuery = query(
           collection(db, "notizie"),
           orderBy("createdAt", "desc")
@@ -50,7 +49,6 @@ const NewsComponent = ({
           tipo: "notizia" as const,
         }));
 
-        // Fetch comunicati
         const comunicatiQuery = query(
           collection(db, "comunicati"),
           orderBy("createdAt", "desc")
@@ -63,10 +61,8 @@ const NewsComponent = ({
           tipo: "comunicato" as const,
         }));
 
-        // Data e ora attuali per filtrare per data di pubblicazione
         const now = new Date();
-
-        // Combine and filter both arrays
+        
         const allItems = [...newsData, ...comunicatiData]
           .filter((item) => {
             // Filtro per categoria
