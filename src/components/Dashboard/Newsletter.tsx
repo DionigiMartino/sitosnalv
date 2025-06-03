@@ -17,10 +17,13 @@ import {
   RefreshCw,
   FileText,
   Users,
+  Copy,
+  Check,
 } from "lucide-react";
 import { collection, getDocs, orderBy, query } from "firebase/firestore";
 import { db } from "@/src/lib/firebase";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Checkbox } from "@/components/ui/checkbox";
 
 const NewsletterGenerator = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -28,11 +31,14 @@ const NewsletterGenerator = () => {
   const [newsletterPreview, setNewsletterPreview] = useState("");
   const [newsletterTitle, setNewsletterTitle] = useState("");
   const [recentContent, setRecentContent] = useState([]);
+  const [selectedContent, setSelectedContent] = useState([]);
   const [stats, setStats] = useState({
     total: 0,
     comunicati: 0,
     notizie: 0,
+    selected: 0,
   });
+  const [copied, setCopied] = useState(false);
 
   useEffect(() => {
     // Imposta il titolo di default
@@ -59,6 +65,14 @@ const NewsletterGenerator = () => {
     // Carica i contenuti recenti
     loadRecentContent();
   }, []);
+
+  useEffect(() => {
+    // Aggiorna statistiche quando cambia la selezione
+    setStats((prev) => ({
+      ...prev,
+      selected: selectedContent.length,
+    }));
+  }, [selectedContent]);
 
   // Funzione per caricare contenuti degli ultimi 30 giorni
   const loadRecentContent = async () => {
@@ -98,16 +112,20 @@ const NewsletterGenerator = () => {
           const itemDate = new Date(item.createdAt);
           return itemDate >= thirtyDaysAgo;
         })
-          // @ts-ignore
-        .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+        // @ts-ignore
+        .sort((a: any, b: any) => new Date(b.createdAt) - new Date(a.createdAt));
 
       setRecentContent(recent);
+
+      // Seleziona tutti di default
+      setSelectedContent(recent.map((item) => item.id));
 
       // Calcola statistiche
       setStats({
         total: recent.length,
         comunicati: recent.filter((item) => item.type === "comunicato").length,
         notizie: recent.filter((item) => item.type === "notizia").length,
+        selected: recent.length,
       });
     } catch (error) {
       console.error("Error loading content:", error);
@@ -135,11 +153,13 @@ const NewsletterGenerator = () => {
         });
 
         setRecentContent(recent);
+        setSelectedContent(recent.map((item) => item.id));
         setStats({
           total: recent.length,
           comunicati: recent.filter((item) => item.type === "comunicato")
             .length,
           notizie: recent.filter((item) => item.type === "notizia").length,
+          selected: recent.length,
         });
       } catch (fallbackError) {
         console.error("Error in fallback:", fallbackError);
@@ -148,6 +168,28 @@ const NewsletterGenerator = () => {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  // Gestione selezione contenuti
+  const toggleContentSelection = (contentId) => {
+    setSelectedContent((prev) =>
+      prev.includes(contentId)
+        ? prev.filter((id) => id !== contentId)
+        : [...prev, contentId]
+    );
+  };
+
+  const toggleSelectAll = () => {
+    if (selectedContent.length === recentContent.length) {
+      setSelectedContent([]);
+    } else {
+      setSelectedContent(recentContent.map((item) => item.id));
+    }
+  };
+
+  // Funzione per ottenere solo i contenuti selezionati
+  const getSelectedContent = () => {
+    return recentContent.filter((item) => selectedContent.includes(item.id));
   };
 
   // Funzione per generare l'HTML della newsletter
@@ -270,6 +312,15 @@ a img {border:none;}
 table { border-collapse:collapse; mso-table-lspace:0pt; mso-table-rspace:0pt; } 
 th { font-weight: normal; text-align: left; } 
 *[class="gmail-fix"] { display: none !important; }
+@media (max-width: 600px) { 
+  .gmx-killpill { content: ' \\03D1';} 
+  .r0-c { box-sizing: border-box !important; text-align: center !important; valign: top !important; width: 320px !important } 
+  .r1-o { border-style: solid !important; margin: 0 auto 0 auto !important; width: 320px !important } 
+  .r2-c { box-sizing: border-box !important; text-align: center !important; valign: top !important; width: 100% !important } 
+  .r3-o { border-style: solid !important; margin: 0 auto 0 auto !important; width: 100% !important } 
+  .columnWrapper { width: 100% !important; } 
+  .mcnImageCardBlock { width: 100% !important; } 
+}
 </style>
 <style type="text/css">
 p, h1, h2, h3, h4, ol, ul { margin: 0; } 
@@ -565,7 +616,7 @@ ${contentRows.map((row) => generateContentRow(row)).join("")}
 <tbody>
 <tr>
 <td align="center" valign="top" class="r33-i nl2go-default-textstyle" style="color: #3b3f44; font-family: arial,helvetica,sans-serif; font-size: 18px; line-height: 1.5; padding-top: 15px; text-align: center;">
-<div><p style="margin: 0;"><strong>SNALV CONFSAL</strong><br><strong>Copyright 2025 @ All rights reserved.</strong></p><p style="margin: 0;"> </p></div>
+<div><p style="margin: 0;"><strong>SNALV CONFSAL</strong><br><strong>Copyright 2024 @ All rights reserved.</strong></p><p style="margin: 0;"> </p></div>
 </td>
 </tr>
 </tbody>
@@ -659,7 +710,13 @@ Snalv Confsal, in qualità di titolare del trattamento, Le ricorda che i Suoi da
 
   // Funzione per scaricare l'HTML
   const downloadHTML = () => {
-    const html = generateNewsletterHTML(recentContent, newsletterTitle);
+    const selectedContentData = getSelectedContent();
+    if (selectedContentData.length === 0) {
+      alert("Seleziona almeno un contenuto per generare la newsletter");
+      return;
+    }
+
+    const html = generateNewsletterHTML(selectedContentData, newsletterTitle);
 
     const blob = new Blob([html], { type: "text/html" });
     const url = URL.createObjectURL(blob);
@@ -672,9 +729,35 @@ Snalv Confsal, in qualità di titolare del trattamento, Le ricorda che i Suoi da
     URL.revokeObjectURL(url);
   };
 
+  // Funzione per copiare l'HTML
+  const copyHTML = async () => {
+    const selectedContentData = getSelectedContent();
+    if (selectedContentData.length === 0) {
+      alert("Seleziona almeno un contenuto per generare la newsletter");
+      return;
+    }
+
+    const html = generateNewsletterHTML(selectedContentData, newsletterTitle);
+
+    try {
+      await navigator.clipboard.writeText(html);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch (error) {
+      console.error("Errore nella copia:", error);
+      alert("Errore nella copia dell'HTML");
+    }
+  };
+
   // Funzione per generare anteprima
   const generatePreview = () => {
-    const html = generateNewsletterHTML(recentContent, newsletterTitle);
+    const selectedContentData = getSelectedContent();
+    if (selectedContentData.length === 0) {
+      alert("Seleziona almeno un contenuto per generare l'anteprima");
+      return;
+    }
+
+    const html = generateNewsletterHTML(selectedContentData, newsletterTitle);
     setNewsletterPreview(html);
     setShowPreviewDialog(true);
   };
@@ -698,18 +781,34 @@ Snalv Confsal, in qualità di titolare del trattamento, Le ricorda che i Suoi da
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-6">
-          {/* Sezione Statistiche */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {/* Sezione Statistiche - Responsive */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             <Card className="bg-blue-50 border-blue-200">
-              <CardContent className="p-4">
-                <div className="flex items-center gap-3">
-                  <FileText className="h-8 w-8 text-blue-600" />
-                  <div>
-                    <div className="text-2xl font-bold text-blue-900">
+              <CardContent className="p-3 sm:p-4">
+                <div className="flex items-center gap-2 sm:gap-3">
+                  <FileText className="h-6 w-6 sm:h-8 sm:w-8 text-blue-600 flex-shrink-0" />
+                  <div className="min-w-0">
+                    <div className="text-xl sm:text-2xl font-bold text-blue-900">
                       {stats.total}
                     </div>
-                    <div className="text-sm text-blue-700">
-                      Contenuti Totali
+                    <div className="text-xs sm:text-sm text-blue-700">
+                      Disponibili
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-green-50 border-green-200">
+              <CardContent className="p-3 sm:p-4">
+                <div className="flex items-center gap-2 sm:gap-3">
+                  <Check className="h-6 w-6 sm:h-8 sm:w-8 text-green-600 flex-shrink-0" />
+                  <div className="min-w-0">
+                    <div className="text-xl sm:text-2xl font-bold text-green-900">
+                      {stats.selected}
+                    </div>
+                    <div className="text-xs sm:text-sm text-green-700">
+                      Selezionati
                     </div>
                   </div>
                 </div>
@@ -717,28 +816,32 @@ Snalv Confsal, in qualità di titolare del trattamento, Le ricorda che i Suoi da
             </Card>
 
             <Card className="bg-indigo-50 border-indigo-200">
-              <CardContent className="p-4">
-                <div className="flex items-center gap-3">
-                  <Users className="h-8 w-8 text-indigo-600" />
-                  <div>
-                    <div className="text-2xl font-bold text-indigo-900">
+              <CardContent className="p-3 sm:p-4">
+                <div className="flex items-center gap-2 sm:gap-3">
+                  <Users className="h-6 w-6 sm:h-8 sm:w-8 text-indigo-600 flex-shrink-0" />
+                  <div className="min-w-0">
+                    <div className="text-xl sm:text-2xl font-bold text-indigo-900">
                       {stats.comunicati}
                     </div>
-                    <div className="text-sm text-indigo-700">Comunicati</div>
+                    <div className="text-xs sm:text-sm text-indigo-700">
+                      Comunicati
+                    </div>
                   </div>
                 </div>
               </CardContent>
             </Card>
 
             <Card className="bg-purple-50 border-purple-200">
-              <CardContent className="p-4">
-                <div className="flex items-center gap-3">
-                  <Calendar className="h-8 w-8 text-purple-600" />
-                  <div>
-                    <div className="text-2xl font-bold text-purple-900">
+              <CardContent className="p-3 sm:p-4">
+                <div className="flex items-center gap-2 sm:gap-3">
+                  <Calendar className="h-6 w-6 sm:h-8 sm:w-8 text-purple-600 flex-shrink-0" />
+                  <div className="min-w-0">
+                    <div className="text-xl sm:text-2xl font-bold text-purple-900">
                       {stats.notizie}
                     </div>
-                    <div className="text-sm text-purple-700">Notizie</div>
+                    <div className="text-xs sm:text-sm text-purple-700">
+                      Notizie
+                    </div>
                   </div>
                 </div>
               </CardContent>
@@ -748,99 +851,90 @@ Snalv Confsal, in qualità di titolare del trattamento, Le ricorda che i Suoi da
           {/* Sezione Configurazione */}
           <Card className="border-green-200 bg-green-50">
             <CardHeader>
-              <CardTitle className="text-green-800">
+              <CardTitle className="text-green-800 text-base sm:text-lg">
                 Configurazione Newsletter
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="newsletter-title">Titolo Newsletter</Label>
+                <Label htmlFor="newsletter-title" className="text-sm">
+                  Titolo Newsletter
+                </Label>
                 <Input
                   id="newsletter-title"
                   value={newsletterTitle}
                   onChange={(e) => setNewsletterTitle(e.target.value)}
                   placeholder="Es: NEWSLETTER SNALV CONFSAL GENNAIO 2024"
-                  className="border-green-300 focus:border-green-500"
+                  className="border-green-300 focus:border-green-500 text-sm"
                 />
               </div>
 
-              <div className="flex items-center gap-2 text-sm text-green-700">
-                <Calendar className="h-4 w-4" />
+              <div className="flex items-center gap-2 text-xs sm:text-sm text-green-700">
+                <Calendar className="h-4 w-4 flex-shrink-0" />
                 <span>Periodo automatico: Ultimi 30 giorni</span>
               </div>
             </CardContent>
           </Card>
 
-          {/* Azioni Principali */}
-          <div className="flex flex-wrap gap-3">
-            <Button
-              onClick={loadRecentContent}
-              disabled={isLoading}
-              variant="outline"
-              className="flex items-center gap-2"
-            >
-              <RefreshCw
-                className={`h-4 w-4 ${isLoading ? "animate-spin" : ""}`}
-              />
-              {isLoading ? "Caricamento..." : "Aggiorna Contenuti"}
-            </Button>
-
-            <Button
-              onClick={generatePreview}
-              disabled={isLoading || stats.total === 0}
-              variant="outline"
-              className="flex items-center gap-2 bg-blue-50 hover:bg-blue-100"
-            >
-              <Eye className="h-4 w-4" />
-              Anteprima Newsletter
-            </Button>
-
-            <Button
-              onClick={downloadHTML}
-              disabled={isLoading || stats.total === 0}
-              className="flex items-center gap-2 bg-green-600 hover:bg-green-700"
-            >
-              <Download className="h-4 w-4" />
-              Scarica HTML
-            </Button>
-          </div>
-
-          {/* Lista Contenuti Recenti */}
+          {/* Selezione Contenuti */}
           {stats.total > 0 && (
             <Card>
-              <CardHeader>
-                <CardTitle className="text-sm font-medium">
-                  Contenuti che saranno inclusi ({stats.total})
-                </CardTitle>
+              <CardHeader className="pb-3">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                  <CardTitle className="text-base sm:text-lg">
+                    Seleziona Contenuti ({stats.selected}/{stats.total})
+                  </CardTitle>
+                  <Button
+                    onClick={toggleSelectAll}
+                    variant="outline"
+                    size="sm"
+                    className="w-full sm:w-auto text-xs"
+                  >
+                    {selectedContent.length === recentContent.length
+                      ? "Deseleziona Tutti"
+                      : "Seleziona Tutti"}
+                  </Button>
+                </div>
               </CardHeader>
               <CardContent>
-                <ScrollArea className="h-48">
+                <ScrollArea className="h-48 sm:h-64">
                   <div className="space-y-2">
                     {recentContent.map((item, index) => (
                       <div
                         key={item.id}
-                        className="flex items-center gap-3 p-2 rounded border"
+                        className="flex items-start gap-3 p-2 sm:p-3 rounded border hover:bg-gray-50"
                       >
-                        <span className="text-xs font-medium text-gray-500">
-                          {String(index + 1).padStart(2, "0")}
-                        </span>
-                        <span
-                          className={`inline-block px-2 py-1 rounded text-xs font-medium ${
-                            item.type === "comunicato"
-                              ? "bg-blue-100 text-blue-800"
-                              : "bg-purple-100 text-purple-800"
-                          }`}
-                        >
-                          {item.type === "comunicato"
-                            ? "Comunicato"
-                            : "Notizia"}
-                        </span>
-                        <span className="flex-1 text-sm truncate">
-                          {item.title}
-                        </span>
-                        <span className="text-xs text-gray-500">
-                          {formatDate(item.createdAt)}
-                        </span>
+                        <Checkbox
+                          checked={selectedContent.includes(item.id)}
+                          onCheckedChange={() =>
+                            toggleContentSelection(item.id)
+                          }
+                          className="mt-1 flex-shrink-0"
+                        />
+                        <div className="flex-1 min-w-0 space-y-1">
+                          <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+                            <span className="text-xs font-medium text-gray-500 flex-shrink-0">
+                              {String(index + 1).padStart(2, "0")}
+                            </span>
+                            <span
+                              className={`inline-block px-2 py-1 rounded text-xs font-medium flex-shrink-0 ${
+                                item.type === "comunicato"
+                                  ? "bg-blue-100 text-blue-800"
+                                  : "bg-purple-100 text-purple-800"
+                              }`}
+                            >
+                              {item.type === "comunicato"
+                                ? "Comunicato"
+                                : "Notizia"}
+                            </span>
+                            <span className="text-xs text-gray-500 flex-shrink-0">
+                              {formatDate(item.createdAt)}
+                            </span>
+                          </div>
+                          <span className="text-sm block break-words">
+                            {item.title}
+                          </span>
+                        </div>
                       </div>
                     ))}
                   </div>
@@ -849,15 +943,67 @@ Snalv Confsal, in qualità di titolare del trattamento, Le ricorda che i Suoi da
             </Card>
           )}
 
+          {/* Azioni Principali - Responsive */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+            <Button
+              onClick={loadRecentContent}
+              disabled={isLoading}
+              variant="outline"
+              className="flex items-center justify-center gap-2 text-sm"
+            >
+              <RefreshCw
+                className={`h-4 w-4 ${isLoading ? "animate-spin" : ""}`}
+              />
+              {isLoading ? "Caricamento..." : "Aggiorna"}
+            </Button>
+
+            <Button
+              onClick={generatePreview}
+              disabled={isLoading || stats.selected === 0}
+              variant="outline"
+              className="flex items-center justify-center gap-2 bg-blue-50 hover:bg-blue-100 text-sm"
+            >
+              <Eye className="h-4 w-4" />
+              Anteprima
+            </Button>
+
+            <Button
+              onClick={copyHTML}
+              disabled={isLoading || stats.selected === 0}
+              variant="outline"
+              className={`flex items-center justify-center gap-2 text-sm ${
+                copied
+                  ? "bg-green-50 text-green-700"
+                  : "bg-orange-50 hover:bg-orange-100"
+              }`}
+            >
+              {copied ? (
+                <Check className="h-4 w-4" />
+              ) : (
+                <Copy className="h-4 w-4" />
+              )}
+              {copied ? "Copiato!" : "Copia HTML"}
+            </Button>
+
+            <Button
+              onClick={downloadHTML}
+              disabled={isLoading || stats.selected === 0}
+              className="flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700 text-sm"
+            >
+              <Download className="h-4 w-4" />
+              Scarica HTML
+            </Button>
+          </div>
+
           {/* Messaggio se nessun contenuto */}
           {stats.total === 0 && !isLoading && (
             <Card className="border-yellow-200 bg-yellow-50">
-              <CardContent className="p-6 text-center">
-                <Calendar className="h-12 w-12 text-yellow-600 mx-auto mb-3" />
-                <h3 className="text-lg font-medium text-yellow-800 mb-2">
+              <CardContent className="p-4 sm:p-6 text-center">
+                <Calendar className="h-8 w-8 sm:h-12 sm:w-12 text-yellow-600 mx-auto mb-3" />
+                <h3 className="text-base sm:text-lg font-medium text-yellow-800 mb-2">
                   Nessun contenuto trovato
                 </h3>
-                <p className="text-yellow-700 text-sm">
+                <p className="text-yellow-700 text-xs sm:text-sm">
                   Non ci sono comunicati o notizie pubblicati negli ultimi 30
                   giorni. Prova a ricaricare o verifica che ci siano contenuti
                   nel database.
@@ -868,34 +1014,50 @@ Snalv Confsal, in qualità di titolare del trattamento, Le ricorda che i Suoi da
         </CardContent>
       </Card>
 
-      {/* Dialog Anteprima */}
+      {/* Dialog Anteprima - Mobile Responsive */}
       <Dialog open={showPreviewDialog} onOpenChange={setShowPreviewDialog}>
-        <DialogContent className="max-w-[95vw] max-h-[95vh] w-full">
-          <DialogHeader>
-            <DialogTitle>Anteprima Newsletter</DialogTitle>
+        <DialogContent className="max-w-[95vw] max-h-[95vh] w-full p-3 sm:p-6">
+          <DialogHeader className="pb-3">
+            <DialogTitle className="text-base sm:text-lg">
+              Anteprima Newsletter
+            </DialogTitle>
           </DialogHeader>
-          <div className="space-y-4 h-full">
-            <div className="flex gap-2">
+          <div className="space-y-3 sm:space-y-4 h-full">
+            <div className="flex flex-col sm:flex-row gap-2">
               <Button
                 onClick={downloadHTML}
-                className="flex items-center gap-2 bg-green-600 hover:bg-green-700"
+                className="flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700 text-sm"
               >
                 <Download className="h-4 w-4" />
                 Scarica HTML
               </Button>
               <Button
+                onClick={copyHTML}
+                variant="outline"
+                className={`flex items-center justify-center gap-2 text-sm ${
+                  copied ? "bg-green-50 text-green-700" : ""
+                }`}
+              >
+                {copied ? (
+                  <Check className="h-4 w-4" />
+                ) : (
+                  <Copy className="h-4 w-4" />
+                )}
+                {copied ? "Copiato!" : "Copia HTML"}
+              </Button>
+              <Button
                 onClick={generatePreview}
                 variant="outline"
-                className="flex items-center gap-2"
+                className="flex items-center justify-center gap-2 text-sm"
               >
                 <RefreshCw className="h-4 w-4" />
-                Aggiorna Anteprima
+                Aggiorna
               </Button>
             </div>
 
             <div
               className="border rounded-lg overflow-hidden"
-              style={{ height: "calc(95vh - 200px)" }}
+              style={{ height: "calc(95vh - 180px)" }}
             >
               {newsletterPreview && (
                 <iframe
