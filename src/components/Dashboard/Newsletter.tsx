@@ -113,7 +113,7 @@ const NewsletterGenerator = () => {
           return itemDate >= thirtyDaysAgo;
         })
         // @ts-ignore
-        .sort((a: any, b: any) => new Date(b.createdAt) - new Date(a.createdAt));
+        .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
       setRecentContent(recent);
 
@@ -269,8 +269,12 @@ const NewsletterGenerator = () => {
                           <tr>
                             <td>
                               <a href="https://snalv.it/${
-                                item.linkNews
-                              }?utm_source=brevo&utm_campaign=NEWSLETTER SNALV CONFSAL ${monthYear}&utm_medium=email" target="_blank" style="margin-left: 80%;display: block;margin-bottom: 10px;color: #1f2d3d;">Leggi</a>
+                                item.type === "comunicato"
+                                  ? "comunicato"
+                                  : "notizia"
+                              }/${
+        item.linkNews
+      }?utm_source=brevo&utm_campaign=NEWSLETTER SNALV CONFSAL ${monthYear}&utm_medium=email" target="_blank" style="margin-left: 80%;display: block;margin-bottom: 10px;color: #1f2d3d;">Leggi</a>
                             </td>
                           </tr>
                         </tbody>
