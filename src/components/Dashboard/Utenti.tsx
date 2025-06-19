@@ -141,7 +141,7 @@ const Users = () => {
   const [showProgressDialog, setShowProgressDialog] = useState(false);
   const [selectedUserProgress, setSelectedUserProgress] = useState(null);
 
-  const roles = ["Responsabile Sindacale", "Amministratore"];
+  const roles = ["Responsabile Sindacale", "Amministratore", "Iscritto"];
 
   // Fetch courses from Firestore
   const fetchCourses = async () => {
