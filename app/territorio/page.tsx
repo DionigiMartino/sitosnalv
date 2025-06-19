@@ -74,10 +74,12 @@ const TerritorioPage = () => {
       const allSedi = querySnapshot.docs.map((doc) => {
         const data = doc.data();
 
-        // Nome specifico per gli Uffici Regionali
+        // Nome specifico per gli Uffici Regionali e Provinciali
         const name =
           data.tipo === "Ufficio Regionale"
             ? data.tipo + " " + data.regione
+            : data.tipo === "Ufficio Provinciale"
+            ? data.tipo + " " + data.provincia
             : data.tipo + " " + data.citta;
 
         return {
