@@ -130,14 +130,35 @@ const WebinarViewer = () => {
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <div className="lg:col-span-2 space-y-8">
-              {selectedWebinar.video?.url ? (
+              {selectedWebinar.videos?.length > 0 ? (
+                selectedWebinar.videos.map((vid, idx) => (
+                  <div
+                    key={idx}
+                    className="relative rounded-2xl overflow-hidden bg-black shadow-2xl ring-1 ring-black/5 mb-6"
+                  >
+                    <div className="aspect-video">
+                      <video
+                        controls
+                        className="absolute inset-0 w-full h-full object-cover"
+                        src={vid.url}
+                      >
+                        Il tuo browser non supporta il tag video.
+                      </video>
+                    </div>
+                    {vid.title && (
+                      <p className="absolute bottom-0 left-0 right-0 bg-black/50 text-white text-sm p-2 truncate">
+                        {vid.title}
+                      </p>
+                    )}
+                  </div>
+                ))
+              ) : selectedWebinar.video?.url ? (
                 <div className="relative rounded-2xl overflow-hidden bg-black shadow-2xl ring-1 ring-black/5">
                   <div className="aspect-video">
                     <video
                       controls
                       className="absolute inset-0 w-full h-full object-cover"
                       src={selectedWebinar.video.url}
-                      poster={selectedWebinar.video.thumbnail}
                     >
                       Il tuo browser non supporta il tag video.
                     </video>
@@ -318,10 +339,16 @@ const WebinarViewer = () => {
                     </p>
 
                     <div className="flex items-center gap-3 pt-4 border-t border-gray-100">
-                      {webinar.video?.url && (
+                      {(webinar.videos?.length > 0 || webinar.video?.url) && (
                         <div className="flex items-center gap-1 bg-blue-50 text-blue-700 px-3 py-1.5 rounded-full">
                           <Play className="h-4 w-4" />
-                          <span className="text-xs font-medium">Video</span>
+                          {webinar.videos?.length > 1 ? (
+                            <span className="text-xs font-medium">
+                              {webinar.videos.length} video
+                            </span>
+                          ) : (
+                            <span className="text-xs font-medium">Video</span>
+                          )}
                         </div>
                       )}
                       {webinar.pdfs?.length > 0 && (
@@ -332,14 +359,16 @@ const WebinarViewer = () => {
                           </span>
                         </div>
                       )}
-                      {!webinar.video?.url && !webinar.pdfs?.length && (
-                        <div className="flex items-center gap-1 bg-gray-50 text-gray-600 px-3 py-1.5 rounded-full">
-                          <FileText className="h-4 w-4" />
-                          <span className="text-xs font-medium">
-                            Solo descrizione
-                          </span>
-                        </div>
-                      )}
+                      {!webinar.video?.url &&
+                        !(webinar.videos?.length > 0) &&
+                        !webinar.pdfs?.length && (
+                          <div className="flex items-center gap-1 bg-gray-50 text-gray-600 px-3 py-1.5 rounded-full">
+                            <FileText className="h-4 w-4" />
+                            <span className="text-xs font-medium">
+                              Solo descrizione
+                            </span>
+                          </div>
+                        )}
                     </div>
                   </div>
                 </CardContent>

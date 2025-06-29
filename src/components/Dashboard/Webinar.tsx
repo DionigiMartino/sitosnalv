@@ -71,6 +71,7 @@ const Webinar = () => {
   const [uploadProgress, setUploadProgress] = useState(false);
   const [dragActive, setDragActive] = useState(false);
   const [dragActiveVideo, setDragActiveVideo] = useState(false);
+  const [videos, setVideos] = useState<any[]>([]);
 
   useEffect(() => {
     fetchWebinars();
@@ -116,6 +117,31 @@ const Webinar = () => {
     return url;
   };
 
+  // Carica un video e lo aggiunge all'array dei video
+  const addVideo = async (file: File) => {
+    if (!file?.type.startsWith("video/")) {
+      alert("Per favore, carica solo file video");
+      return;
+    }
+    try {
+      setUploadProgress(true);
+      const url = await handleVideoUpload(file);
+      setVideos((prev) => [
+        ...prev,
+        {
+          url,
+          title: file.name.replace(/\.[^/.]+$/, ""),
+          filename: file.name,
+        },
+      ]);
+    } catch (error) {
+      console.error("Error uploading video:", error);
+      alert("Errore durante il caricamento del video");
+    } finally {
+      setUploadProgress(false);
+    }
+  };
+
   const handleVideoDelete = async () => {
     try {
       if (selectedWebinar?.video?.url) {
@@ -126,6 +152,7 @@ const Webinar = () => {
       setVideo(null);
       setVideoUrl("");
       setVideoTitle("");
+      setVideos([]);
     } catch (error) {
       console.error("Error deleting video:", error);
       alert("Errore durante l'eliminazione del video");
@@ -183,11 +210,22 @@ const Webinar = () => {
         };
       }
 
+      // Prepara array di video finale
+      let videosData =
+        videos.length > 0
+          ? videos.map(({ url, title }) => ({ url, title }))
+          : [];
+      if (videosData.length === 0 && videoData) {
+        videosData = [videoData];
+      }
+
       const data = {
         title,
         date: new Date(date),
         description,
-        video: videoData,
+        videos: videosData,
+        // Per retro-compatibilità manteniamo anche il campo singolo video
+        video: videosData[0] || null,
         pdfs: pdfs.length > 0 ? [...pdfs] : [],
         updatedAt: serverTimestamp(),
         createdAt: selectedWebinar?.createdAt || serverTimestamp(),
@@ -225,6 +263,7 @@ const Webinar = () => {
     setVideo(null);
     setVideoUrl("");
     setVideoTitle("");
+    setVideos([]);
     setPdfs([]);
     setSelectedWebinar(null);
   };
@@ -239,7 +278,19 @@ const Webinar = () => {
 
     setIsLoading(true);
     try {
-      if (webinarToDelete.video?.url) {
+      if (webinarToDelete.videos?.length > 0) {
+        const storage = getStorage();
+        await Promise.all(
+          webinarToDelete.videos.map(async (vid) => {
+            if (vid.url) {
+              const videoRef = ref(storage, vid.url);
+              await deleteObject(videoRef).catch((error) =>
+                console.error("Error deleting video:", error)
+              );
+            }
+          })
+        );
+      } else if (webinarToDelete.video?.url) {
         const storage = getStorage();
         const videoRef = ref(storage, webinarToDelete.video.url);
         await deleteObject(videoRef);
@@ -343,15 +394,14 @@ const Webinar = () => {
                     <TableCell>{webinar.title}</TableCell>
                     <TableCell>
                       <div className="flex gap-2">
-                        {webinar.video && (
-                          <FileVideo className="h-4 w-4 text-blue-500" />
-                        )}
-                        {webinar.pdfs?.length > 0 && (
+                        {(webinar.videos?.length > 0 || webinar.video) && (
                           <div className="flex items-center">
-                            <FileText className="h-4 w-4 text-red-500" />
-                            <span className="text-sm ml-1">
-                              ({webinar.pdfs.length})
-                            </span>
+                            <FileVideo className="h-4 w-4 text-blue-500" />
+                            {webinar.videos?.length > 1 && (
+                              <span className="text-sm ml-1">
+                                ({webinar.videos.length})
+                              </span>
+                            )}
                           </div>
                         )}
                       </div>
@@ -378,8 +428,22 @@ const Webinar = () => {
                           setTitle(webinar.title);
                           setDate(webinar.date.toISOString().slice(0, 16));
                           setDescription(webinar.description);
-                          setVideoTitle(webinar.video?.title || "");
-                          setVideoUrl(webinar.video?.url || "");
+                          setVideos(
+                            webinar.videos && webinar.videos.length > 0
+                              ? webinar.videos
+                              : webinar.video
+                              ? [
+                                  {
+                                    url: webinar.video.url,
+                                    title: webinar.video.title || "",
+                                    filename: webinar.video.filename || "",
+                                  },
+                                ]
+                              : []
+                          );
+                          setVideo(null);
+                          setVideoTitle("");
+                          setVideoUrl("");
                           setPdfs(webinar.pdfs || []);
                         }}
                       >
@@ -521,6 +585,7 @@ const Webinar = () => {
                       }
                       transition-colors duration-200 text-center
                       ${videoUrl || video ? "border-green-500 bg-green-50" : ""}
+                      ${videos.length > 0 ? "border-green-500 bg-green-50" : ""}
                     `}
                     onDragEnter={(e) => {
                       e.preventDefault();
@@ -541,43 +606,76 @@ const Webinar = () => {
                       e.stopPropagation();
                       setDragActiveVideo(false);
 
-                      const file = e.dataTransfer.files[0];
-                      if (!file?.type.startsWith("video/")) {
-                        alert("Per favore, carica solo file video");
-                        return;
+                      const files = Array.from(e.dataTransfer.files);
+                      for (const file of files) {
+                        await addVideo(file as File);
                       }
-                      setVideo(file);
                     }}
                   >
-                    {videoUrl || video ? (
+                    {videos.length > 0 ? (
                       <div className="space-y-4">
-                        <div className="flex items-center justify-center">
-                          <div className="bg-white p-4 rounded-lg shadow-sm w-full max-w-md">
-                            <div className="flex items-center gap-3">
-                              <FileVideo className="h-8 w-8 text-blue-500" />
-                              <div className="flex-1">
-                                <Input
-                                  placeholder="Titolo del video"
-                                  value={videoTitle}
-                                  onChange={(e) =>
-                                    setVideoTitle(e.target.value)
-                                  }
-                                  className="border-0 border-b focus:ring-0"
-                                />
-                                <p className="text-xs text-gray-500 mt-1">
-                                  {video?.name || "Video caricato"}
-                                </p>
-                              </div>
-                              <Button
-                                type="button"
-                                variant="ghost"
-                                size="icon"
-                                onClick={handleVideoDelete}
-                              >
-                                <Trash2 className="h-4 w-4 text-red-500" />
-                              </Button>
+                        {videos.map((v, index) => (
+                          <div
+                            key={index}
+                            className="flex items-center gap-3 bg-white p-4 rounded-lg shadow-sm"
+                          >
+                            <FileVideo className="h-8 w-8 text-blue-500" />
+                            <div className="flex-1">
+                              <Input
+                                placeholder="Titolo del video"
+                                value={v.title}
+                                onChange={(e) =>
+                                  setVideos((prev) =>
+                                    prev.map((item, i) =>
+                                      i === index
+                                        ? { ...item, title: e.target.value }
+                                        : item
+                                    )
+                                  )
+                                }
+                                className="border-0 border-b focus:ring-0"
+                              />
+                              <p className="text-xs text-gray-500 mt-1 truncate">
+                                {v.filename || "Video caricato"}
+                              </p>
                             </div>
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="icon"
+                              onClick={async () => {
+                                try {
+                                  const storage = getStorage();
+                                  const videoRef = ref(storage, v.url);
+                                  await deleteObject(videoRef);
+                                } catch (err) {
+                                  console.error(err);
+                                }
+                                setVideos((prev) =>
+                                  prev.filter((_, i) => i !== index)
+                                );
+                              }}
+                            >
+                              <Trash2 className="h-4 w-4 text-red-500" />
+                            </Button>
                           </div>
+                        ))}
+                        <div className="flex justify-center">
+                          <label className="text-blue-600 hover:text-blue-700 cursor-pointer text-sm flex items-center gap-1">
+                            <PlusCircle className="h-4 w-4" /> Aggiungi video
+                            <input
+                              type="file"
+                              accept="video/*"
+                              className="hidden"
+                              multiple
+                              onChange={async (e) => {
+                                const files = Array.from(e.target.files);
+                                for (const file of files) {
+                                  await addVideo(file as File);
+                                }
+                              }}
+                            />
+                          </label>
                         </div>
                       </div>
                     ) : (
@@ -593,7 +691,12 @@ const Webinar = () => {
                                   type="file"
                                   accept="video/*"
                                   className="hidden"
-                                  onChange={(e) => setVideo(e.target.files[0])}
+                                  onChange={async (e) => {
+                                    const files = Array.from(e.target.files);
+                                    for (const file of files) {
+                                      await addVideo(file as File);
+                                    }
+                                  }}
                                 />
                               </label>
                             </p>
