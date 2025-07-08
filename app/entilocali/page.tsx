@@ -152,7 +152,7 @@ export default function EntiLocaliPage() {
                     entilocali@snalv.it - snalventilocali@pec.it
                   </p>
                   <p>
-                    <span className="font-bold">Telefono:</span> 380.5252867
+                    <span className="font-bold">Telefono:</span> 350.0539435
                   </p>
                 </div>
               </div>
