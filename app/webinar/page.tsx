@@ -137,32 +137,78 @@ const WebinarViewer = () => {
                     className="relative rounded-2xl overflow-hidden bg-black shadow-2xl ring-1 ring-black/5 mb-6"
                   >
                     <div className="aspect-video">
-                      <video
-                        controls
-                        className="absolute inset-0 w-full h-full object-cover"
-                        src={vid.url}
-                      >
-                        Il tuo browser non supporta il tag video.
-                      </video>
+                      {vid.type === "youtube" ? (
+                        <iframe
+                          className="absolute inset-0 w-full h-full"
+                          src={
+                            vid.embedUrl ||
+                            `https://www.youtube.com/embed/${vid.videoId}`
+                          }
+                          title={vid.title || "Video YouTube"}
+                          frameBorder="0"
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                          allowFullScreen
+                        />
+                      ) : (
+                        <video
+                          controls
+                          className="absolute inset-0 w-full h-full object-cover"
+                          src={vid.url}
+                        >
+                          Il tuo browser non supporta il tag video.
+                        </video>
+                      )}
                     </div>
                     {vid.title && (
-                      <p className="absolute bottom-0 left-0 right-0 bg-black/50 text-white text-sm p-2 truncate">
-                        {vid.title}
-                      </p>
+                      <div className="absolute bottom-0 left-0 right-0 bg-black/50 text-white text-sm p-2 flex items-center justify-between">
+                        <span className="truncate">{vid.title}</span>
+                        {vid.type === "youtube" && (
+                          <div className="flex items-center gap-1 bg-red-600 px-2 py-1 rounded text-xs">
+                            <span>YouTube</span>
+                          </div>
+                        )}
+                      </div>
                     )}
                   </div>
                 ))
               ) : selectedWebinar.video?.url ? (
                 <div className="relative rounded-2xl overflow-hidden bg-black shadow-2xl ring-1 ring-black/5">
                   <div className="aspect-video">
-                    <video
-                      controls
-                      className="absolute inset-0 w-full h-full object-cover"
-                      src={selectedWebinar.video.url}
-                    >
-                      Il tuo browser non supporta il tag video.
-                    </video>
+                    {/* Gestisco anche i video singoli legacy che potrebbero essere YouTube */}
+                    {selectedWebinar.video.type === "youtube" ? (
+                      <iframe
+                        className="absolute inset-0 w-full h-full"
+                        src={
+                          selectedWebinar.video.embedUrl ||
+                          `https://www.youtube.com/embed/${selectedWebinar.video.videoId}`
+                        }
+                        title={selectedWebinar.video.title || "Video YouTube"}
+                        frameBorder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                        allowFullScreen
+                      />
+                    ) : (
+                      <video
+                        controls
+                        className="absolute inset-0 w-full h-full object-cover"
+                        src={selectedWebinar.video.url}
+                      >
+                        Il tuo browser non supporta il tag video.
+                      </video>
+                    )}
                   </div>
+                  {selectedWebinar.video.title && (
+                    <div className="absolute bottom-0 left-0 right-0 bg-black/50 text-white text-sm p-2 flex items-center justify-between">
+                      <span className="truncate">
+                        {selectedWebinar.video.title}
+                      </span>
+                      {selectedWebinar.video.type === "youtube" && (
+                        <div className="flex items-center gap-1 bg-red-600 px-2 py-1 rounded text-xs">
+                          <span>YouTube</span>
+                        </div>
+                      )}
+                    </div>
+                  )}
                 </div>
               ) : (
                 <div className="relative aspect-video rounded-2xl overflow-hidden bg-gradient-to-br from-gray-100 to-gray-50 flex items-center justify-center ring-1 ring-black/5">

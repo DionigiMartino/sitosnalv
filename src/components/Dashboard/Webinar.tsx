@@ -73,6 +73,10 @@ const Webinar = () => {
   const [dragActiveVideo, setDragActiveVideo] = useState(false);
   const [videos, setVideos] = useState<any[]>([]);
 
+  // Nuovi stati per i video YouTube
+  const [youtubeUrl, setYoutubeUrl] = useState("");
+  const [youtubeTitle, setYoutubeTitle] = useState("");
+
   useEffect(() => {
     fetchWebinars();
   }, []);
@@ -132,6 +136,7 @@ const Webinar = () => {
           url,
           title: file.name.replace(/\.[^/.]+$/, ""),
           filename: file.name,
+          type: "uploaded", // Nuovo campo tipo
         },
       ]);
     } catch (error) {
@@ -140,6 +145,49 @@ const Webinar = () => {
     } finally {
       setUploadProgress(false);
     }
+  };
+
+  // Nuova funzione per aggiungere video YouTube
+  const addYouTubeVideo = () => {
+    if (!youtubeUrl.trim()) {
+      alert("Per favore, inserisci un URL di YouTube valido");
+      return;
+    }
+
+    // Estrai l'ID del video YouTube dall'URL
+    const getYouTubeVideoId = (url: string) => {
+      const regExp =
+        /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+      const match = url.match(regExp);
+      return match && match[2].length === 11 ? match[2] : null;
+    };
+
+    const videoId = getYouTubeVideoId(youtubeUrl);
+    if (!videoId) {
+      alert(
+        "URL YouTube non valido. Assicurati di inserire un link YouTube corretto."
+      );
+      return;
+    }
+
+    const embedUrl = `https://www.youtube.com/embed/${videoId}`;
+    const thumbnailUrl = `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`;
+
+    setVideos((prev) => [
+      ...prev,
+      {
+        url: youtubeUrl,
+        embedUrl,
+        thumbnailUrl,
+        videoId,
+        title: youtubeTitle || "Video YouTube",
+        type: "youtube",
+      },
+    ]);
+
+    // Reset dei campi
+    setYoutubeUrl("");
+    setYoutubeTitle("");
   };
 
   const handleVideoDelete = async () => {
@@ -232,10 +280,39 @@ const Webinar = () => {
       };
 
       if (selectedWebinar?.id) {
-        if (selectedWebinar.video?.url && !videoData) {
+        // Pulizia dei video rimossi durante l'aggiornamento
+        if (
+          selectedWebinar.video?.url &&
+          selectedWebinar.video.type === "uploaded" &&
+          !videoData
+        ) {
           const storage = getStorage();
           const videoRef = ref(storage, selectedWebinar.video.url);
-          await deleteObject(videoRef);
+          await deleteObject(videoRef).catch((error) =>
+            console.error("Error deleting old video:", error)
+          );
+        }
+
+        // Pulizia dei video dall'array precedente che sono stati rimossi
+        if (selectedWebinar.videos?.length > 0) {
+          const currentVideoUrls = videosData.map((v) => v.url);
+          const removedVideos = selectedWebinar.videos.filter(
+            (oldVideo) =>
+              oldVideo.type === "uploaded" &&
+              !currentVideoUrls.includes(oldVideo.url)
+          );
+
+          if (removedVideos.length > 0) {
+            const storage = getStorage();
+            await Promise.all(
+              removedVideos.map(async (vid) => {
+                const videoRef = ref(storage, vid.url);
+                await deleteObject(videoRef).catch((error) =>
+                  console.error("Error deleting removed video:", error)
+                );
+              })
+            );
+          }
         }
 
         const docRef = doc(db, "webinars", selectedWebinar.id);
@@ -266,6 +343,10 @@ const Webinar = () => {
     setVideos([]);
     setPdfs([]);
     setSelectedWebinar(null);
+
+    // Reset nuovi campi YouTube
+    setYoutubeUrl("");
+    setYoutubeTitle("");
   };
 
   const handleDeleteClick = (webinar) => {
@@ -282,7 +363,8 @@ const Webinar = () => {
         const storage = getStorage();
         await Promise.all(
           webinarToDelete.videos.map(async (vid) => {
-            if (vid.url) {
+            // Elimina solo i video caricati, non quelli di YouTube
+            if (vid.url && vid.type === "uploaded") {
               const videoRef = ref(storage, vid.url);
               await deleteObject(videoRef).catch((error) =>
                 console.error("Error deleting video:", error)
@@ -290,7 +372,10 @@ const Webinar = () => {
             }
           })
         );
-      } else if (webinarToDelete.video?.url) {
+      } else if (
+        webinarToDelete.video?.url &&
+        webinarToDelete.video?.type !== "youtube"
+      ) {
         const storage = getStorage();
         const videoRef = ref(storage, webinarToDelete.video.url);
         await deleteObject(videoRef);
@@ -394,15 +479,55 @@ const Webinar = () => {
                     <TableCell>{webinar.title}</TableCell>
                     <TableCell>
                       <div className="flex gap-2">
-                        {(webinar.videos?.length > 0 || webinar.video) && (
-                          <div className="flex items-center">
-                            <FileVideo className="h-4 w-4 text-blue-500" />
-                            {webinar.videos?.length > 1 && (
-                              <span className="text-sm ml-1">
-                                ({webinar.videos.length})
-                              </span>
+                        {webinar.videos?.length > 0 ? (
+                          <div className="flex items-center gap-1">
+                            {webinar.videos.some(
+                              (v) => v.type === "uploaded"
+                            ) && (
+                              <div className="flex items-center">
+                                <FileVideo className="h-4 w-4 text-blue-500" />
+                                <span className="text-xs ml-1">
+                                  {
+                                    webinar.videos.filter(
+                                      (v) => v.type === "uploaded"
+                                    ).length
+                                  }
+                                </span>
+                              </div>
+                            )}
+                            {webinar.videos.some(
+                              (v) => v.type === "youtube"
+                            ) && (
+                              <div className="flex items-center">
+                                <div className="w-4 h-3 bg-red-500 rounded flex items-center justify-center">
+                                  <span className="text-white text-xs font-bold">
+                                    YT
+                                  </span>
+                                </div>
+                                <span className="text-xs ml-1">
+                                  {
+                                    webinar.videos.filter(
+                                      (v) => v.type === "youtube"
+                                    ).length
+                                  }
+                                </span>
+                              </div>
                             )}
                           </div>
+                        ) : (
+                          webinar.video && (
+                            <div className="flex items-center">
+                              {webinar.video.type === "youtube" ? (
+                                <div className="w-4 h-3 bg-red-500 rounded flex items-center justify-center">
+                                  <span className="text-white text-xs font-bold">
+                                    YT
+                                  </span>
+                                </div>
+                              ) : (
+                                <FileVideo className="h-4 w-4 text-blue-500" />
+                              )}
+                            </div>
+                          )
                         )}
                       </div>
                     </TableCell>
@@ -437,6 +562,7 @@ const Webinar = () => {
                                     url: webinar.video.url,
                                     title: webinar.video.title || "",
                                     filename: webinar.video.filename || "",
+                                    type: "uploaded", // Assicurati che i video esistenti abbiano un tipo
                                   },
                                 ]
                               : []
@@ -507,6 +633,51 @@ const Webinar = () => {
                       >
                         Guarda
                       </a>
+                    </div>
+                  </div>
+                )}
+
+                {selectedWebinar?.videos?.length > 0 && (
+                  <div className="space-y-2">
+                    <h4 className="font-medium">
+                      Video ({selectedWebinar.videos.length})
+                    </h4>
+                    <div className="space-y-2">
+                      {selectedWebinar.videos.map((video, index) => (
+                        <div key={index} className="flex items-center gap-2">
+                          {video.type === "youtube" ? (
+                            <>
+                              <div className="w-6 h-4 bg-red-500 rounded flex items-center justify-center">
+                                <span className="text-white text-xs font-bold">
+                                  YT
+                                </span>
+                              </div>
+                              <span>{video.title}</span>
+                              <a
+                                href={video.url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-red-500 hover:text-red-700"
+                              >
+                                Guarda su YouTube
+                              </a>
+                            </>
+                          ) : (
+                            <>
+                              <FileVideo className="h-4 w-4 text-blue-500" />
+                              <span>{video.title}</span>
+                              <a
+                                href={video.url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-blue-500 hover:text-blue-700"
+                              >
+                                Guarda
+                              </a>
+                            </>
+                          )}
+                        </div>
+                      ))}
                     </div>
                   </div>
                 )}
@@ -619,37 +790,70 @@ const Webinar = () => {
                             key={index}
                             className="flex items-center gap-3 bg-white p-4 rounded-lg shadow-sm"
                           >
-                            <FileVideo className="h-8 w-8 text-blue-500" />
-                            <div className="flex-1">
-                              <Input
-                                placeholder="Titolo del video"
-                                value={v.title}
-                                onChange={(e) =>
-                                  setVideos((prev) =>
-                                    prev.map((item, i) =>
-                                      i === index
-                                        ? { ...item, title: e.target.value }
-                                        : item
-                                    )
-                                  )
-                                }
-                                className="border-0 border-b focus:ring-0"
-                              />
-                              <p className="text-xs text-gray-500 mt-1 truncate">
-                                {v.filename || "Video caricato"}
-                              </p>
-                            </div>
+                            {v.type === "youtube" ? (
+                              <div className="flex items-center gap-2">
+                                <div className="w-16 h-12 bg-red-500 rounded flex items-center justify-center">
+                                  <span className="text-white text-xs font-bold">
+                                    YT
+                                  </span>
+                                </div>
+                                <div className="flex-1">
+                                  <Input
+                                    placeholder="Titolo del video YouTube"
+                                    value={v.title}
+                                    onChange={(e) =>
+                                      setVideos((prev) =>
+                                        prev.map((item, i) =>
+                                          i === index
+                                            ? { ...item, title: e.target.value }
+                                            : item
+                                        )
+                                      )
+                                    }
+                                    className="border-0 border-b focus:ring-0"
+                                  />
+                                  <p className="text-xs text-gray-500 mt-1 truncate">
+                                    YouTube: {v.videoId}
+                                  </p>
+                                </div>
+                              </div>
+                            ) : (
+                              <>
+                                <FileVideo className="h-8 w-8 text-blue-500" />
+                                <div className="flex-1">
+                                  <Input
+                                    placeholder="Titolo del video"
+                                    value={v.title}
+                                    onChange={(e) =>
+                                      setVideos((prev) =>
+                                        prev.map((item, i) =>
+                                          i === index
+                                            ? { ...item, title: e.target.value }
+                                            : item
+                                        )
+                                      )
+                                    }
+                                    className="border-0 border-b focus:ring-0"
+                                  />
+                                  <p className="text-xs text-gray-500 mt-1 truncate">
+                                    {v.filename || "Video caricato"}
+                                  </p>
+                                </div>
+                              </>
+                            )}
                             <Button
                               type="button"
                               variant="ghost"
                               size="icon"
                               onClick={async () => {
-                                try {
-                                  const storage = getStorage();
-                                  const videoRef = ref(storage, v.url);
-                                  await deleteObject(videoRef);
-                                } catch (err) {
-                                  console.error(err);
+                                if (v.type === "uploaded") {
+                                  try {
+                                    const storage = getStorage();
+                                    const videoRef = ref(storage, v.url);
+                                    await deleteObject(videoRef);
+                                  } catch (err) {
+                                    console.error(err);
+                                  }
                                 }
                                 setVideos((prev) =>
                                   prev.filter((_, i) => i !== index)
@@ -660,9 +864,9 @@ const Webinar = () => {
                             </Button>
                           </div>
                         ))}
-                        <div className="flex justify-center">
+                        <div className="flex justify-center gap-4">
                           <label className="text-blue-600 hover:text-blue-700 cursor-pointer text-sm flex items-center gap-1">
-                            <PlusCircle className="h-4 w-4" /> Aggiungi video
+                            <PlusCircle className="h-4 w-4" /> Carica video
                             <input
                               type="file"
                               accept="video/*"
@@ -676,6 +880,26 @@ const Webinar = () => {
                               }}
                             />
                           </label>
+                          <span className="text-gray-400">|</span>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const url = prompt(
+                                "Inserisci l'URL del video YouTube:"
+                              );
+                              const title = prompt(
+                                "Inserisci il titolo del video (opzionale):"
+                              );
+                              if (url) {
+                                setYoutubeUrl(url);
+                                setYoutubeTitle(title || "");
+                                addYouTubeVideo();
+                              }
+                            }}
+                            className="text-red-600 hover:text-red-700 text-sm flex items-center gap-1"
+                          >
+                            <PlusCircle className="h-4 w-4" /> Video YouTube
+                          </button>
                         </div>
                       </div>
                     ) : (
@@ -704,6 +928,41 @@ const Webinar = () => {
                               Formati supportati: MP4, WebM, MOV (max 500MB)
                             </p>
                           </div>
+                        </div>
+
+                        <div className="flex items-center gap-4">
+                          <div className="flex-1 h-px bg-gray-200"></div>
+                          <span className="text-xs text-gray-500 bg-white px-2">
+                            oppure
+                          </span>
+                          <div className="flex-1 h-px bg-gray-200"></div>
+                        </div>
+
+                        <div className="space-y-3">
+                          <p className="text-sm text-gray-600 text-center">
+                            Aggiungi un video da YouTube
+                          </p>
+                          <div className="flex gap-2">
+                            <Input
+                              placeholder="URL del video YouTube"
+                              value={youtubeUrl}
+                              onChange={(e) => setYoutubeUrl(e.target.value)}
+                              className="flex-1"
+                            />
+                            <Button
+                              type="button"
+                              onClick={addYouTubeVideo}
+                              variant="outline"
+                              className="px-4"
+                            >
+                              Aggiungi
+                            </Button>
+                          </div>
+                          <Input
+                            placeholder="Titolo del video (opzionale)"
+                            value={youtubeTitle}
+                            onChange={(e) => setYoutubeTitle(e.target.value)}
+                          />
                         </div>
                       </div>
                     )}
