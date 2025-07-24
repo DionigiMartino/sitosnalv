@@ -83,6 +83,34 @@ const WebinarViewer = () => {
     return format(date, "HH:mm", { locale: it });
   };
 
+  // Funzione helper per riconoscere i video YouTube
+  const isYouTubeVideo = (video) => {
+    return (
+      video.type === "youtube" ||
+      video.videoId ||
+      video.embedUrl ||
+      (video.url &&
+        (video.url.includes("youtube.com") || video.url.includes("youtu.be")))
+    );
+  };
+
+  // Funzione per ottenere l'URL embed di YouTube
+  const getYouTubeEmbedUrl = (video) => {
+    if (video.embedUrl) return video.embedUrl;
+    if (video.videoId) return `https://www.youtube.com/embed/${video.videoId}`;
+
+    // Estrai l'ID dall'URL se presente
+    if (video.url) {
+      const regExp =
+        /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+      const match = video.url.match(regExp);
+      const videoId = match && match[2].length === 11 ? match[2] : null;
+      if (videoId) return `https://www.youtube.com/embed/${videoId}`;
+    }
+
+    return null;
+  };
+
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-50">
@@ -95,6 +123,17 @@ const WebinarViewer = () => {
   }
 
   if (selectedWebinar) {
+    // Debug temporaneo per i video
+    console.log("selectedWebinar:", selectedWebinar);
+    console.log("videos array:", selectedWebinar.videos);
+    if (selectedWebinar.videos?.length > 0) {
+      selectedWebinar.videos.forEach((vid, idx) => {
+        console.log(`Video ${idx}:`, vid);
+        console.log(`Is YouTube: ${isYouTubeVideo(vid)}`);
+        console.log(`Embed URL: ${getYouTubeEmbedUrl(vid)}`);
+      });
+    }
+
     return (
       <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-blue-50">
         <div className="max-w-7xl mx-auto px-4 py-8">
@@ -137,13 +176,10 @@ const WebinarViewer = () => {
                     className="relative rounded-2xl overflow-hidden bg-black shadow-2xl ring-1 ring-black/5 mb-6"
                   >
                     <div className="aspect-video">
-                      {vid.type === "youtube" ? (
+                      {isYouTubeVideo(vid) ? (
                         <iframe
                           className="absolute inset-0 w-full h-full"
-                          src={
-                            vid.embedUrl ||
-                            `https://www.youtube.com/embed/${vid.videoId}`
-                          }
+                          src={getYouTubeEmbedUrl(vid)}
                           title={vid.title || "Video YouTube"}
                           frameBorder="0"
                           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
@@ -162,7 +198,7 @@ const WebinarViewer = () => {
                     {vid.title && (
                       <div className="absolute bottom-0 left-0 right-0 bg-black/50 text-white text-sm p-2 flex items-center justify-between">
                         <span className="truncate">{vid.title}</span>
-                        {vid.type === "youtube" && (
+                        {isYouTubeVideo(vid) && (
                           <div className="flex items-center gap-1 bg-red-600 px-2 py-1 rounded text-xs">
                             <span>YouTube</span>
                           </div>
@@ -175,13 +211,10 @@ const WebinarViewer = () => {
                 <div className="relative rounded-2xl overflow-hidden bg-black shadow-2xl ring-1 ring-black/5">
                   <div className="aspect-video">
                     {/* Gestisco anche i video singoli legacy che potrebbero essere YouTube */}
-                    {selectedWebinar.video.type === "youtube" ? (
+                    {isYouTubeVideo(selectedWebinar.video) ? (
                       <iframe
                         className="absolute inset-0 w-full h-full"
-                        src={
-                          selectedWebinar.video.embedUrl ||
-                          `https://www.youtube.com/embed/${selectedWebinar.video.videoId}`
-                        }
+                        src={getYouTubeEmbedUrl(selectedWebinar.video)}
                         title={selectedWebinar.video.title || "Video YouTube"}
                         frameBorder="0"
                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
@@ -202,7 +235,7 @@ const WebinarViewer = () => {
                       <span className="truncate">
                         {selectedWebinar.video.title}
                       </span>
-                      {selectedWebinar.video.type === "youtube" && (
+                      {isYouTubeVideo(selectedWebinar.video) && (
                         <div className="flex items-center gap-1 bg-red-600 px-2 py-1 rounded text-xs">
                           <span>YouTube</span>
                         </div>
